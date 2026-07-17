@@ -6,8 +6,50 @@ import {
   Play, X, Copy, Check, Video, Shield, Map, Bot, Radio,
   PhoneCall, PhoneMissed, PhoneForwarded, Mic, FileText,
   Navigation, Clock, Volume2, Layers, ClipboardList, Camera,
-  Ruler, Package, DollarSign, Send, Eye, MessageCircle, Repeat
+  Ruler, Package, DollarSign, Send, Eye, MessageCircle, Repeat,
+  Route, Truck, Calendar, CreditCard, Megaphone, Gift, AlertTriangle, Menu
 } from 'lucide-react'
+
+// ─── Analytics (Umami) visitor identity ───────────────────────────────────────
+// Persists a random visitor id in this browser so a demo-lead submission can be
+// joined back to its Umami session (page views, referrer, device, IP, duration).
+const VISITOR_ID_KEY = 'af_visitor_id'
+function getVisitorId() {
+  try {
+    let id = localStorage.getItem(VISITOR_ID_KEY)
+    if (!id) {
+      id = (crypto.randomUUID ? crypto.randomUUID() : `${Date.now()}-${Math.random().toString(36).slice(2)}`)
+      localStorage.setItem(VISITOR_ID_KEY, id)
+    }
+    return id
+  } catch {
+    return null // localStorage unavailable (private mode etc.) — degrade gracefully
+  }
+}
+
+// ─── Live demo access toggle ──────────────────────────────────────────────────
+// Flip this to `true` once the demo dashboard is ready to open to the public
+// again. While `false`, every "Live Demo" entry point captures the prospect's
+// details and shows a "we'll be in touch" message instead of linking through
+// to the live dashboard.
+const LIVE_DEMO_ENABLED = false
+
+// Remembers that a visitor already requested access, so we don't re-prompt
+// them for their details every time they click a demo link.
+const DEMO_LEAD_STORAGE_KEY = 'af_demo_lead_submitted'
+function getSavedDemoLead() {
+  try {
+    const raw = localStorage.getItem(DEMO_LEAD_STORAGE_KEY)
+    return raw ? JSON.parse(raw) : null
+  } catch {
+    return null
+  }
+}
+function saveDemoLead(data) {
+  try {
+    localStorage.setItem(DEMO_LEAD_STORAGE_KEY, JSON.stringify(data))
+  } catch { /* localStorage unavailable — degrade gracefully */ }
+}
 
 // ─── Global CSS animations ────────────────────────────────────────────────────
 const GLOBAL_STYLES = `
@@ -106,11 +148,17 @@ const GLOBAL_STYLES = `
     opacity: 1;
     filter: none;
   }
+  .nav-links-desktop { display: flex; gap: 12px; align-items: center; }
+  .nav-hamburger-btn { display: none; }
+  @media (max-width: 900px) {
+    .nav-links-desktop { display: none; }
+    .nav-hamburger-btn { display: inline-flex; }
+  }
 `
 
 // ─── Demo credentials ─────────────────────────────────────────────────────────
 const DEMO_EMAIL = 'demo@autofront.com.au'
-const DEMO_PASSWORD = 'AutofrontDemo2024!'
+const DEMO_PASSWORD = 'AutofrontDemo2026!'
 
 const JMS_OPTIONS = [
   { value: 'simpro', label: 'simPRO' },
@@ -1927,6 +1975,18 @@ function LeadCaptureModal({ onClose, onSuccess }) {
   const [form, setForm] = useState({ name: '', phone: '', company: '', jms: '', jmsOther: '', website: '' })
   const set = (k, v) => setForm(f => ({ ...f, [k]: v }))
 
+  // While the live demo is paused, a returning visitor who already submitted
+  // their details shouldn't be asked again — just remind them we'll be in touch.
+  useEffect(() => {
+    if (!LIVE_DEMO_ENABLED) {
+      const saved = getSavedDemoLead()
+      if (saved) {
+        setForm(f => ({ ...f, name: saved.name || '' }))
+        setStep('thanks')
+      }
+    }
+  }, [])
+
   const validate = () => {
     const e = {}
     if (!form.name.trim() || form.name.trim().length < 2) e.name = 'Please enter your full name'
@@ -1940,7 +2000,7 @@ function LeadCaptureModal({ onClose, onSuccess }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault()
-    if (form.website) { setStep('credentials'); return }
+    if (form.website) { setStep(LIVE_DEMO_ENABLED ? 'credentials' : 'thanks'); return }
     const errs = validate()
     if (Object.keys(errs).length) { setErrors(errs); return }
     setErrors({})
@@ -1956,6 +2016,8 @@ function LeadCaptureModal({ onClose, onSuccess }) {
       referrer: document.referrer || null,
       url: window.location.href,
       submittedAt: new Date().toISOString(),
+      visitorId: getVisitorId(),
+      liveDemoEnabled: LIVE_DEMO_ENABLED,
     }
 
     try {
@@ -1972,8 +2034,18 @@ function LeadCaptureModal({ onClose, onSuccess }) {
       })
     } catch { /* proceed regardless */ }
 
+    // Fire a conversion event into Umami tied to this same visitor id, so the
+    // funnel (session → demo request) is visible in the analytics dashboard too.
+    window.umami?.track?.('demo-lead-submit', { company: payload.company, jms: payload.jms })
+
     setSubmitting(false)
-    setStep('credentials')
+
+    if (LIVE_DEMO_ENABLED) {
+      setStep('credentials')
+    } else {
+      saveDemoLead({ name: payload.name, company: payload.company, submittedAt: payload.submittedAt })
+      setStep('thanks')
+    }
   }
 
   const inp = (err) => ({
@@ -2011,9 +2083,11 @@ function LeadCaptureModal({ onClose, onSuccess }) {
               }}>
                 <Play size={22} color="white" />
               </div>
-              <h2 style={{ color: '#fff', fontSize: '1.45rem', fontWeight: 700, margin: '0 0 8px' }}>Request Demo Access</h2>
+              <h2 style={{ color: '#fff', fontSize: '1.45rem', fontWeight: 700, margin: '0 0 8px' }}>{LIVE_DEMO_ENABLED ? 'Request Demo Access' : 'Request Early Access'}</h2>
               <p style={{ color: '#9ca3af', fontSize: '0.92rem', margin: 0, lineHeight: 1.5 }}>
-                Tell us a little about your business and we'll open the live dashboard for you.
+                {LIVE_DEMO_ENABLED
+                  ? "Tell us a little about your business and we'll open the live dashboard for you."
+                  : "Tell us a little about your business and we'll be in touch soon to book you in for a personal walkthrough."}
               </p>
             </div>
             <form onSubmit={handleSubmit} noValidate>
@@ -2081,13 +2155,45 @@ function LeadCaptureModal({ onClose, onSuccess }) {
                   onMouseEnter={e => { if (!submitting) e.currentTarget.style.opacity = '0.88' }}
                   onMouseLeave={e => { e.currentTarget.style.opacity = '1' }}
                 >
-                  {submitting ? 'Submitting…' : <><span>Get Demo Access</span> <ArrowRight size={16} /></>}
+                  {submitting ? 'Submitting…' : LIVE_DEMO_ENABLED ? <><span>Get Demo Access</span> <ArrowRight size={16} /></> : <><span>Request Access</span> <ArrowRight size={16} /></>}
                 </button>
                 <p style={{ color: '#4b5563', fontSize: '0.75rem', textAlign: 'center', margin: 0 }}>
-                  Your details are used only to personalise your demo experience.
+                  {LIVE_DEMO_ENABLED ? 'Your details are used only to personalise your demo experience.' : "Your details are used only to arrange your walkthrough — we won't spam you."}
                 </p>
               </div>
             </form>
+          </>
+        ) : step === 'thanks' ? (
+          <>
+            <div style={{ textAlign: 'center', marginBottom: 8 }}>
+              <div style={{
+                display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+                width: 52, height: 52, borderRadius: '50%',
+                background: 'linear-gradient(135deg, #10b981, #059669)', marginBottom: 16,
+              }}>
+                <CheckCircle size={24} color="white" />
+              </div>
+              <h2 style={{ color: '#fff', fontSize: '1.45rem', fontWeight: 700, margin: '0 0 8px' }}>
+                Thanks{form.name.trim() ? `, ${form.name.trim().split(' ')[0]}` : ''} — we’ve got your details
+              </h2>
+              <p style={{ color: '#9ca3af', fontSize: '0.92rem', margin: '0 0 28px', lineHeight: 1.6 }}>
+                The live demo is paused while we polish a few things. One of our team will be in touch
+                soon to book you in for a personal walkthrough of the platform.
+              </p>
+            </div>
+            <button onClick={onClose}
+              style={{
+                width: '100%', padding: '14px',
+                background: 'linear-gradient(135deg, #6366f1, #8b5cf6)',
+                color: '#fff', border: 'none', borderRadius: 10, cursor: 'pointer',
+                fontSize: '1rem', fontWeight: 700, boxShadow: '0 8px 24px rgba(99,102,241,0.35)',
+                display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
+              }}
+              onMouseEnter={e => e.currentTarget.style.opacity = '0.88'}
+              onMouseLeave={e => e.currentTarget.style.opacity = '1'}
+            >
+              Got it, thanks
+            </button>
           </>
         ) : (
           <>
@@ -2156,13 +2262,44 @@ export default function LandingPage() {
   const [showCapture, setShowCapture] = useState(false)
   const [showWhoAreWe, setShowWhoAreWe] = useState(false)
   const [activePlatformFeature, setActivePlatformFeature] = useState(0)
+  const [activeSection, setActiveSection] = useState('')
+  const [mobileNavOpen, setMobileNavOpen] = useState(false)
 
   const handleLogin = () => { window.location.href = DEMO_URL }
   const openDemo = () => setShowCapture(true)
 
+  // Close the mobile nav if the viewport is resized back up to desktop width.
+  useEffect(() => {
+    const onResize = () => { if (window.innerWidth > 900) setMobileNavOpen(false) }
+    window.addEventListener('resize', onResize)
+    return () => window.removeEventListener('resize', onResize)
+  }, [])
+
+  // Tag this browser's Umami session with our own persistent visitor id so it
+  // can be joined to a demo-lead submission later.
+  useEffect(() => {
+    const visitorId = getVisitorId()
+    if (visitorId && window.umami?.identify) window.umami.identify(visitorId)
+  }, [])
+
   useEffect(() => {
     const t = setInterval(() => setActivePlatformFeature(f => (f + 1) % PLATFORM_FEATURES.length), 3500)
     return () => clearInterval(t)
+  }, [])
+
+  useEffect(() => {
+    const sectionIds = ['self-service-section', 'dashboard-section', 'connect-section', 'quote-section', 'platform-section']
+    const observers = sectionIds.map(id => {
+      const el = document.getElementById(id)
+      if (!el) return null
+      const obs = new IntersectionObserver(
+        ([entry]) => { if (entry.isIntersecting) setActiveSection(id) },
+        { threshold: 0.25 }
+      )
+      obs.observe(el)
+      return obs
+    })
+    return () => observers.forEach(obs => obs?.disconnect())
   }, [])
 
   const af = PLATFORM_FEATURES[activePlatformFeature]
@@ -2202,14 +2339,18 @@ export default function LandingPage() {
         <div style={{ display: 'flex', alignItems: 'center' }}>
           <img src="/autofront-logo.png" alt="Autofront" style={{ height: 50, width: 'auto' }} />
         </div>
-        <div style={{ display: 'flex', gap: 12, alignItems: 'center' }}>
-          {[['Self Service', 'self-service-section'], ['Dashboard', 'dashboard-section'], ['Connect', 'connect-section'], ['Quote', 'quote-section'], ['Platform', 'platform-section']].map(([label, id]) => (
-            <button key={id} onClick={() => document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' })}
-              style={{ padding: '8px 18px', background: 'transparent', color: '#9ca3af', border: 'none', cursor: 'pointer', fontSize: '0.88rem', fontWeight: 500, transition: 'color .2s' }}
-              onMouseEnter={e => e.currentTarget.style.color = '#fff'}
-              onMouseLeave={e => e.currentTarget.style.color = '#9ca3af'}
-            >{label}</button>
-          ))}
+        <div className="nav-links-desktop">
+          {[['Self Service', 'self-service-section'], ['Dashboard', 'dashboard-section'], ['Connect', 'connect-section'], ['Quote', 'quote-section'], ['Platform', 'platform-section']].map(([label, id]) => {
+            const isActive = activeSection === id
+            return (
+              <button key={id}
+                onClick={() => { setActiveSection(id); document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' }) }}
+                style={{ padding: '8px 18px', background: isActive ? 'rgba(99,102,241,0.12)' : 'transparent', color: isActive ? '#a5b4fc' : '#9ca3af', border: isActive ? '1px solid rgba(99,102,241,0.3)' : '1px solid transparent', borderRadius: 8, cursor: 'pointer', fontSize: '0.88rem', fontWeight: isActive ? 600 : 500, transition: 'all .2s' }}
+                onMouseEnter={e => { if (!isActive) e.currentTarget.style.color = '#fff' }}
+                onMouseLeave={e => { if (!isActive) e.currentTarget.style.color = '#9ca3af' }}
+              >{label}</button>
+            )
+          })}
           <button onClick={() => setShowWhoAreWe(true)}
             style={{ padding: '8px 18px', background: 'rgba(99,102,241,0.12)', color: '#a5b4fc', border: '1px solid rgba(99,102,241,0.3)', borderRadius: 8, cursor: 'pointer', fontSize: '0.88rem', fontWeight: 600, transition: 'all .2s', animation: 'ourStoryPulse 2.6s ease-in-out infinite' }}
             onMouseEnter={e => { e.currentTarget.style.background = 'rgba(99,102,241,0.24)'; e.currentTarget.style.animationPlayState = 'paused' }}
@@ -2226,7 +2367,48 @@ export default function LandingPage() {
             onMouseLeave={e => e.currentTarget.style.opacity = '1'}
           >Log In</button>
         </div>
+
+        <button className="nav-hamburger-btn" onClick={() => setMobileNavOpen(o => !o)}
+          aria-label={mobileNavOpen ? 'Close menu' : 'Open menu'}
+          style={{
+            alignItems: 'center', justifyContent: 'center',
+            width: 40, height: 40, background: 'rgba(255,255,255,0.06)',
+            border: '1px solid rgba(255,255,255,0.1)', borderRadius: 8,
+            color: '#e5e7eb', cursor: 'pointer',
+          }}
+        >
+          {mobileNavOpen ? <X size={20} /> : <Menu size={20} />}
+        </button>
       </nav>
+
+      {mobileNavOpen && (
+        <div style={{
+          position: 'sticky', top: 64, zIndex: 99,
+          background: 'rgba(11,15,26,0.98)', backdropFilter: 'blur(14px)',
+          borderBottom: '1px solid rgba(255,255,255,0.08)',
+          display: 'flex', flexDirection: 'column', gap: 6,
+          padding: '12px 5vw 16px',
+        }}>
+          {[['Self Service', 'self-service-section'], ['Dashboard', 'dashboard-section'], ['Connect', 'connect-section'], ['Quote', 'quote-section'], ['Platform', 'platform-section']].map(([label, id]) => {
+            const isActive = activeSection === id
+            return (
+              <button key={id}
+                onClick={() => { setActiveSection(id); setMobileNavOpen(false); document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' }) }}
+                style={{ width: '100%', textAlign: 'left', padding: '11px 14px', background: isActive ? 'rgba(99,102,241,0.12)' : 'transparent', color: isActive ? '#a5b4fc' : '#d1d5db', border: isActive ? '1px solid rgba(99,102,241,0.3)' : '1px solid transparent', borderRadius: 8, cursor: 'pointer', fontSize: '0.95rem', fontWeight: isActive ? 600 : 500 }}
+              >{label}</button>
+            )
+          })}
+          <button onClick={() => { setShowWhoAreWe(true); setMobileNavOpen(false) }}
+            style={{ width: '100%', textAlign: 'left', padding: '11px 14px', background: 'rgba(99,102,241,0.12)', color: '#a5b4fc', border: '1px solid rgba(99,102,241,0.3)', borderRadius: 8, cursor: 'pointer', fontSize: '0.95rem', fontWeight: 600, marginTop: 4 }}
+          >Who are we?</button>
+          <button onClick={() => { openDemo(); setMobileNavOpen(false) }}
+            style={{ width: '100%', textAlign: 'left', padding: '11px 14px', background: 'rgba(99,102,241,0.15)', color: '#a5b4fc', border: '1px solid rgba(99,102,241,0.3)', borderRadius: 8, cursor: 'pointer', fontSize: '0.95rem', fontWeight: 600 }}
+          >Live Demo</button>
+          <button onClick={() => { handleLogin(); setMobileNavOpen(false) }}
+            style={{ width: '100%', textAlign: 'left', padding: '11px 14px', background: 'linear-gradient(135deg, #6366f1, #8b5cf6)', color: '#fff', border: 'none', borderRadius: 8, cursor: 'pointer', fontSize: '0.95rem', fontWeight: 600 }}
+          >Log In</button>
+        </div>
+      )}
 
       <div style={{ overflowX: 'hidden' }}>
       {/* ══════════════════════════════════════════════════════════════════ */}
@@ -2820,6 +3002,137 @@ export default function LandingPage() {
           ))}
         </div>
       </FocusSection>
+
+      {/* ── ROADMAP SECTION ── */}
+      <section id="roadmap-section" style={{ padding: '96px 5vw 80px', background: 'radial-gradient(ellipse 80% 50% at 50% 0%, rgba(139,92,246,0.06) 0%, transparent 70%)', borderTop: '1px solid rgba(255,255,255,0.05)' }}>
+        <div style={{ textAlign: 'center', marginBottom: 64 }}>
+          <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8, background: 'rgba(139,92,246,0.12)', border: '1px solid rgba(139,92,246,0.25)', borderRadius: 99, padding: '6px 16px', marginBottom: 20, fontSize: '0.8rem', color: '#c4b5fd', fontWeight: 600, letterSpacing: '0.06em', textTransform: 'uppercase' }}>
+            <Route size={13} /> Coming Soon
+          </div>
+          <h2 style={{ fontSize: 'clamp(1.8rem, 3.5vw, 2.8rem)', fontWeight: 800, letterSpacing: '-0.02em', margin: '0 0 16px' }}>Operations Management</h2>
+          <p style={{ color: '#9ca3af', fontSize: '1.05rem', maxWidth: 620, margin: '0 auto' }}>The next evolution of Autofront — turning field operations into a fully automated, self-optimising machine. These capabilities are in active development.</p>
+        </div>
+
+        {/* GPS / Live tracking — wide card */}
+        <div style={{ maxWidth: 1100, margin: '0 auto 24px', background: 'linear-gradient(135deg, rgba(99,102,241,0.08), rgba(16,185,129,0.05))', border: '1px solid rgba(99,102,241,0.18)', borderRadius: 20, padding: '40px 48px', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: 40, alignItems: 'center' }}>
+          <div>
+            <div style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: 52, height: 52, borderRadius: 14, background: 'rgba(99,102,241,0.18)', marginBottom: 20 }}>
+              <MapPin size={26} color="#6366f1" />
+            </div>
+            <h3 style={{ fontSize: '1.45rem', fontWeight: 800, margin: '0 0 12px', letterSpacing: '-0.02em' }}>Live GPS Field Tracking</h3>
+            <p style={{ color: '#9ca3af', lineHeight: 1.75, fontSize: '0.97rem', margin: 0 }}>Track every field and sales vehicle in real time. Know exactly where your team is throughout the day — without calling anyone. Instantly identify staff in neighbouring suburbs to service same-day requests, and provide customers with automatically updated ETAs from the moment they book.</p>
+          </div>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
+            {[
+              { icon: Navigation, color: '#6366f1', label: 'Real-time map view', desc: 'See your whole fleet on a live map at a glance' },
+              { icon: Clock, color: '#8b5cf6', label: 'Auto ETA updates', desc: 'Customers receive accurate arrival windows automatically' },
+              { icon: Truck, color: '#10b981', label: 'Same-day routing', desc: 'Spot nearby staff and re-route for urgent jobs instantly' },
+              { icon: Zap, color: '#f59e0b', label: 'Dispatch intelligence', desc: 'Surface the right person at the right time, automatically' },
+            ].map((item, i) => (
+              <div key={i} style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.07)', borderRadius: 12, padding: '16px' }}>
+                <item.icon size={18} color={item.color} style={{ marginBottom: 8 }} />
+                <div style={{ fontSize: '0.82rem', fontWeight: 700, color: '#e5e7eb', marginBottom: 4 }}>{item.label}</div>
+                <div style={{ fontSize: '0.76rem', color: '#6b7280', lineHeight: 1.5 }}>{item.desc}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Route planning + Disruption triage + Quote scheduling — three columns */}
+        <div style={{ maxWidth: 1100, margin: '0 auto 24px', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: 20 }}>
+          <div style={{ background: 'rgba(255,255,255,0.025)', border: '1px solid rgba(139,92,246,0.2)', borderRadius: 18, padding: '32px 28px' }}>
+            <div style={{ width: 46, height: 46, borderRadius: 12, background: 'rgba(139,92,246,0.18)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 18 }}>
+              <Route size={22} color="#8b5cf6" />
+            </div>
+            <h3 style={{ fontWeight: 800, fontSize: '1.05rem', margin: '0 0 10px' }}>Intelligent Route Planning</h3>
+            <p style={{ color: '#9ca3af', fontSize: '0.87rem', lineHeight: 1.7, margin: '0 0 18px' }}>Offer customers booking windows — not rigid time slots — then let Autofront optimise the run sheet. Dedicate days or staff members to geographic quadrants (NE / NW / SE / SW), so a lead from a given suburb is automatically routed to whoever covers that zone that day. A visual map shows coverage at a glance.</p>
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
+              {['Booking windows', 'Geo quadrants', 'Fuel optimisation', 'Visual map'].map(tag => (
+                <span key={tag} style={{ fontSize: '0.74rem', fontWeight: 600, color: '#a78bfa', background: 'rgba(139,92,246,0.12)', border: '1px solid rgba(139,92,246,0.2)', borderRadius: 99, padding: '3px 10px' }}>{tag}</span>
+              ))}
+            </div>
+          </div>
+
+          <div style={{ background: 'rgba(255,255,255,0.025)', border: '1px solid rgba(239,68,68,0.2)', borderRadius: 18, padding: '32px 28px' }}>
+            <div style={{ width: 46, height: 46, borderRadius: 12, background: 'rgba(239,68,68,0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 18 }}>
+              <AlertTriangle size={22} color="#f87171" />
+            </div>
+            <h3 style={{ fontWeight: 800, fontSize: '1.05rem', margin: '0 0 10px' }}>Disruption Triage — Automated</h3>
+            <p style={{ color: '#9ca3af', fontSize: '0.87rem', lineHeight: 1.7, margin: '0 0 18px' }}>Technician calls in sick at 6am with six jobs on the run sheet? Autofront instantly triages every impacted booking: find available cover, reschedule within the AM or PM window, or — when neither is possible — send each customer an immediate apology with a rebooking link and an incentive. What once took an ops manager an hour of calls is resolved in minutes.</p>
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
+              {['Auto-triage', 'Cover matching', 'Customer comms', 'Rebooking link'].map(tag => (
+                <span key={tag} style={{ fontSize: '0.74rem', fontWeight: 600, color: '#f87171', background: 'rgba(239,68,68,0.1)', border: '1px solid rgba(239,68,68,0.2)', borderRadius: 99, padding: '3px 10px' }}>{tag}</span>
+              ))}
+            </div>
+          </div>
+
+          <div style={{ background: 'rgba(255,255,255,0.025)', border: '1px solid rgba(245,158,11,0.2)', borderRadius: 18, padding: '32px 28px' }}>
+            <div style={{ width: 46, height: 46, borderRadius: 12, background: 'rgba(245,158,11,0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 18 }}>
+              <Calendar size={22} color="#f59e0b" />
+            </div>
+            <h3 style={{ fontWeight: 800, fontSize: '1.05rem', margin: '0 0 10px' }}>Quote-to-Install Scheduling</h3>
+            <p style={{ color: '#9ca3af', fontSize: '0.87rem', lineHeight: 1.7, margin: '0 0 18px' }}>During the quoting phase, give customers realistic install timeframes based on your live capacity — and use that pencilled-in date as a conversion lever. Accepting the quote confirms the slot, reducing back-and-forth and accelerating your pipeline.</p>
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
+              {['Live capacity view', 'Pencil-in date', 'Quote incentive', 'Auto-confirms'].map(tag => (
+                <span key={tag} style={{ fontSize: '0.74rem', fontWeight: 600, color: '#f59e0b', background: 'rgba(245,158,11,0.1)', border: '1px solid rgba(245,158,11,0.2)', borderRadius: 99, padding: '3px 10px' }}>{tag}</span>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* On-site payment + Campaign engine — two wide cards */}
+        <div style={{ maxWidth: 1100, margin: '0 auto', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(420px, 1fr))', gap: 20 }}>
+          <div style={{ background: 'linear-gradient(135deg, rgba(16,185,129,0.08), rgba(6,182,212,0.05))', border: '1px solid rgba(16,185,129,0.2)', borderRadius: 18, padding: '36px' }}>
+            <div style={{ display: 'flex', alignItems: 'flex-start', gap: 18, marginBottom: 16 }}>
+              <div style={{ width: 46, height: 46, borderRadius: 12, background: 'rgba(16,185,129,0.18)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                <CreditCard size={22} color="#10b981" />
+              </div>
+              <div>
+                <h3 style={{ fontWeight: 800, fontSize: '1.05rem', margin: '0 0 8px' }}>On-Site Electronic Payment</h3>
+                <p style={{ color: '#9ca3af', fontSize: '0.87rem', lineHeight: 1.7, margin: 0 }}>Job complete? Any technician or sales rep can accept payment on the spot using nothing but their phone. Once processed, the job status automatically updates to invoice paid — and a review request with a loyalty incentive (free service call or future discount) is sent to the customer immediately.</p>
+              </div>
+            </div>
+            <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
+              {[
+                { icon: CreditCard, label: 'Tap-to-pay via phone' },
+                { icon: CheckCircle, label: 'Auto job status update' },
+                { icon: Gift, label: 'Loyalty incentive on completion' },
+                { icon: Star, label: 'Instant review request' },
+              ].map((item, i) => (
+                <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 6, background: 'rgba(16,185,129,0.1)', border: '1px solid rgba(16,185,129,0.2)', borderRadius: 8, padding: '6px 12px' }}>
+                  <item.icon size={13} color="#10b981" />
+                  <span style={{ fontSize: '0.77rem', fontWeight: 600, color: '#6ee7b7' }}>{item.label}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div style={{ background: 'linear-gradient(135deg, rgba(236,72,153,0.08), rgba(139,92,246,0.05))', border: '1px solid rgba(236,72,153,0.2)', borderRadius: 18, padding: '36px' }}>
+            <div style={{ display: 'flex', alignItems: 'flex-start', gap: 18, marginBottom: 16 }}>
+              <div style={{ width: 46, height: 46, borderRadius: 12, background: 'rgba(236,72,153,0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                <Megaphone size={22} color="#ec4899" />
+              </div>
+              <div>
+                <h3 style={{ fontWeight: 800, fontSize: '1.05rem', margin: '0 0 8px' }}>Targeted Customer Campaigns</h3>
+                <p style={{ color: '#9ca3af', fontSize: '0.87rem', lineHeight: 1.7, margin: 0 }}>Your existing customer base is your most valuable asset. Pull a precision list — every customer you installed solar for in the past 3 years, or every unit of a specific brand and model — and send a targeted SMS or email campaign in minutes. Track responses and conversions in real time, measure ROI, save the campaign to re-run or tweak next season. All fully compliant with ACMA regulations, with automatic opt-out and do-not-contact management built in.</p>
+              </div>
+            </div>
+            <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
+              {[
+                { icon: Target, label: 'Precision audience builder' },
+                { icon: Send, label: 'SMS & email delivery' },
+                { icon: BarChart2, label: 'Live ROI tracking' },
+                { icon: Shield, label: 'ACMA compliant' },
+              ].map((item, i) => (
+                <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 6, background: 'rgba(236,72,153,0.1)', border: '1px solid rgba(236,72,153,0.2)', borderRadius: 8, padding: '6px 12px' }}>
+                  <item.icon size={13} color="#ec4899" />
+                  <span style={{ fontSize: '0.77rem', fontWeight: 600, color: '#f9a8d4' }}>{item.label}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
 
       {/* ── HOW THE DEMO WORKS ── */}
       <section style={{ padding: '80px 5vw', background: 'rgba(99,102,241,0.04)', borderTop: '1px solid rgba(99,102,241,0.1)', borderBottom: '1px solid rgba(99,102,241,0.1)' }}>
