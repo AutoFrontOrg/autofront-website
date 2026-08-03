@@ -1,0 +1,29 @@
+                                               Table "public.apex_elec_leads"
+          Column          |            Type             | Collation | Nullable |                   Default                   
+--------------------------+-----------------------------+-----------+----------+---------------------------------------------
+ id                       | integer                     |           | not null | nextval('apex_elec_leads_id_seq'::regclass)
+ customer_id              | bigint                      |           |          | 
+ session_id               | character varying(255)      |           | not null | 
+ utm_source               | character varying(255)      |           |          | 
+ utm_medium               | character varying(255)      |           |          | 
+ utm_campaign             | character varying(255)      |           |          | 
+ utm_content              | character varying(255)      |           |          | 
+ utm_term                 | character varying(255)      |           |          | 
+ stage                    | character varying(50)       |           |          | 'contact'::character varying
+ source                   | character varying(255)      |           |          | 
+ data                     | jsonb                       |           |          | 
+ created_at               | timestamp without time zone |           |          | CURRENT_TIMESTAMP
+ updated_at               | timestamp without time zone |           |          | CURRENT_TIMESTAMP
+ referral_code            | character varying(255)      |           |          | 
+ referral_source          | character varying(255)      |           |          | 
+ manual_status            | character varying(50)       |           |          | 
+ manual_status_note       | text                        |           |          | 
+ manual_status_updated_at | timestamp without time zone |           |          | 
+ manual_status_updated_by | character varying(255)      |           |          | 
+ furthest_step            | integer                     |           |          | 0
+ furthest_step_at         | timestamp without time zone |           |          | 
+Indexes:
+    "apex_elec_leads_pkey" PRIMARY KEY, btree (id)
+    "idx_apex_elec_leads_customer_id" btree (customer_id)
+    "idx_apex_elec_leads_furthest_step" btree (furthest_step)
+

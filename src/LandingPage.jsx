@@ -7,7 +7,8 @@ import {
   PhoneCall, PhoneMissed, PhoneForwarded, Mic, FileText,
   Navigation, Clock, Volume2, Layers, ClipboardList, Camera,
   Ruler, Package, DollarSign, Send, Eye, MessageCircle, Repeat,
-  Route, Truck, Calendar, CreditCard, Megaphone, Gift, AlertTriangle, Menu
+  Route, Truck, Calendar, CreditCard, Megaphone, Gift, AlertTriangle, Menu,
+  Calculator, ScanLine, Settings
 } from 'lucide-react'
 
 // ─── Analytics (Umami) visitor identity ───────────────────────────────────────
@@ -154,6 +155,10 @@ const GLOBAL_STYLES = `
     .nav-links-desktop { display: none; }
     .nav-hamburger-btn { display: inline-flex; }
   }
+  @keyframes veecNewFlash {
+    0%, 100% { opacity: 1; }
+    50%       { opacity: 0.25; }
+  }
 `
 
 // ─── Demo credentials ─────────────────────────────────────────────────────────
@@ -189,7 +194,7 @@ const PLATFORM_FEATURES = [
   { icon: TrendingUp, color: '#6366f1', title: 'Lead Intelligence', desc: 'Capture, score and track every inbound enquiry. Identify which channels convert, where leads drop off, and auto-follow-up with SMS the moment a prospect goes cold.', stats: '+34% avg. conversion lift' },
   { icon: BarChart2, color: '#10b981', title: 'Sales Performance', desc: 'Live revenue dashboards, job pipeline health, quote-to-invoice tracking and technician performance — all in one view.', stats: 'Live P&L per technician' },
   { icon: Target, color: '#f59e0b', title: 'Marketing Intelligence', desc: 'Know precisely which ad spend is working. Track reach, frequency, cost-per-lead and ROAS across Google, Meta and beyond — without leaving the dashboard.', stats: 'Google & Meta connected' },
-  { icon: Wrench, color: '#8b5cf6', title: 'Job Management Integration', desc: 'Seamless two-way sync with simPRO, ServiceM8, TradeTrak and AroFlo. See open jobs, scheduled installs and technician locations on a live map.', stats: 'simPRO · ServiceM8 · Trak' },
+  { icon: Wrench, color: '#8b5cf6', title: 'Job Management Integration', desc: 'Seamless two-way sync with your job management system. See open jobs, scheduled installs and technician locations on a live map.', stats: 'Job Management System' },
   { icon: Mail, color: '#ec4899', title: 'Campaigns', desc: 'Send targeted SMS and email campaigns to your existing customer base. Segment by suburb, job type, last service date or lifetime value.', stats: 'SMS + Email, no limits' },
   { icon: Bell, color: '#14b8a6', title: 'Automated Reminders', desc: 'Remind customers when their system is due for a service — personalised, timed and fully automated. Set it and forget it.', stats: 'Automated sequences' },
   { icon: Star, color: '#f97316', title: 'Upsell Engine', desc: 'Identify customers ready for an upgrade based on install date, product age, suburb and climate data. Reach them at the right moment with the right offer.', stats: 'AI-powered targeting' },
@@ -201,17 +206,15 @@ const DEMO_COMPANIES = [
 ]
 
 const INTEGRATIONS = [
-  { name: 'simPRO',      logo: '/logos/simpro.png' },
-  { name: 'ServiceM8',   logo: '/logos/servicem8.png'  },
-  { name: 'TradeTrak',   logo: '/logos/tradetrak.png'  },
-  { name: 'AroFlo',      logo: '/logos/aroflo.png'     },
-  { name: 'Google Ads',  logo: '/logos/google.png'     },
-  { name: 'Meta Ads',    logo: '/logos/meta.png'       },
-  { name: 'Twilio',      logo: '/logos/twilio.png'     },
-  { name: 'Podium',      logo: '/logos/podium.png'     },
-  { name: 'Xero',        logo: '/logos/xero.png'       },
-  { name: 'Google Maps', logo: '/logos/google.png'     },
-  { name: 'Stripe',      logo: '/logos/stripe.png'     },
+  { name: 'ServiceM8', logo: '/logos/servicem8.png' },
+  { name: 'TradeTrak', logo: '/logos/tradetrak.png' },
+  { name: 'Google Ads', logo: '/logos/google.png' },
+  { name: 'Meta Ads', logo: '/logos/meta.png' },
+  { name: 'Twilio', logo: '/logos/twilio.png' },
+  { name: 'Podium', logo: '/logos/podium.png' },
+  { name: 'Xero', logo: '/logos/xero.png' },
+  { name: 'Google Maps', logo: '/logos/google.png' },
+  { name: 'Stripe', logo: '/logos/stripe.png' },
 ]
 
 const TYPEWRITER_WORDS = [
@@ -221,6 +224,45 @@ const TYPEWRITER_WORDS = [
   'live call routing & IVR',
   'automated follow-up',
   'opt-in location tracking',
+]
+
+// ─── VEEC calculator — live product scan demo data ────────────────────────────
+const VEEC_PRODUCTS = [
+  {
+    name: 'Daikin Cora 7.1kW reverse-cycle split system (FTKM71WVMA)',
+    category: 'Air conditioning',
+    approved: true,
+    veecs: '≈15–18 VEECs',
+    reason: 'Replacing a gas room heater — falls toward the upper end of the 3–9kW incentive range. Replacing an existing split system instead generates far less (≈2–3 VEECs).',
+  },
+  {
+    name: 'Reclaim Energy CO₂ 315L (REHP-CO2-315GL)',
+    category: 'Heat-pump hot water',
+    approved: true,
+    veecs: '8–10 VEECs',
+    reason: '8 VEECs replacing gas; 9 metro / 10 regional replacing electric — per current VEU register data for Victoria.',
+  },
+  {
+    name: 'Emerald Energy All-In-One Pro 220L (EE-HWS-A1-220)',
+    category: 'Heat-pump hot water',
+    approved: true,
+    veecs: '9–11 VEECs',
+    reason: '9 VEECs replacing gas; 10 metro / 11 regional replacing electric — per current VEU register data.',
+  },
+  {
+    name: 'De’Longhi Pinguino PACEL110ERFWIFI 2.9kW portable cooling unit',
+    category: 'Air conditioning',
+    approved: false,
+    veecs: '0 VEECs',
+    reason: 'Portable cooling-only appliance. VEU space-heating products must be approved, high-efficiency reverse-cycle systems providing both heating and cooling.',
+  },
+  {
+    name: 'Dux Proflo 250L electric storage (250T1)',
+    category: 'Hot water',
+    approved: false,
+    veecs: '0 VEECs',
+    reason: 'A conventional resistance-element electric storage heater. Can be the system being removed, but the eligible replacement must generally be an approved heat-pump or solar-boosted system.',
+  },
 ]
 
 const HERO_NOTIFS = [
@@ -1203,19 +1245,19 @@ function CopyButton({ text }) {
 
 // ─── Quote carousel data ─────────────────────────────────────────────────────
 const QUOTE_PANELS = [
-  { id: 'capture',  label: 'Site Capture',    icon: Camera,        color: '#f59e0b', sub: 'Photos & measurements' },
-  { id: 'build',    label: 'Build Quote',      icon: ClipboardList, color: '#8b5cf6', sub: 'Catalog & pricing'     },
-  { id: 'proposal', label: 'Live Proposal',    icon: FileText,      color: '#10b981', sub: 'Options & rebates'     },
-  { id: 'tracking', label: 'Open Tracking',    icon: Eye,           color: '#ec4899', sub: 'Read & respond'        },
+  { id: 'capture', label: 'Site Capture', icon: Camera, color: '#f59e0b', sub: 'Photos & measurements' },
+  { id: 'build', label: 'Build Quote', icon: ClipboardList, color: '#8b5cf6', sub: 'Catalog & pricing' },
+  { id: 'proposal', label: 'Live Proposal', icon: FileText, color: '#10b981', sub: 'Options & rebates' },
+  { id: 'tracking', label: 'Open Tracking', icon: Eye, color: '#ec4899', sub: 'Read & respond' },
 ]
 
 // ── Panel 1: Site capture ─────────────────────────────────────────────────────
 function QuoteCapturePanel({ animate }) {
   const photos = [
-    { label: 'Bathroom',     src: '/site-photos/living-room.jpg'  },
-    { label: 'Switchboard',  src: '/site-photos/switchboard.jpg'  },
-    { label: 'Controller',   src: '/site-photos/roof-space.jpg'   },
-    { label: 'Main Living',  src: '/site-photos/main-living.jpg'  },
+    { label: 'Bathroom', src: '/site-photos/living-room.jpg' },
+    { label: 'Switchboard', src: '/site-photos/switchboard.jpg' },
+    { label: 'Controller', src: '/site-photos/roof-space.jpg' },
+    { label: 'Main Living', src: '/site-photos/main-living.jpg' },
   ]
   return (
     <div style={{ padding: '18px 22px', display: 'flex', flexDirection: 'column', gap: 14 }}>
@@ -1283,8 +1325,8 @@ function QuoteCapturePanel({ animate }) {
 // ── Panel 2: Build quote ──────────────────────────────────────────────────────
 const QUOTE_LINES = [
   { sku: 'DKIN-14kW', name: 'Daikin 14kW Ducted System', qty: 1, unit: '$4,850', total: '$4,850', color: '#8b5cf6' },
-  { sku: 'INST-DUC',  name: 'Installation — ducted',     qty: 1, unit: '$2,200', total: '$2,200', color: '#6366f1' },
-  { sku: 'VEEC-STC',  name: 'VEEC / STC Rebate',         qty: 1, unit: '−$680',  total: '−$680',  color: '#10b981' },
+  { sku: 'INST-DUC', name: 'Installation — ducted', qty: 1, unit: '$2,200', total: '$2,200', color: '#6366f1' },
+  { sku: 'VEEC-STC', name: 'VEEC / STC Rebate', qty: 1, unit: '−$680', total: '−$680', color: '#10b981' },
 ]
 function QuoteBuildPanel({ animate }) {
   return (
@@ -1337,9 +1379,9 @@ function QuoteBuildPanel({ animate }) {
 
 // ── Panel 3: Live proposal ────────────────────────────────────────────────────
 const PROPOSAL_OPTIONS = [
-  { tier: 'Good',   brand: 'Mitsubishi 12kW', price: '$4,990', badge: null,          color: '#6b7280' },
-  { tier: 'Better', brand: 'Daikin 14kW',     price: '$6,370', badge: 'Most Popular', color: '#8b5cf6' },
-  { tier: 'Best',   brand: 'Daikin 18kW',     price: '$7,890', badge: 'Best Value',   color: '#f59e0b' },
+  { tier: 'Good', brand: 'Mitsubishi 12kW', price: '$4,990', badge: null, color: '#6b7280' },
+  { tier: 'Better', brand: 'Daikin 14kW', price: '$6,370', badge: 'Most Popular', color: '#8b5cf6' },
+  { tier: 'Best', brand: 'Daikin 18kW', price: '$7,890', badge: 'Best Value', color: '#f59e0b' },
 ]
 function QuoteProposalPanel({ animate }) {
   return (
@@ -1384,10 +1426,10 @@ function QuoteProposalPanel({ animate }) {
 
 // ── Panel 4: Open tracking ────────────────────────────────────────────────────
 const PROPOSAL_EVENTS = [
-  { icon: Send,          color: '#6366f1', label: 'Proposal sent',           time: '2:31 PM',   detail: 'Delivered to john.chapman@gmail.com' },
-  { icon: Eye,           color: '#f59e0b', label: 'Proposal opened',         time: '3:47 PM',   detail: 'Opened on iPhone · spent 4m 12s reading' },
-  { icon: Target,        color: '#ec4899', label: '"Better" option selected', time: '3:49 PM',   detail: 'Customer compared Daikin 14kW vs 18kW' },
-  { icon: MessageCircle, color: '#10b981', label: 'Question added',           time: '4:02 PM',   detail: '"Does this include the 10 yr warranty?"' },
+  { icon: Send, color: '#6366f1', label: 'Proposal sent', time: '2:31 PM', detail: 'Delivered to john.chapman@gmail.com' },
+  { icon: Eye, color: '#f59e0b', label: 'Proposal opened', time: '3:47 PM', detail: 'Opened on iPhone · spent 4m 12s reading' },
+  { icon: Target, color: '#ec4899', label: '"Better" option selected', time: '3:49 PM', detail: 'Customer compared Daikin 14kW vs 18kW' },
+  { icon: MessageCircle, color: '#10b981', label: 'Question added', time: '4:02 PM', detail: '"Does this include the 10 yr warranty?"' },
 ]
 function QuoteTrackingPanel({ animate }) {
   return (
@@ -1443,17 +1485,17 @@ function QuoteCarousel() {
   const panel = QUOTE_PANELS[active]
 
   const panelMap = {
-    capture:  <QuoteCapturePanel  key={animKey} animate={true} />,
-    build:    <QuoteBuildPanel    key={animKey} animate={true} />,
+    capture: <QuoteCapturePanel key={animKey} animate={true} />,
+    build: <QuoteBuildPanel key={animKey} animate={true} />,
     proposal: <QuoteProposalPanel key={animKey} animate={true} />,
     tracking: <QuoteTrackingPanel key={animKey} animate={true} />,
   }
 
   const kpiMap = {
-    capture:  [{ label: 'Photos captured', value: '4',        color: '#f59e0b' }, { label: 'Floor area',  value: '220 m²',  color: '#fbbf24' }, { label: 'Site notes',    value: '1 added',  color: '#10b981' }],
-    build:    [{ label: 'Items in catalog', value: '2,847',   color: '#8b5cf6' }, { label: 'Quote total', value: '$6,370',  color: '#fbbf24' }, { label: 'Rebate saved',  value: '$680',     color: '#10b981' }],
-    proposal: [{ label: 'Options shown',   value: '3 tiers',  color: '#10b981' }, { label: 'Sent in',    value: '< 2 min', color: '#fbbf24' }, { label: 'Rebate shown',  value: 'Auto',     color: '#6366f1' }],
-    tracking: [{ label: 'Time to open',    value: '76 min',   color: '#ec4899' }, { label: 'Read time',  value: '4m 12s',  color: '#f59e0b' }, { label: 'Questions',     value: '1 pending',color: '#10b981' }],
+    capture: [{ label: 'Photos captured', value: '4', color: '#f59e0b' }, { label: 'Floor area', value: '220 m²', color: '#fbbf24' }, { label: 'Site notes', value: '1 added', color: '#10b981' }],
+    build: [{ label: 'Items in catalog', value: '2,847', color: '#8b5cf6' }, { label: 'Quote total', value: '$6,370', color: '#fbbf24' }, { label: 'Rebate saved', value: '$680', color: '#10b981' }],
+    proposal: [{ label: 'Options shown', value: '3 tiers', color: '#10b981' }, { label: 'Sent in', value: '< 2 min', color: '#fbbf24' }, { label: 'Rebate shown', value: 'Auto', color: '#6366f1' }],
+    tracking: [{ label: 'Time to open', value: '76 min', color: '#ec4899' }, { label: 'Read time', value: '4m 12s', color: '#f59e0b' }, { label: 'Questions', value: '1 pending', color: '#10b981' }],
   }
 
   return (
@@ -1467,15 +1509,15 @@ function QuoteCarousel() {
       {/* Browser chrome */}
       <div style={{ padding: '11px 16px', background: 'rgba(0,0,0,0.3)', borderBottom: '1px solid rgba(255,255,255,0.06)', display: 'flex', alignItems: 'center', gap: 12 }}>
         <div style={{ display: 'flex', gap: 6, flexShrink: 0 }}>
-          {['#ef4444','#f59e0b','#10b981'].map((col, i) => (
-            <div key={i} style={{ width: 10, height: 10, borderRadius: '50%', background: col, opacity: 0.65 }}/>
+          {['#ef4444', '#f59e0b', '#10b981'].map((col, i) => (
+            <div key={i} style={{ width: 10, height: 10, borderRadius: '50%', background: col, opacity: 0.65 }} />
           ))}
         </div>
         <div style={{ flex: 1, background: 'rgba(255,255,255,0.05)', borderRadius: 6, padding: '4px 10px', fontSize: '0.7rem', color: '#4b5563', textAlign: 'center' }}>
           quote.autofront.com.au
         </div>
         <div style={{ flexShrink: 0, display: 'flex', alignItems: 'center', gap: 6 }}>
-          <div style={{ width: 6, height: 6, borderRadius: '50%', background: '#f59e0b', animation: 'pulseDot 2s ease-in-out infinite' }}/>
+          <div style={{ width: 6, height: 6, borderRadius: '50%', background: '#f59e0b', animation: 'pulseDot 2s ease-in-out infinite' }} />
           <span style={{ fontSize: '0.67rem', color: '#6b7280' }}>On-site</span>
         </div>
       </div>
@@ -1493,7 +1535,7 @@ function QuoteCarousel() {
               <p.icon size={13} color={isActive ? p.color : '#4b5563'} style={{ transition: 'color .2s' }} />
               <span style={{ fontSize: '0.66rem', fontWeight: isActive ? 700 : 400, color: isActive ? p.color : '#6b7280', transition: 'all .2s', whiteSpace: 'nowrap' }}>{p.label}</span>
               {isActive && (
-                <div style={{ position: 'absolute', bottom: 0, left: '8%', right: '8%', height: 2, background: p.color, borderRadius: '2px 2px 0 0' }}/>
+                <div style={{ position: 'absolute', bottom: 0, left: '8%', right: '8%', height: 2, background: p.color, borderRadius: '2px 2px 0 0' }} />
               )}
             </button>
           )
@@ -1526,7 +1568,7 @@ function QuoteCarousel() {
             width: i === active ? 22 : 7, height: 7, borderRadius: 99,
             background: i === active ? QUOTE_PANELS[active].color : 'rgba(255,255,255,0.15)',
             border: 'none', cursor: 'pointer', padding: 0, transition: 'all 0.3s ease',
-          }}/>
+          }} />
         ))}
       </div>
     </div>
@@ -1535,16 +1577,16 @@ function QuoteCarousel() {
 
 // ─── Self Service Portal carousel ────────────────────────────────────────────
 const SS_PANELS = [
-  { id: 'book',    label: 'Book',         icon: ClipboardList, color: '#6366f1', sub: 'Choose type'     },
-  { id: 'slots',   label: 'Availability', icon: Clock,         color: '#8b5cf6', sub: 'JMS timeslots'   },
-  { id: 'qualify', label: 'Qualify Lead', icon: CheckCircle,   color: '#10b981', sub: 'Auto-criteria'   },
-  { id: 'confirm', label: 'Confirmed',    icon: Bell,          color: '#ec4899', sub: 'SMS + reminders' },
+  { id: 'book', label: 'Book', icon: ClipboardList, color: '#6366f1', sub: 'Choose type' },
+  { id: 'slots', label: 'Availability', icon: Clock, color: '#8b5cf6', sub: 'JMS timeslots' },
+  { id: 'qualify', label: 'Qualify Lead', icon: CheckCircle, color: '#10b981', sub: 'Auto-criteria' },
+  { id: 'confirm', label: 'Confirmed', icon: Bell, color: '#ec4899', sub: 'SMS + reminders' },
 ]
 
 function SSBookingPanel({ animate }) {
   const types = [
-    { icon: Phone,  color: '#6366f1', label: 'Phone Consultation', duration: '30 min', selected: true  },
-    { icon: Video,  color: '#8b5cf6', label: 'Video Walkthrough',  duration: '45 min', selected: false },
+    { icon: Phone, color: '#6366f1', label: 'Phone Consultation', duration: '30 min', selected: true },
+    { icon: Video, color: '#8b5cf6', label: 'Video Walkthrough', duration: '45 min', selected: false },
     { icon: MapPin, color: '#ec4899', label: 'Onsite Sales Visit', duration: '60 min', selected: false },
   ]
   return (
@@ -1576,14 +1618,14 @@ function SSBookingPanel({ animate }) {
 
 function SSAvailabilityPanel({ animate }) {
   const days = [
-    { label: 'Mon', date: '30', open: true  },
-    { label: 'Tue', date: '1',  open: true, active: true },
-    { label: 'Wed', date: '2',  open: false },
-    { label: 'Thu', date: '3',  open: true  },
-    { label: 'Fri', date: '4',  open: true  },
+    { label: 'Mon', date: '30', open: true },
+    { label: 'Tue', date: '1', open: true, active: true },
+    { label: 'Wed', date: '2', open: false },
+    { label: 'Thu', date: '3', open: true },
+    { label: 'Fri', date: '4', open: true },
   ]
-  const times  = ['9:00 AM', '10:30 AM', '12:00 PM', '2:00 PM', '3:30 PM']
-  const taken  = [false, false, true, false, true]
+  const times = ['9:00 AM', '10:30 AM', '12:00 PM', '2:00 PM', '3:30 PM']
+  const taken = [false, false, true, false, true]
   const chosen = 1
   return (
     <div style={{ padding: '16px 22px', display: 'flex', flexDirection: 'column', gap: 14 }}>
@@ -1624,11 +1666,11 @@ function SSAvailabilityPanel({ animate }) {
 
 function SSQualifyPanel({ animate }) {
   const criteria = [
-    { label: 'Service area confirmed', status: 'pass', detail: 'North Brisbane — covered'    },
-    { label: 'Property type eligible',  status: 'pass', detail: 'Residential — eligible'      },
-    { label: 'Job scope within range',  status: 'pass', detail: 'Est. $4,200 — qualifies'     },
-    { label: 'Existing customer check', status: 'warn', detail: 'New customer — welcome!'     },
-    { label: 'Rebate eligibility',      status: 'pass', detail: 'STC eligible — auto-applied' },
+    { label: 'Service area confirmed', status: 'pass', detail: 'North Brisbane — covered' },
+    { label: 'Property type eligible', status: 'pass', detail: 'Residential — eligible' },
+    { label: 'Job scope within range', status: 'pass', detail: 'Est. $4,200 — qualifies' },
+    { label: 'Existing customer check', status: 'warn', detail: 'New customer — welcome!' },
+    { label: 'Rebate eligibility', status: 'pass', detail: 'STC eligible — auto-applied' },
   ]
   return (
     <div style={{ padding: '18px 24px', display: 'flex', flexDirection: 'column', gap: 9 }}>
@@ -1681,9 +1723,9 @@ function SSConfirmPanel({ animate }) {
       </div>
       <div style={{ display: 'flex', flexDirection: 'column', gap: 7 }}>
         {[
-          { icon: Send,          color: '#10b981', label: 'Confirmation SMS sent',    detail: 'Delivered to Michael instantly',    bg: 'rgba(16,185,129,0.08)',  border: 'rgba(16,185,129,0.2)'  },
-          { icon: Bell,          color: '#6366f1', label: 'Reminder scheduled',       detail: '24 hrs before appointment',         bg: 'rgba(99,102,241,0.08)',  border: 'rgba(99,102,241,0.2)'  },
-          { icon: ClipboardList, color: '#f59e0b', label: 'Lead created in CRM',      detail: 'Assigned to Sarah T. pipeline',     bg: 'rgba(245,158,11,0.08)',  border: 'rgba(245,158,11,0.2)'  },
+          { icon: Send, color: '#10b981', label: 'Confirmation SMS sent', detail: 'Delivered to Michael instantly', bg: 'rgba(16,185,129,0.08)', border: 'rgba(16,185,129,0.2)' },
+          { icon: Bell, color: '#6366f1', label: 'Reminder scheduled', detail: '24 hrs before appointment', bg: 'rgba(99,102,241,0.08)', border: 'rgba(99,102,241,0.2)' },
+          { icon: ClipboardList, color: '#f59e0b', label: 'Lead created in CRM', detail: 'Assigned to Sarah T. pipeline', bg: 'rgba(245,158,11,0.08)', border: 'rgba(245,158,11,0.2)' },
         ].map((b, i) => (
           <div key={i} style={{
             display: 'flex', alignItems: 'center', gap: 10, padding: '8px 12px', borderRadius: 9,
@@ -1716,17 +1758,17 @@ function SelfServiceCarousel() {
   const panel = SS_PANELS[active]
 
   const panelMap = {
-    book:    <SSBookingPanel      key={animKey} animate={true} />,
-    slots:   <SSAvailabilityPanel key={animKey} animate={true} />,
-    qualify: <SSQualifyPanel      key={animKey} animate={true} />,
-    confirm: <SSConfirmPanel      key={animKey} animate={true} />,
+    book: <SSBookingPanel key={animKey} animate={true} />,
+    slots: <SSAvailabilityPanel key={animKey} animate={true} />,
+    qualify: <SSQualifyPanel key={animKey} animate={true} />,
+    confirm: <SSConfirmPanel key={animKey} animate={true} />,
   }
 
   const kpiMap = {
-    book:    [{ label: 'Consultation types', value: '3',       color: '#6366f1' }, { label: 'Avg session',  value: '38 min',  color: '#8b5cf6' }, { label: 'Show rate',   value: '91%',     color: '#10b981' }],
-    slots:   [{ label: 'Available today',    value: '5 slots', color: '#8b5cf6' }, { label: 'Booked today', value: '7',       color: '#6366f1' }, { label: 'Next open',   value: '10:30 AM',color: '#10b981' }],
-    qualify: [{ label: 'Criteria checked',   value: '5 / 5',   color: '#10b981' }, { label: 'Pass rate',    value: '78%',     color: '#6366f1' }, { label: 'Auto-filtered',value: '22%',    color: '#f59e0b' }],
-    confirm: [{ label: 'SMS sent',           value: 'Instant', color: '#10b981' }, { label: 'Reminders',    value: '2 auto',  color: '#6366f1' }, { label: 'No-shows',    value: '↓ 64%',   color: '#ec4899' }],
+    book: [{ label: 'Consultation types', value: '3', color: '#6366f1' }, { label: 'Avg session', value: '38 min', color: '#8b5cf6' }, { label: 'Show rate', value: '91%', color: '#10b981' }],
+    slots: [{ label: 'Available today', value: '5 slots', color: '#8b5cf6' }, { label: 'Booked today', value: '7', color: '#6366f1' }, { label: 'Next open', value: '10:30 AM', color: '#10b981' }],
+    qualify: [{ label: 'Criteria checked', value: '5 / 5', color: '#10b981' }, { label: 'Pass rate', value: '78%', color: '#6366f1' }, { label: 'Auto-filtered', value: '22%', color: '#f59e0b' }],
+    confirm: [{ label: 'SMS sent', value: 'Instant', color: '#10b981' }, { label: 'Reminders', value: '2 auto', color: '#6366f1' }, { label: 'No-shows', value: '↓ 64%', color: '#ec4899' }],
   }
 
   return (
@@ -1740,7 +1782,7 @@ function SelfServiceCarousel() {
       {/* Browser chrome */}
       <div style={{ padding: '11px 16px', background: 'rgba(0,0,0,0.3)', borderBottom: '1px solid rgba(255,255,255,0.06)', display: 'flex', alignItems: 'center', gap: 12 }}>
         <div style={{ display: 'flex', gap: 6, flexShrink: 0 }}>
-          {['#ef4444','#f59e0b','#10b981'].map((col, i) => (
+          {['#ef4444', '#f59e0b', '#10b981'].map((col, i) => (
             <div key={i} style={{ width: 10, height: 10, borderRadius: '50%', background: col, opacity: 0.65 }} />
           ))}
         </div>
@@ -2258,6 +2300,176 @@ function LeadCaptureModal({ onClose, onSuccess }) {
 // ─── Main Landing Page ────────────────────────────────────────────────────────
 const DEMO_URL = 'https://demo.autofront.com.au'
 
+// ─── VEEC Calculator floating widget ──────────────────────────────────────────
+function VeecFloatingWidget() {
+  const [open, setOpen] = useState(false)
+  const [isMobile, setIsMobile] = useState(false)
+  const [idx, setIdx] = useState(0)
+  const [text, setText] = useState('')
+  const [deleting, setDeleting] = useState(false)
+  const [paused, setPaused] = useState(false)
+
+  useEffect(() => {
+    const check = () => setIsMobile(window.innerWidth <= 768)
+    check()
+    window.addEventListener('resize', check)
+    return () => window.removeEventListener('resize', check)
+  }, [])
+
+  const product = VEEC_PRODUCTS[idx]
+  const resultReady = text === product.name
+
+  // Types out each product name, holds while the result panel is shown, then
+  // deletes and advances — only runs while the panel is expanded.
+  useEffect(() => {
+    if (!open) return
+    if (paused) {
+      const t = setTimeout(() => { setPaused(false); setDeleting(true) }, 2800)
+      return () => clearTimeout(t)
+    }
+    const full = product.name
+    if (!deleting) {
+      if (text.length < full.length) {
+        const t = setTimeout(() => setText(full.slice(0, text.length + 1)), 26)
+        return () => clearTimeout(t)
+      }
+      setPaused(true)
+    } else {
+      if (text.length > 0) {
+        const t = setTimeout(() => setText(text.slice(0, -1)), 12)
+        return () => clearTimeout(t)
+      }
+      setDeleting(false)
+      setIdx(i => (i + 1) % VEEC_PRODUCTS.length)
+    }
+  }, [text, deleting, paused, open, idx])
+
+  if (!open) {
+    return (
+      <button
+        onClick={() => setOpen(true)}
+        aria-label="Open VEEC Calculator"
+        style={{
+          position: 'fixed',
+          ...(isMobile ? { right: 16, bottom: 16 } : { left: 20, top: '50%', transform: 'translateY(-50%)' }),
+          zIndex: 40, width: 56, height: 56, borderRadius: '50%', padding: 0,
+          background: 'linear-gradient(160deg, rgba(16,185,129,0.24), rgba(11,15,26,0.96) 65%)',
+          border: '1px solid rgba(16,185,129,0.4)',
+          boxShadow: '0 14px 40px rgba(0,0,0,0.45), 0 0 26px rgba(16,185,129,0.22)',
+          backdropFilter: 'blur(16px)', cursor: 'pointer',
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+        }}
+      >
+        <Calculator size={26} color="#10b981" />
+        <span style={{
+          position: 'absolute', top: -6, right: -8,
+          background: '#ef4444', color: '#fff', fontSize: '0.58rem', fontWeight: 800,
+          borderRadius: 99, padding: '2px 7px', letterSpacing: '0.04em',
+          animation: 'veecNewFlash 0.9s ease-in-out infinite',
+          boxShadow: '0 0 10px rgba(239,68,68,0.65)',
+        }}>NEW</span>
+      </button>
+    )
+  }
+
+  const panelBody = (
+    <>
+      <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: 14 }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+          <div style={{ width: 38, height: 38, borderRadius: 11, background: 'rgba(16,185,129,0.18)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+            <Calculator size={19} color="#10b981" />
+          </div>
+          <div>
+            <div style={{ fontSize: '0.62rem', fontWeight: 800, color: '#6ee7b7', letterSpacing: '0.08em', textTransform: 'uppercase' }}>Internal</div>
+            <div style={{ fontSize: '0.95rem', fontWeight: 800, letterSpacing: '-0.01em' }}>VEEC Calculator</div>
+          </div>
+        </div>
+        <button onClick={() => setOpen(false)} style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: 8, width: 26, height: 26, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', color: '#9ca3af', flexShrink: 0 }}>
+          <X size={13} />
+        </button>
+      </div>
+
+      <div style={{ display: 'inline-flex', alignItems: 'center', gap: 6, background: 'rgba(16,185,129,0.14)', border: '1px solid rgba(16,185,129,0.3)', borderRadius: 99, padding: '4px 10px', marginBottom: 12, fontSize: '0.63rem', color: '#6ee7b7', fontWeight: 700, letterSpacing: '0.06em', textTransform: 'uppercase' }}>
+        <ScanLine size={11} /> Step 1 — Realtime product detection
+      </div>
+
+      <div style={{ background: 'rgba(0,0,0,0.25)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: 10, padding: '12px 14px', marginBottom: 14, minHeight: 58 }}>
+        <div style={{ fontSize: '0.65rem', color: '#6b7280', fontWeight: 600, marginBottom: 4, textTransform: 'uppercase', letterSpacing: '0.05em' }}>Detecting quote line item</div>
+        <div style={{ fontSize: '0.83rem', color: '#e5e7eb', fontWeight: 600, lineHeight: 1.5, fontFamily: 'monospace' }}>
+          {text}
+          <span style={{ animation: 'blinkCursor 1s step-end infinite', color: '#10b981', marginLeft: 1 }}>|</span>
+        </div>
+      </div>
+
+      <div style={{
+        opacity: resultReady ? 1 : 0,
+        transform: resultReady ? 'translateY(0)' : 'translateY(8px)',
+        transition: 'opacity .35s ease, transform .35s ease',
+        pointerEvents: 'none',
+      }}>
+        <div style={{ fontSize: '0.63rem', fontWeight: 700, color: '#6b7280', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 8 }}>Result</div>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 10, flexWrap: 'wrap' }}>
+          <span style={{ fontSize: '0.68rem', fontWeight: 700, color: '#a78bfa', background: 'rgba(139,92,246,0.14)', border: '1px solid rgba(139,92,246,0.28)', borderRadius: 99, padding: '3px 9px' }}>{product.category}</span>
+          <span style={{
+            fontSize: '0.68rem', fontWeight: 800, borderRadius: 99, padding: '3px 9px',
+            color: product.approved ? '#6ee7b7' : '#fca5a5',
+            background: product.approved ? 'rgba(16,185,129,0.14)' : 'rgba(239,68,68,0.14)',
+            border: `1px solid ${product.approved ? 'rgba(16,185,129,0.3)' : 'rgba(239,68,68,0.3)'}`,
+          }}>
+            {product.approved ? '✅ Approved' : '❌ Not eligible'}
+          </span>
+        </div>
+        <div style={{ display: 'flex', alignItems: 'baseline', gap: 6, marginBottom: 8 }}>
+          <DollarSign size={15} color={product.approved ? '#10b981' : '#6b7280'} />
+          <span style={{ fontSize: '1.05rem', fontWeight: 800, color: product.approved ? '#10b981' : '#9ca3af' }}>{product.veecs}</span>
+        </div>
+        <p style={{ fontSize: '0.75rem', color: '#9ca3af', lineHeight: 1.6, margin: 0 }}>{product.reason}</p>
+      </div>
+
+      <div style={{ borderTop: '1px solid rgba(255,255,255,0.08)', marginTop: 16, paddingTop: 14 }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 7, marginBottom: 4 }}>
+          <Settings size={13} color="#a78bfa" />
+          <span style={{ fontSize: '0.74rem', fontWeight: 700, color: '#c4b5fd' }}>Set your Certificate Value</span>
+        </div>
+        <p style={{ fontSize: '0.71rem', color: '#6b7280', lineHeight: 1.5, margin: 0 }}>Control the $ rate once — rebates then apply automatically to every eligible quote.</p>
+      </div>
+    </>
+  )
+
+  if (isMobile) {
+    return (
+      <div style={{
+        position: 'fixed', inset: 0, zIndex: 1150,
+        background: 'rgba(0,0,0,0.82)', backdropFilter: 'blur(8px)',
+        display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 16, overflowY: 'auto',
+      }} onClick={() => setOpen(false)}>
+        <div onClick={e => e.stopPropagation()} style={{
+          width: '100%', maxWidth: 380, maxHeight: '85vh', overflowY: 'auto',
+          background: 'linear-gradient(160deg, rgba(16,185,129,0.16), rgba(11,15,26,0.98) 55%)',
+          border: '1px solid rgba(16,185,129,0.3)', borderRadius: 20, padding: '22px 20px 24px',
+          boxShadow: '0 24px 70px rgba(0,0,0,0.5), 0 0 46px rgba(16,185,129,0.18)',
+        }}>
+          {panelBody}
+        </div>
+      </div>
+    )
+  }
+
+  return (
+    <div style={{
+      position: 'fixed', left: 20, top: '50%', transform: 'translateY(-50%)',
+      width: 340, maxHeight: '82vh', overflowY: 'auto',
+      zIndex: 40,
+      background: 'linear-gradient(160deg, rgba(16,185,129,0.14), rgba(11,15,26,0.96) 55%)',
+      border: '1px solid rgba(16,185,129,0.3)', borderRadius: 20, padding: '22px 22px 24px',
+      boxShadow: '0 24px 70px rgba(0,0,0,0.5), 0 0 46px rgba(16,185,129,0.16)',
+      backdropFilter: 'blur(16px)',
+    }}>
+      {panelBody}
+    </div>
+  )
+}
+
 export default function LandingPage() {
   const [showCapture, setShowCapture] = useState(false)
   const [showWhoAreWe, setShowWhoAreWe] = useState(false)
@@ -2324,6 +2536,8 @@ export default function LandingPage() {
   return (
     <div style={{ minHeight: '100vh', background: '#0b0f1a', color: '#fff', fontFamily: "'Inter', system-ui, sans-serif" }}>
       <style>{GLOBAL_STYLES}</style>
+
+      <VeecFloatingWidget />
 
       {showCapture && <LeadCaptureModal onClose={() => setShowCapture(false)} onSuccess={() => { window.location.href = DEMO_URL }} />}
       {showWhoAreWe && <WhoAreWeModal onClose={() => setShowWhoAreWe(false)} />}
@@ -2411,814 +2625,814 @@ export default function LandingPage() {
       )}
 
       <div style={{ overflowX: 'hidden' }}>
-      {/* ══════════════════════════════════════════════════════════════════ */}
-      {/* ── HERO ── */}
-      {/* ══════════════════════════════════════════════════════════════════ */}
-      <section style={{ padding: '88px 5vw 80px', position: 'relative', overflow: 'hidden' }}>
-        {/* Floating orb backgrounds */}
-        <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none', zIndex: 0 }}>
-          <div style={{ position: 'absolute', width: 700, height: 700, borderRadius: '50%', top: '-250px', left: '-150px', background: 'radial-gradient(circle, rgba(99,102,241,0.13) 0%, transparent 68%)', animation: 'floatOrb 9s ease-in-out infinite' }} />
-          <div style={{ position: 'absolute', width: 500, height: 500, borderRadius: '50%', top: '5%', right: '-120px', background: 'radial-gradient(circle, rgba(139,92,246,0.11) 0%, transparent 68%)', animation: 'floatOrb 11s ease-in-out 2s infinite reverse' }} />
-          <div style={{ position: 'absolute', width: 350, height: 350, borderRadius: '50%', bottom: '-80px', left: '35%', background: 'radial-gradient(circle, rgba(236,72,153,0.07) 0%, transparent 68%)', animation: 'floatOrb 7s ease-in-out 1s infinite' }} />
-          {/* Dot grid */}
-          <div style={{ position: 'absolute', inset: 0, backgroundImage: 'radial-gradient(rgba(255,255,255,0.025) 1px, transparent 1px)', backgroundSize: '36px 36px' }} />
-        </div>
+        {/* ══════════════════════════════════════════════════════════════════ */}
+        {/* ── HERO ── */}
+        {/* ══════════════════════════════════════════════════════════════════ */}
+        <section style={{ padding: '88px 5vw 80px', position: 'relative', overflow: 'hidden' }}>
+          {/* Floating orb backgrounds */}
+          <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none', zIndex: 0 }}>
+            <div style={{ position: 'absolute', width: 700, height: 700, borderRadius: '50%', top: '-250px', left: '-150px', background: 'radial-gradient(circle, rgba(99,102,241,0.13) 0%, transparent 68%)', animation: 'floatOrb 9s ease-in-out infinite' }} />
+            <div style={{ position: 'absolute', width: 500, height: 500, borderRadius: '50%', top: '5%', right: '-120px', background: 'radial-gradient(circle, rgba(139,92,246,0.11) 0%, transparent 68%)', animation: 'floatOrb 11s ease-in-out 2s infinite reverse' }} />
+            <div style={{ position: 'absolute', width: 350, height: 350, borderRadius: '50%', bottom: '-80px', left: '35%', background: 'radial-gradient(circle, rgba(236,72,153,0.07) 0%, transparent 68%)', animation: 'floatOrb 7s ease-in-out 1s infinite' }} />
+            {/* Dot grid */}
+            <div style={{ position: 'absolute', inset: 0, backgroundImage: 'radial-gradient(rgba(255,255,255,0.025) 1px, transparent 1px)', backgroundSize: '36px 36px' }} />
+          </div>
 
-        {/* 2-col layout */}
-        <div style={{
-          maxWidth: 1180, margin: '0 auto', position: 'relative', zIndex: 1,
-          display: 'flex', flexWrap: 'wrap', gap: '56px', alignItems: 'center',
-        }}>
-          {/* Left: text */}
-          <div style={{ flex: '1 1 420px' }}>
+          {/* 2-col layout */}
+          <div style={{
+            maxWidth: 1180, margin: '0 auto', position: 'relative', zIndex: 1,
+            display: 'flex', flexWrap: 'wrap', gap: '56px', alignItems: 'center',
+          }}>
+            {/* Left: text */}
+            <div style={{ flex: '1 1 420px' }}>
+              <Reveal>
+                <div style={{
+                  display: 'inline-flex', alignItems: 'center', gap: 8,
+                  background: 'rgba(99,102,241,0.12)', border: '1px solid rgba(99,102,241,0.25)',
+                  borderRadius: 99, padding: '6px 16px', marginBottom: 28,
+                  fontSize: '0.82rem', color: '#a5b4fc', fontWeight: 500,
+                }}>
+                  <span style={{ width: 7, height: 7, borderRadius: '50%', background: '#6366f1', display: 'inline-block', animation: 'pulseDot 2s ease-in-out infinite' }} />
+                  Built for trade &amp; service businesses
+                </div>
+              </Reveal>
+
+              <Reveal delay={80}>
+                <h1 style={{ fontSize: 'clamp(2.2rem, 5vw, 3.8rem)', fontWeight: 800, lineHeight: 1.1, letterSpacing: '-0.03em', margin: '0 0 22px' }}>
+                  Every customer<br />interaction,{' '}
+                  <span style={{ background: 'linear-gradient(135deg, #6366f1 0%, #a78bfa 50%, #ec4899 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
+                    one intelligent platform
+                  </span>
+                </h1>
+              </Reveal>
+
+              <Reveal delay={160}>
+                <p style={{ fontSize: 'clamp(0.98rem, 1.8vw, 1.15rem)', color: '#9ca3af', marginBottom: 36, lineHeight: 1.7, maxWidth: 540, minHeight: '4em' }}>
+                  One platform delivering <Typewriter /> — integrated across your leads, jobs, quotes, campaigns and team in a single live screen.
+                </p>
+              </Reveal>
+
+              <Reveal delay={240}>
+                <div style={{ display: 'flex', gap: 14, flexWrap: 'wrap', marginBottom: 40 }}>
+                  <button onClick={openDemo} style={primaryBtn}
+                    onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.boxShadow = '0 18px 40px rgba(99,102,241,0.55)' }}
+                    onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = '0 12px 32px rgba(99,102,241,0.4)' }}
+                  >
+                    <Play size={18} /> Try Live Demo
+                  </button>
+                  <button onClick={() => document.getElementById('connect-section')?.scrollIntoView({ behavior: 'smooth' })} style={ghostBtn}
+                    onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.1)'}
+                    onMouseLeave={e => e.currentTarget.style.background = 'rgba(255,255,255,0.06)'}
+                  >
+                    Explore Connect <ChevronDown size={16} />
+                  </button>
+                </div>
+              </Reveal>
+
+              <Reveal delay={320}>
+                <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap' }}>
+                  {DEMO_COMPANIES.map(co => (
+                    <div key={co.id} style={{
+                      display: 'flex', alignItems: 'center', gap: 8,
+                      background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)',
+                      borderRadius: 99, padding: '8px 16px', fontSize: '0.85rem', color: '#9ca3af',
+                    }}>
+                      <co.icon size={15} color={co.color} />
+                      <span style={{ color: '#fff', fontWeight: 500 }}>{co.name}</span>
+                      <span>&mdash; live demo</span>
+                    </div>
+                  ))}
+                </div>
+              </Reveal>
+            </div>
+
+            {/* Right: animated notifications */}
+            <div style={{ flex: '1 1 320px', maxWidth: 400 }}>
+              <HeroNotifications />
+            </div>
+          </div>
+        </section>
+
+        {/* ── STATS STRIP ── */}
+        <section style={{ padding: '48px 5vw', borderTop: '1px solid rgba(255,255,255,0.05)', borderBottom: '1px solid rgba(255,255,255,0.05)', background: 'rgba(255,255,255,0.02)' }}>
+          <Reveal>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))', gap: 32, maxWidth: 900, margin: '0 auto', textAlign: 'center' }}>
+              {[
+                { n: 34, suffix: '%', label: 'avg. lift in lead conversion', bar: 34 },
+                { n: 2400, suffix: '+', label: 'customer interactions / month', bar: 80 },
+                { n: 8, suffix: '+', label: 'field service integrations', bar: 60 },
+                { n: 100, suffix: '%', label: 'AU-hosted, GDPR-ready', bar: 100 },
+              ].map((s, i) => (
+                <div key={i}>
+                  <div style={{ fontSize: 'clamp(1.8rem, 3.5vw, 2.4rem)', fontWeight: 800, color: '#fff', lineHeight: 1, marginBottom: 6 }}>
+                    <Counter to={s.n} suffix={s.suffix} />
+                  </div>
+                  <div style={{ color: '#6b7280', fontSize: '0.85rem', marginBottom: 10 }}>{s.label}</div>
+                  <div style={{ height: 3, background: 'rgba(255,255,255,0.07)', borderRadius: 99, overflow: 'hidden' }}>
+                    <div style={{
+                      height: '100%', background: 'linear-gradient(90deg, #6366f1, #a78bfa)',
+                      borderRadius: 99,
+                      '--bar-w': `${s.bar}%`,
+                      animation: 'barGrow 1.2s ease forwards',
+                      animationDelay: `${i * 150}ms`,
+                      width: 0,
+                    }} />
+                  </div>
+                </div>
+              ))}
+            </div>
+          </Reveal>
+        </section>
+
+
+        {/* ══════════════════════════════════════════════════════════════════ */}
+        {/* ── SELF SERVICE PORTAL ── */}
+        {/* ══════════════════════════════════════════════════════════════════ */}
+        <FocusSection id="self-service-section" sectionStyle={{ padding: '96px 5vw 80px', borderTop: '1px solid rgba(255,255,255,0.05)', background: 'radial-gradient(ellipse 80% 60% at 50% 0%, rgba(99,102,241,0.07) 0%, transparent 70%)' }}>
+          <Reveal>
+            <div style={{ textAlign: 'center', marginBottom: 56 }}>
+              <div style={{
+                display: 'inline-flex', alignItems: 'center', gap: 8,
+                background: 'rgba(99,102,241,0.1)', border: '1px solid rgba(99,102,241,0.25)',
+                borderRadius: 99, padding: '6px 16px', marginBottom: 20,
+                fontSize: '0.8rem', color: '#a5b4fc', fontWeight: 600, letterSpacing: '0.06em', textTransform: 'uppercase',
+              }}>
+                <Smartphone size={13} />
+                Self Service Portal
+              </div>
+              <h2 style={{ fontSize: 'clamp(2rem, 4vw, 3rem)', fontWeight: 800, letterSpacing: '-0.03em', margin: '0 0 18px', lineHeight: 1.1 }}>
+                Let customers do the work.<br />
+                <span style={{ background: 'linear-gradient(135deg, #6366f1 0%, #a78bfa 60%, #ec4899 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>You just show up.</span>
+              </h2>
+              <p style={{ color: '#9ca3af', fontSize: 'clamp(1rem, 1.8vw, 1.15rem)', maxWidth: 640, margin: '0 auto', lineHeight: 1.7 }}>
+                Replace the static contact form on your website with an intelligent booking workflow.
+                Prospects qualify themselves, pick a time that suits you, and convert — without a single manual step.
+              </p>
+            </div>
+          </Reveal>
+
+          {/* Booking portal carousel */}
+          <Reveal delay={80}>
+            <SelfServiceCarousel />
+          </Reveal>
+
+          {/* Feature grid */}
+          <Reveal delay={180}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(290px, 1fr))', gap: 20, maxWidth: 1180, margin: '52px auto 52px' }}>
+              {[
+                {
+                  icon: Video,
+                  color: '#6366f1',
+                  title: 'Phone, Video & Onsite Consultations',
+                  desc: 'Let prospective customers self-book the consultation type that suits them — phone call, video walkthrough, or in-person sales visit — matched directly against your real availability.',
+                },
+                {
+                  icon: Clock,
+                  color: '#8b5cf6',
+                  title: 'Availability from your Job Management System',
+                  desc: 'Bookings slot in around your existing jobs and schedules. No double-ups, no manual calendar management — your JMS drives availability in real time.',
+                },
+                {
+                  icon: Target,
+                  color: '#ec4899',
+                  title: 'Qualify Leads Automatically',
+                  desc: 'Set criteria that every prospective customer must meet before they can book. Only the right people get through — reducing wasted time and improving your conversion rate.',
+                },
+                {
+                  icon: ClipboardList,
+                  color: '#f59e0b',
+                  title: 'Replace Your Leads Form',
+                  desc: 'Swap the dead-end contact form on your website for an actionable booking flow. Every inquiry becomes a qualified lead with a confirmed appointment and real intent.',
+                },
+                {
+                  icon: Shield,
+                  color: '#10b981',
+                  title: 'Warranty Claims & Service Requests',
+                  desc: 'Customers can lodge warranty claims or request service against their completed jobs. The portal validates the customer and job against live data — no emails sitting in inboxes.',
+                },
+                {
+                  icon: Bell,
+                  color: '#06b6d4',
+                  title: 'Automated Confirmations & Reminders',
+                  desc: 'Customers receive instant booking confirmation and automated reminders as the appointment approaches. No-shows drop. Your diary stays full.',
+                },
+              ].map(({ icon: Icon, color, title, desc }) => (
+                <div key={title} style={{
+                  background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.07)',
+                  borderRadius: 16, padding: '28px 24px', transition: 'border-color .2s, background .2s',
+                }}
+                  onMouseEnter={e => { e.currentTarget.style.borderColor = `${color}44`; e.currentTarget.style.background = 'rgba(255,255,255,0.055)' }}
+                  onMouseLeave={e => { e.currentTarget.style.borderColor = 'rgba(255,255,255,0.07)'; e.currentTarget.style.background = 'rgba(255,255,255,0.03)' }}
+                >
+                  <div style={{ width: 44, height: 44, borderRadius: 12, background: `${color}1a`, display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 16 }}>
+                    <Icon size={20} color={color} />
+                  </div>
+                  <h3 style={{ fontWeight: 700, fontSize: '1rem', marginBottom: 8, color: '#f9fafb', lineHeight: 1.3 }}>{title}</h3>
+                  <p style={{ color: '#9ca3af', fontSize: '0.9rem', lineHeight: 1.65, margin: 0 }}>{desc}</p>
+                </div>
+              ))}
+            </div>
+          </Reveal>
+
+          <Reveal delay={200}>
+            <div style={{ textAlign: 'center' }}>
+              <button onClick={openDemo}
+                style={{
+                  padding: '15px 34px',
+                  background: 'linear-gradient(135deg, #6366f1, #8b5cf6)',
+                  color: '#fff', border: 'none', borderRadius: 12,
+                  cursor: 'pointer', fontSize: '1rem', fontWeight: 700,
+                  boxShadow: '0 12px 32px rgba(99,102,241,0.4)',
+                  display: 'inline-flex', alignItems: 'center', gap: 8,
+                  transition: 'transform .2s, box-shadow .2s',
+                }}
+                onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.boxShadow = '0 18px 40px rgba(99,102,241,0.55)' }}
+                onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = '0 12px 32px rgba(99,102,241,0.4)' }}
+              >
+                <Play size={17} /> See the Self Service Portal <ArrowRight size={15} />
+              </button>
+            </div>
+          </Reveal>
+        </FocusSection>
+
+        {/* ══════════════════════════════════════════════════════════════════ */}
+        {/* ── DASHBOARD SHOWCASE ── */}
+        {/* ══════════════════════════════════════════════════════════════════ */}
+        <FocusSection id="dashboard-section" sectionStyle={{ padding: '96px 5vw', background: 'radial-gradient(ellipse 80% 60% at 50% 0%, rgba(16,185,129,0.06) 0%, transparent 70%)' }}>
+          <Reveal>
+            <div style={{ textAlign: 'center', marginBottom: 52 }}>
+              <div style={{
+                display: 'inline-flex', alignItems: 'center', gap: 8,
+                background: 'rgba(16,185,129,0.1)', border: '1px solid rgba(16,185,129,0.2)',
+                borderRadius: 99, padding: '6px 16px', marginBottom: 20,
+                fontSize: '0.8rem', color: '#6ee7b7', fontWeight: 600, letterSpacing: '0.06em', textTransform: 'uppercase',
+              }}>
+                <BarChart2 size={13} />
+                The Dashboard
+              </div>
+              <h2 style={{ fontSize: 'clamp(2rem, 4vw, 3rem)', fontWeight: 800, letterSpacing: '-0.03em', margin: '0 0 18px', lineHeight: 1.1 }}>
+                Your data. Beautifully live.
+              </h2>
+              <p style={{ color: '#9ca3af', fontSize: 'clamp(1rem, 1.8vw, 1.15rem)', maxWidth: 640, margin: '0 auto', lineHeight: 1.7 }}>
+                Marketing ROAS, sales conversions, salesperson performance and lead analytics
+                — all updating in real time, cycling through what matters most to your business.
+              </p>
+            </div>
+          </Reveal>
+          <Reveal delay={100}>
+            <DashboardCarousel />
+          </Reveal>
+          <Reveal delay={200}>
+            <div style={{ textAlign: 'center', marginTop: 44 }}>
+              <button onClick={openDemo}
+                style={{
+                  padding: '15px 34px',
+                  background: 'linear-gradient(135deg, #10b981, #059669)',
+                  color: '#fff', border: 'none', borderRadius: 12,
+                  cursor: 'pointer', fontSize: '1rem', fontWeight: 700,
+                  boxShadow: '0 12px 32px rgba(16,185,129,0.35)',
+                  display: 'inline-flex', alignItems: 'center', gap: 8,
+                  transition: 'transform .2s, box-shadow .2s',
+                }}
+                onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.boxShadow = '0 18px 40px rgba(16,185,129,0.5)' }}
+                onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = '0 12px 32px rgba(16,185,129,0.35)' }}
+              >
+                <Play size={17} /> Explore the Dashboard <ArrowRight size={15} />
+              </button>
+            </div>
+          </Reveal>
+        </FocusSection>
+
+        {/* ══════════════════════════════════════════════════════════════════ */}
+        {/* ── CONNECT SECTION ── */}
+        {/* ══════════════════════════════════════════════════════════════════ */}
+        <FocusSection id="connect-section" sectionStyle={{ padding: '96px 5vw 80px' }}>
+          <div style={{ textAlign: 'center', marginBottom: 56 }}>
             <Reveal>
               <div style={{
                 display: 'inline-flex', alignItems: 'center', gap: 8,
-                background: 'rgba(99,102,241,0.12)', border: '1px solid rgba(99,102,241,0.25)',
-                borderRadius: 99, padding: '6px 16px', marginBottom: 28,
-                fontSize: '0.82rem', color: '#a5b4fc', fontWeight: 500,
+                background: 'rgba(99,102,241,0.1)', border: '1px solid rgba(99,102,241,0.2)',
+                borderRadius: 99, padding: '6px 16px', marginBottom: 20,
+                fontSize: '0.8rem', color: '#a5b4fc', fontWeight: 600, letterSpacing: '0.06em', textTransform: 'uppercase',
               }}>
-                <span style={{ width: 7, height: 7, borderRadius: '50%', background: '#6366f1', display: 'inline-block', animation: 'pulseDot 2s ease-in-out infinite' }} />
-                Built for trade &amp; service businesses
+                <Phone size={13} />
+                Autofront Connect
               </div>
             </Reveal>
 
             <Reveal delay={80}>
-              <h1 style={{ fontSize: 'clamp(2.2rem, 5vw, 3.8rem)', fontWeight: 800, lineHeight: 1.1, letterSpacing: '-0.03em', margin: '0 0 22px' }}>
-                Every customer<br />interaction,{' '}
-                <span style={{ background: 'linear-gradient(135deg, #6366f1 0%, #a78bfa 50%, #ec4899 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
-                  one intelligent platform
-                </span>
-              </h1>
+              <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 28 }}>
+                <ConnectRipple />
+              </div>
             </Reveal>
 
             <Reveal delay={160}>
-              <p style={{ fontSize: 'clamp(0.98rem, 1.8vw, 1.15rem)', color: '#9ca3af', marginBottom: 36, lineHeight: 1.7, maxWidth: 540, minHeight: '4em' }}>
-                One platform delivering <Typewriter /> — integrated across your leads, jobs, quotes, campaigns and team in a single live screen.
+              <h2 style={{ fontSize: 'clamp(2rem, 4vw, 3.2rem)', fontWeight: 800, letterSpacing: '-0.03em', margin: '0 0 20px', lineHeight: 1.1 }}>
+                Your business on the line.<br />
+                <span style={{ background: 'linear-gradient(135deg, #6366f1, #a78bfa)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>Always.</span>
+              </h2>
+            </Reveal>
+
+            <Reveal delay={200}>
+              <p style={{ color: '#9ca3af', fontSize: 'clamp(1rem, 1.8vw, 1.2rem)', maxWidth: 700, margin: '0 auto', lineHeight: 1.7 }}>
+                Connect is a business-grade communications platform purpose-built for trade and service operators.
+                Whether you&rsquo;re a sole trader keeping your personal mobile private or a 50-seat operation
+                demanding full enterprise telephony &mdash; Connect scales with you.
               </p>
             </Reveal>
+          </div>
 
-            <Reveal delay={240}>
-              <div style={{ display: 'flex', gap: 14, flexWrap: 'wrap', marginBottom: 40 }}>
-                <button onClick={openDemo} style={primaryBtn}
-                  onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.boxShadow = '0 18px 40px rgba(99,102,241,0.55)' }}
-                  onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = '0 12px 32px rgba(99,102,241,0.4)' }}
-                >
-                  <Play size={18} /> Try Live Demo
-                </button>
-                <button onClick={() => document.getElementById('connect-section')?.scrollIntoView({ behavior: 'smooth' })} style={ghostBtn}
-                  onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.1)'}
-                  onMouseLeave={e => e.currentTarget.style.background = 'rgba(255,255,255,0.06)'}
-                >
-                  Explore Connect <ChevronDown size={16} />
-                </button>
+          {/* Connect carousel */}
+          <Reveal delay={240}>
+            <ConnectCarousel />
+          </Reveal>
+          <div style={{ height: 64 }} />
+
+          {/* Hero value props */}
+          <div style={{ maxWidth: 1100, margin: '0 auto 64px', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: 20 }}>
+            {[
+              { icon: Smartphone, color: '#6366f1', headline: 'One number. Any device.', body: 'A dedicated business number that rings on your mobile, desktop browser or team wallboard — without mixing your personal calls. Full softphone functionality with no hardware required.' },
+              { icon: PhoneCall, color: '#10b981', headline: 'Answer every call informed.', body: 'Before you say hello, Connect shows you who’s calling, their open quotes, active jobs, conversation history — and whether they’ve already tried calling three times with no answer.' },
+              { icon: Clock, color: '#f59e0b', headline: 'No missed lead goes cold.', body: 'Every unanswered call triggers an automatic, personalised SMS. The customer knows you’ll be in touch. Your business never loses a lead to silence again.' },
+            ].map((c, i) => (
+              <Reveal key={i} delay={i * 100}>
+                <TiltCard>
+                  <div style={{ background: 'linear-gradient(135deg, rgba(99,102,241,0.07), rgba(139,92,246,0.04))', border: '1px solid rgba(99,102,241,0.15)', borderRadius: 16, padding: '32px 28px', height: '100%' }}>
+                    <div style={{ width: 44, height: 44, borderRadius: 11, background: `${c.color}22`, display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 18 }}>
+                      <c.icon size={22} color={c.color} />
+                    </div>
+                    <h3 style={{ fontWeight: 700, fontSize: '1.1rem', margin: '0 0 10px', letterSpacing: '-0.01em' }}>{c.headline}</h3>
+                    <p style={{ color: '#9ca3af', fontSize: '0.9rem', lineHeight: 1.65, margin: 0 }}>{c.body}</p>
+                  </div>
+                </TiltCard>
+              </Reveal>
+            ))}
+          </div>
+
+          {/* Connect features grid */}
+          <div style={{ maxWidth: 1100, margin: '0 auto', display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(256px, 1fr))', gap: 14 }}>
+            {CONNECT_FEATURES.map((f, i) => (
+              <Reveal key={i} delay={(i % 4) * 80}>
+                <TiltCard>
+                  <div style={{ background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.06)', borderRadius: 14, padding: '22px 20px', height: '100%', transition: 'border-color .2s, background .2s', cursor: 'default' }}
+                    onMouseEnter={e => { e.currentTarget.style.borderColor = f.color + '45'; e.currentTarget.style.background = `${f.color}09` }}
+                    onMouseLeave={e => { e.currentTarget.style.borderColor = 'rgba(255,255,255,0.06)'; e.currentTarget.style.background = 'rgba(255,255,255,0.02)' }}
+                  >
+                    <div style={{ width: 40, height: 40, borderRadius: 10, background: `${f.color}22`, display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 14 }}>
+                      <f.icon size={19} color={f.color} />
+                    </div>
+                    <h3 style={{ fontWeight: 700, fontSize: '0.93rem', margin: '0 0 7px' }}>{f.title}</h3>
+                    <p style={{ color: '#6b7280', fontSize: '0.83rem', lineHeight: 1.6, margin: 0 }}>{f.desc}</p>
+                  </div>
+                </TiltCard>
+              </Reveal>
+            ))}
+          </div>
+
+          {/* ADAM AI spotlight */}
+          <Reveal delay={100}>
+            <div style={{
+              maxWidth: 1100, margin: '56px auto 0',
+              background: 'linear-gradient(135deg, rgba(139,92,246,0.1), rgba(99,102,241,0.06))',
+              border: '1px solid rgba(139,92,246,0.2)', borderRadius: 20, padding: '48px',
+              display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: 52, alignItems: 'center',
+            }}>
+              <div>
+                <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8, background: 'rgba(139,92,246,0.15)', border: '1px solid rgba(139,92,246,0.3)', borderRadius: 99, padding: '5px 14px', marginBottom: 20, fontSize: '0.78rem', color: '#a78bfa', fontWeight: 600, letterSpacing: '0.06em', textTransform: 'uppercase' }}>
+                  <Bot size={12} />
+                  ADAM — AI Automation
+                </div>
+                <h3 style={{ fontSize: 'clamp(1.4rem, 2.5vw, 2rem)', fontWeight: 800, margin: '0 0 16px', letterSpacing: '-0.02em' }}>
+                  Always the right reply.<br />Every time.
+                </h3>
+                <p style={{ color: '#9ca3af', lineHeight: 1.7, fontSize: '0.95rem', margin: '0 0 20px' }}>
+                  ADAM reads the full conversation history, open quote details, job status and customer profile to construct the perfect reply — instantly. No copy-pasting. No generic responses. Always on-brand, always in context.
+                </p>
+                <p style={{ color: '#9ca3af', lineHeight: 1.7, fontSize: '0.95rem', margin: '0 0 28px' }}>
+                  Connect ADAM to automated triggers: a job status change fires a personalised SMS —
+                  <span style={{ color: '#c4b5fd', fontStyle: 'italic' }}>{' '}“Salesman John Doe is en route for your on-site quote — ETA 28 minutes based on current location.”</span>
+                  {' '}Your customer is always informed, without anyone on your team lifting a finger.
+                </p>
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
+                  {['Smart reply suggestions', 'Quote & job context', 'Tone-matched responses', 'Status change automation', 'Triggered messaging', 'Full conversation history'].map(tag => (
+                    <div key={tag} style={{ background: 'rgba(139,92,246,0.12)', border: '1px solid rgba(139,92,246,0.2)', borderRadius: 99, padding: '5px 12px', fontSize: '0.76rem', color: '#c4b5fd', fontWeight: 500 }}>{tag}</div>
+                  ))}
+                </div>
               </div>
-            </Reveal>
-
-            <Reveal delay={320}>
-              <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap' }}>
-                {DEMO_COMPANIES.map(co => (
-                  <div key={co.id} style={{
-                    display: 'flex', alignItems: 'center', gap: 8,
-                    background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)',
-                    borderRadius: 99, padding: '8px 16px', fontSize: '0.85rem', color: '#9ca3af',
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+                {[
+                  { from: 'customer', text: 'Hi, just wondering when my hot water install is scheduled? I booked last Tuesday.', ts: '9:14 AM' },
+                  { from: 'adam', text: '💡 ADAM suggestion: “Hi Sarah! Your hot water system install is scheduled for this Thursday 10–11 AM with our tech Mark Davis. You’ll receive an SMS when he’s en route. Let us know if you need to reschedule!”', ts: '' },
+                ].map((msg, i) => (
+                  <div key={i} style={{
+                    background: msg.from === 'customer' ? 'rgba(255,255,255,0.05)' : 'rgba(139,92,246,0.12)',
+                    border: `1px solid ${msg.from === 'customer' ? 'rgba(255,255,255,0.08)' : 'rgba(139,92,246,0.25)'}`,
+                    borderRadius: 12, padding: '14px 16px',
+                    animation: `slideInRight 0.5s ease ${i * 0.3 + 0.4}s both`,
                   }}>
-                    <co.icon size={15} color={co.color} />
-                    <span style={{ color: '#fff', fontWeight: 500 }}>{co.name}</span>
-                    <span>&mdash; live demo</span>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 6 }}>
+                      <span style={{ fontSize: '0.72rem', fontWeight: 600, color: msg.from === 'customer' ? '#9ca3af' : '#a78bfa', textTransform: 'uppercase', letterSpacing: '0.06em' }}>
+                        {msg.from === 'customer' ? '← Customer' : '⚡ ADAM'}
+                      </span>
+                      {msg.ts && <span style={{ fontSize: '0.72rem', color: '#4b5563' }}>{msg.ts}</span>}
+                    </div>
+                    <p style={{ color: msg.from === 'customer' ? '#d1d5db' : '#e9d5ff', fontSize: '0.87rem', margin: 0, lineHeight: 1.5 }}>{msg.text}</p>
                   </div>
                 ))}
+                <div style={{ background: 'rgba(16,185,129,0.08)', border: '1px solid rgba(16,185,129,0.2)', borderRadius: 10, padding: '10px 14px', display: 'flex', alignItems: 'center', gap: 8 }}>
+                  <CheckCircle size={14} color="#10b981" />
+                  <span style={{ color: '#6ee7b7', fontSize: '0.8rem' }}>Sent by team member in 4 seconds</span>
+                </div>
               </div>
+            </div>
+          </Reveal>
+
+          <div style={{ textAlign: 'center', marginTop: 52 }}>
+            <Reveal>
+              <button onClick={openDemo} style={primaryBtn}
+                onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.boxShadow = '0 18px 40px rgba(99,102,241,0.55)' }}
+                onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = '0 12px 32px rgba(99,102,241,0.4)' }}
+              >
+                <Play size={18} /> See Connect in Action <ArrowRight size={16} />
+              </button>
             </Reveal>
           </div>
+        </FocusSection>
 
-          {/* Right: animated notifications */}
-          <div style={{ flex: '1 1 320px', maxWidth: 400 }}>
-            <HeroNotifications />
-          </div>
-        </div>
-      </section>
-
-      {/* ── STATS STRIP ── */}
-      <section style={{ padding: '48px 5vw', borderTop: '1px solid rgba(255,255,255,0.05)', borderBottom: '1px solid rgba(255,255,255,0.05)', background: 'rgba(255,255,255,0.02)' }}>
-        <Reveal>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))', gap: 32, maxWidth: 900, margin: '0 auto', textAlign: 'center' }}>
-            {[
-              { n: 34, suffix: '%', label: 'avg. lift in lead conversion', bar: 34 },
-              { n: 2400, suffix: '+', label: 'customer interactions / month', bar: 80 },
-              { n: 8, suffix: '+', label: 'field service integrations', bar: 60 },
-              { n: 100, suffix: '%', label: 'AU-hosted, GDPR-ready', bar: 100 },
-            ].map((s, i) => (
-              <div key={i}>
-                <div style={{ fontSize: 'clamp(1.8rem, 3.5vw, 2.4rem)', fontWeight: 800, color: '#fff', lineHeight: 1, marginBottom: 6 }}>
-                  <Counter to={s.n} suffix={s.suffix} />
-                </div>
-                <div style={{ color: '#6b7280', fontSize: '0.85rem', marginBottom: 10 }}>{s.label}</div>
-                <div style={{ height: 3, background: 'rgba(255,255,255,0.07)', borderRadius: 99, overflow: 'hidden' }}>
-                  <div style={{
-                    height: '100%', background: 'linear-gradient(90deg, #6366f1, #a78bfa)',
-                    borderRadius: 99,
-                    '--bar-w': `${s.bar}%`,
-                    animation: 'barGrow 1.2s ease forwards',
-                    animationDelay: `${i * 150}ms`,
-                    width: 0,
-                  }} />
-                </div>
-              </div>
-            ))}
-          </div>
-        </Reveal>
-      </section>
-
-
-      {/* ══════════════════════════════════════════════════════════════════ */}
-      {/* ── SELF SERVICE PORTAL ── */}
-      {/* ══════════════════════════════════════════════════════════════════ */}
-      <FocusSection id="self-service-section" sectionStyle={{ padding: '96px 5vw 80px', borderTop: '1px solid rgba(255,255,255,0.05)', background: 'radial-gradient(ellipse 80% 60% at 50% 0%, rgba(99,102,241,0.07) 0%, transparent 70%)' }}>
-        <Reveal>
+        {/* ══════════════════════════════════════════════════════════════════ */}
+        {/* ── QUOTE ONSITE SECTION ── */}
+        {/* ══════════════════════════════════════════════════════════════════ */}
+        <FocusSection id="quote-section" sectionStyle={{ padding: '96px 5vw 80px', background: 'radial-gradient(ellipse 80% 50% at 50% 0%, rgba(245,158,11,0.07) 0%, transparent 70%)', borderTop: '1px solid rgba(255,255,255,0.05)' }}>
           <div style={{ textAlign: 'center', marginBottom: 56 }}>
-            <div style={{
-              display: 'inline-flex', alignItems: 'center', gap: 8,
-              background: 'rgba(99,102,241,0.1)', border: '1px solid rgba(99,102,241,0.25)',
-              borderRadius: 99, padding: '6px 16px', marginBottom: 20,
-              fontSize: '0.8rem', color: '#a5b4fc', fontWeight: 600, letterSpacing: '0.06em', textTransform: 'uppercase',
-            }}>
-              <Smartphone size={13} />
-              Self Service Portal
-            </div>
-            <h2 style={{ fontSize: 'clamp(2rem, 4vw, 3rem)', fontWeight: 800, letterSpacing: '-0.03em', margin: '0 0 18px', lineHeight: 1.1 }}>
-              Let customers do the work.<br />
-              <span style={{ background: 'linear-gradient(135deg, #6366f1 0%, #a78bfa 60%, #ec4899 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>You just show up.</span>
-            </h2>
-            <p style={{ color: '#9ca3af', fontSize: 'clamp(1rem, 1.8vw, 1.15rem)', maxWidth: 640, margin: '0 auto', lineHeight: 1.7 }}>
-              Replace the static contact form on your website with an intelligent booking workflow.
-              Prospects qualify themselves, pick a time that suits you, and convert — without a single manual step.
-            </p>
-          </div>
-        </Reveal>
-
-        {/* Booking portal carousel */}
-        <Reveal delay={80}>
-          <SelfServiceCarousel />
-        </Reveal>
-
-        {/* Feature grid */}
-        <Reveal delay={180}>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(290px, 1fr))', gap: 20, maxWidth: 1180, margin: '52px auto 52px' }}>
-            {[
-              {
-                icon: Video,
-                color: '#6366f1',
-                title: 'Phone, Video & Onsite Consultations',
-                desc: 'Let prospective customers self-book the consultation type that suits them — phone call, video walkthrough, or in-person sales visit — matched directly against your real availability.',
-              },
-              {
-                icon: Clock,
-                color: '#8b5cf6',
-                title: 'Availability from your Job Management System',
-                desc: 'Bookings slot in around your existing jobs and schedules. No double-ups, no manual calendar management — your JMS drives availability in real time.',
-              },
-              {
-                icon: Target,
-                color: '#ec4899',
-                title: 'Qualify Leads Automatically',
-                desc: 'Set criteria that every prospective customer must meet before they can book. Only the right people get through — reducing wasted time and improving your conversion rate.',
-              },
-              {
-                icon: ClipboardList,
-                color: '#f59e0b',
-                title: 'Replace Your Leads Form',
-                desc: 'Swap the dead-end contact form on your website for an actionable booking flow. Every inquiry becomes a qualified lead with a confirmed appointment and real intent.',
-              },
-              {
-                icon: Shield,
-                color: '#10b981',
-                title: 'Warranty Claims & Service Requests',
-                desc: 'Customers can lodge warranty claims or request service against their completed jobs. The portal validates the customer and job against live data — no emails sitting in inboxes.',
-              },
-              {
-                icon: Bell,
-                color: '#06b6d4',
-                title: 'Automated Confirmations & Reminders',
-                desc: 'Customers receive instant booking confirmation and automated reminders as the appointment approaches. No-shows drop. Your diary stays full.',
-              },
-            ].map(({ icon: Icon, color, title, desc }) => (
-              <div key={title} style={{
-                background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.07)',
-                borderRadius: 16, padding: '28px 24px', transition: 'border-color .2s, background .2s',
-              }}
-                onMouseEnter={e => { e.currentTarget.style.borderColor = `${color}44`; e.currentTarget.style.background = 'rgba(255,255,255,0.055)' }}
-                onMouseLeave={e => { e.currentTarget.style.borderColor = 'rgba(255,255,255,0.07)'; e.currentTarget.style.background = 'rgba(255,255,255,0.03)' }}
-              >
-                <div style={{ width: 44, height: 44, borderRadius: 12, background: `${color}1a`, display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 16 }}>
-                  <Icon size={20} color={color} />
-                </div>
-                <h3 style={{ fontWeight: 700, fontSize: '1rem', marginBottom: 8, color: '#f9fafb', lineHeight: 1.3 }}>{title}</h3>
-                <p style={{ color: '#9ca3af', fontSize: '0.9rem', lineHeight: 1.65, margin: 0 }}>{desc}</p>
+            <Reveal>
+              <div style={{
+                display: 'inline-flex', alignItems: 'center', gap: 8,
+                background: 'rgba(245,158,11,0.1)', border: '1px solid rgba(245,158,11,0.22)',
+                borderRadius: 99, padding: '6px 16px', marginBottom: 20,
+                fontSize: '0.8rem', color: '#fcd34d', fontWeight: 600, letterSpacing: '0.06em', textTransform: 'uppercase',
+              }}>
+                <ClipboardList size={13} />
+                Quote Onsite
               </div>
-            ))}
+            </Reveal>
+            <Reveal delay={80}>
+              <h2 style={{ fontSize: 'clamp(2rem, 4vw, 3.2rem)', fontWeight: 800, letterSpacing: '-0.03em', margin: '0 0 20px', lineHeight: 1.1 }}>
+                Close the deal<br />
+                <span style={{ background: 'linear-gradient(135deg, #f59e0b, #fbbf24, #f97316)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>before you leave the site.</span>
+              </h2>
+            </Reveal>
+            <Reveal delay={160}>
+              <p style={{ color: '#9ca3af', fontSize: 'clamp(1rem, 1.8vw, 1.2rem)', maxWidth: 700, margin: '0 auto', lineHeight: 1.7 }}>
+                Empower your sales staff to capture everything on the spot — photos, measurements, floor area and product selections —
+                and walk away leaving a polished, interactive proposal in the customer&rsquo;s inbox. No more returning to the office to draft quotes from memory.
+              </p>
+            </Reveal>
           </div>
-        </Reveal>
-
-        <Reveal delay={200}>
-          <div style={{ textAlign: 'center' }}>
-            <button onClick={openDemo}
-              style={{
-                padding: '15px 34px',
-                background: 'linear-gradient(135deg, #6366f1, #8b5cf6)',
-                color: '#fff', border: 'none', borderRadius: 12,
-                cursor: 'pointer', fontSize: '1rem', fontWeight: 700,
-                boxShadow: '0 12px 32px rgba(99,102,241,0.4)',
-                display: 'inline-flex', alignItems: 'center', gap: 8,
-                transition: 'transform .2s, box-shadow .2s',
-              }}
-              onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.boxShadow = '0 18px 40px rgba(99,102,241,0.55)' }}
-              onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = '0 12px 32px rgba(99,102,241,0.4)' }}
-            >
-              <Play size={17} /> See the Self Service Portal <ArrowRight size={15} />
-            </button>
-          </div>
-        </Reveal>
-      </FocusSection>
-
-      {/* ══════════════════════════════════════════════════════════════════ */}
-      {/* ── DASHBOARD SHOWCASE ── */}
-      {/* ══════════════════════════════════════════════════════════════════ */}
-      <FocusSection id="dashboard-section" sectionStyle={{ padding: '96px 5vw', background: 'radial-gradient(ellipse 80% 60% at 50% 0%, rgba(16,185,129,0.06) 0%, transparent 70%)' }}>
-        <Reveal>
-          <div style={{ textAlign: 'center', marginBottom: 52 }}>
-            <div style={{
-              display: 'inline-flex', alignItems: 'center', gap: 8,
-              background: 'rgba(16,185,129,0.1)', border: '1px solid rgba(16,185,129,0.2)',
-              borderRadius: 99, padding: '6px 16px', marginBottom: 20,
-              fontSize: '0.8rem', color: '#6ee7b7', fontWeight: 600, letterSpacing: '0.06em', textTransform: 'uppercase',
-            }}>
-              <BarChart2 size={13} />
-              The Dashboard
-            </div>
-            <h2 style={{ fontSize: 'clamp(2rem, 4vw, 3rem)', fontWeight: 800, letterSpacing: '-0.03em', margin: '0 0 18px', lineHeight: 1.1 }}>
-              Your data. Beautifully live.
-            </h2>
-            <p style={{ color: '#9ca3af', fontSize: 'clamp(1rem, 1.8vw, 1.15rem)', maxWidth: 640, margin: '0 auto', lineHeight: 1.7 }}>
-              Marketing ROAS, sales conversions, salesperson performance and lead analytics
-              — all updating in real time, cycling through what matters most to your business.
-            </p>
-          </div>
-        </Reveal>
-        <Reveal delay={100}>
-          <DashboardCarousel />
-        </Reveal>
-        <Reveal delay={200}>
-          <div style={{ textAlign: 'center', marginTop: 44 }}>
-            <button onClick={openDemo}
-              style={{
-                padding: '15px 34px',
-                background: 'linear-gradient(135deg, #10b981, #059669)',
-                color: '#fff', border: 'none', borderRadius: 12,
-                cursor: 'pointer', fontSize: '1rem', fontWeight: 700,
-                boxShadow: '0 12px 32px rgba(16,185,129,0.35)',
-                display: 'inline-flex', alignItems: 'center', gap: 8,
-                transition: 'transform .2s, box-shadow .2s',
-              }}
-              onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.boxShadow = '0 18px 40px rgba(16,185,129,0.5)' }}
-              onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = '0 12px 32px rgba(16,185,129,0.35)' }}
-            >
-              <Play size={17} /> Explore the Dashboard <ArrowRight size={15} />
-            </button>
-          </div>
-        </Reveal>
-      </FocusSection>
-
-      {/* ══════════════════════════════════════════════════════════════════ */}
-      {/* ── CONNECT SECTION ── */}
-      {/* ══════════════════════════════════════════════════════════════════ */}
-      <FocusSection id="connect-section" sectionStyle={{ padding: '96px 5vw 80px' }}>
-        <div style={{ textAlign: 'center', marginBottom: 56 }}>
-          <Reveal>
-            <div style={{
-              display: 'inline-flex', alignItems: 'center', gap: 8,
-              background: 'rgba(99,102,241,0.1)', border: '1px solid rgba(99,102,241,0.2)',
-              borderRadius: 99, padding: '6px 16px', marginBottom: 20,
-              fontSize: '0.8rem', color: '#a5b4fc', fontWeight: 600, letterSpacing: '0.06em', textTransform: 'uppercase',
-            }}>
-              <Phone size={13} />
-              Autofront Connect
-            </div>
-          </Reveal>
-
-          <Reveal delay={80}>
-            <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 28 }}>
-              <ConnectRipple />
-            </div>
-          </Reveal>
-
-          <Reveal delay={160}>
-            <h2 style={{ fontSize: 'clamp(2rem, 4vw, 3.2rem)', fontWeight: 800, letterSpacing: '-0.03em', margin: '0 0 20px', lineHeight: 1.1 }}>
-              Your business on the line.<br />
-              <span style={{ background: 'linear-gradient(135deg, #6366f1, #a78bfa)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>Always.</span>
-            </h2>
-          </Reveal>
 
           <Reveal delay={200}>
-            <p style={{ color: '#9ca3af', fontSize: 'clamp(1rem, 1.8vw, 1.2rem)', maxWidth: 700, margin: '0 auto', lineHeight: 1.7 }}>
-              Connect is a business-grade communications platform purpose-built for trade and service operators.
-              Whether you&rsquo;re a sole trader keeping your personal mobile private or a 50-seat operation
-              demanding full enterprise telephony &mdash; Connect scales with you.
-            </p>
+            <QuoteCarousel />
           </Reveal>
-        </div>
+          <div style={{ height: 64 }} />
 
-        {/* Connect carousel */}
-        <Reveal delay={240}>
-          <ConnectCarousel />
-        </Reveal>
-        <div style={{ height: 64 }} />
-
-        {/* Hero value props */}
-        <div style={{ maxWidth: 1100, margin: '0 auto 64px', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: 20 }}>
-          {[
-            { icon: Smartphone, color: '#6366f1', headline: 'One number. Any device.', body: 'A dedicated business number that rings on your mobile, desktop browser or team wallboard — without mixing your personal calls. Full softphone functionality with no hardware required.' },
-            { icon: PhoneCall, color: '#10b981', headline: 'Answer every call informed.', body: 'Before you say hello, Connect shows you who’s calling, their open quotes, active jobs, conversation history — and whether they’ve already tried calling three times with no answer.' },
-            { icon: Clock, color: '#f59e0b', headline: 'No missed lead goes cold.', body: 'Every unanswered call triggers an automatic, personalised SMS. The customer knows you’ll be in touch. Your business never loses a lead to silence again.' },
-          ].map((c, i) => (
-            <Reveal key={i} delay={i * 100}>
-              <TiltCard>
-                <div style={{ background: 'linear-gradient(135deg, rgba(99,102,241,0.07), rgba(139,92,246,0.04))', border: '1px solid rgba(99,102,241,0.15)', borderRadius: 16, padding: '32px 28px', height: '100%' }}>
-                  <div style={{ width: 44, height: 44, borderRadius: 11, background: `${c.color}22`, display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 18 }}>
-                    <c.icon size={22} color={c.color} />
+          {/* Value prop cards */}
+          <div style={{ maxWidth: 1100, margin: '0 auto 64px', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: 20 }}>
+            {[
+              { icon: Camera, color: '#f59e0b', headline: 'Capture everything on site.', body: 'Take photos, record measurements and floor area directly in the app. All evidence is attached to the quote automatically — no emails, no lost notes, no memory required.' },
+              { icon: ClipboardList, color: '#10b981', headline: 'Pull from your catalog live.', body: 'Connect to your job management system or import your own pricing catalog. Select products, configure options and apply discounts in seconds while standing in the customer’s home.' },
+              { icon: Eye, color: '#6366f1', headline: 'Know the moment they open it.', body: 'Get notified the instant the customer opens your proposal. See exactly what they read, respond to their questions in-thread, and send automated follow-up reminders so no warm lead goes cold.' },
+            ].map((c, i) => (
+              <Reveal key={i} delay={i * 100}>
+                <TiltCard>
+                  <div style={{ background: 'linear-gradient(135deg, rgba(245,158,11,0.06), rgba(249,115,22,0.03))', border: '1px solid rgba(245,158,11,0.14)', borderRadius: 16, padding: '32px 28px', height: '100%' }}>
+                    <div style={{ width: 44, height: 44, borderRadius: 11, background: `${c.color}22`, display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 18 }}>
+                      <c.icon size={22} color={c.color} />
+                    </div>
+                    <h3 style={{ fontWeight: 700, fontSize: '1.1rem', margin: '0 0 10px', letterSpacing: '-0.01em' }}>{c.headline}</h3>
+                    <p style={{ color: '#9ca3af', fontSize: '0.9rem', lineHeight: 1.65, margin: 0 }}>{c.body}</p>
                   </div>
-                  <h3 style={{ fontWeight: 700, fontSize: '1.1rem', margin: '0 0 10px', letterSpacing: '-0.01em' }}>{c.headline}</h3>
-                  <p style={{ color: '#9ca3af', fontSize: '0.9rem', lineHeight: 1.65, margin: 0 }}>{c.body}</p>
-                </div>
-              </TiltCard>
-            </Reveal>
-          ))}
-        </div>
+                </TiltCard>
+              </Reveal>
+            ))}
+          </div>
 
-        {/* Connect features grid */}
-        <div style={{ maxWidth: 1100, margin: '0 auto', display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(256px, 1fr))', gap: 14 }}>
-          {CONNECT_FEATURES.map((f, i) => (
-            <Reveal key={i} delay={(i % 4) * 80}>
-              <TiltCard>
-                <div style={{ background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.06)', borderRadius: 14, padding: '22px 20px', height: '100%', transition: 'border-color .2s, background .2s', cursor: 'default' }}
-                  onMouseEnter={e => { e.currentTarget.style.borderColor = f.color + '45'; e.currentTarget.style.background = `${f.color}09` }}
-                  onMouseLeave={e => { e.currentTarget.style.borderColor = 'rgba(255,255,255,0.06)'; e.currentTarget.style.background = 'rgba(255,255,255,0.02)' }}
-                >
-                  <div style={{ width: 40, height: 40, borderRadius: 10, background: `${f.color}22`, display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 14 }}>
-                    <f.icon size={19} color={f.color} />
+          {/* Feature grid */}
+          <div style={{ maxWidth: 1100, margin: '0 auto', display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(256px, 1fr))', gap: 14 }}>
+            {[
+              { icon: Ruler, color: '#f59e0b', title: 'On-site measurements & photos', desc: 'Capture floor area, dimensions and job photos in-app. Every detail is pinned to the quote — no clipboard, no follow-up email.' },
+              { icon: Package, color: '#8b5cf6', title: 'Live catalog & pricing', desc: 'Pull directly from your job management system. Products, labour rates and options — always up to date.' },
+              { icon: DollarSign, color: '#10b981', title: 'VEEC rebates & discounts', desc: 'Automatically apply government rebates, energy efficiency incentives and tiered discounts to every applicable line item. No manual calculations.' },
+              { icon: ClipboardList, color: '#f97316', title: 'Multi-option interactive proposal', desc: 'Present Good / Better / Best tiers side by side. Let customers compare brands, sizes and specifications — not just price.' },
+              { icon: Send, color: '#6366f1', title: 'Proposal in their inbox on the spot', desc: 'Send a branded, mobile-optimised proposal before you back out of the driveway. The customer receives it while the conversation is still fresh.' },
+              { icon: Eye, color: '#ec4899', title: 'Real-time open & read tracking', desc: 'Know the second a prospect opens your proposal. See which sections they lingered on and trigger the right follow-up at exactly the right moment.' },
+              { icon: MessageCircle, color: '#14b8a6', title: 'In-proposal Q&A thread', desc: 'Customers leave comments or questions directly on the proposal. You respond in-thread — no back-and-forth email chains, no lost context.' },
+              { icon: Repeat, color: '#84cc16', title: 'Automated follow-up reminders', desc: 'Set a follow-up schedule once. The platform nudges the customer at the right intervals — and alerts your salesperson when a proposal goes quiet.' },
+            ].map((f, i) => (
+              <Reveal key={i} delay={(i % 4) * 80}>
+                <TiltCard>
+                  <div style={{ background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.06)', borderRadius: 14, padding: '22px 20px', height: '100%', transition: 'border-color .2s, background .2s', cursor: 'default' }}
+                    onMouseEnter={e => { e.currentTarget.style.borderColor = f.color + '45'; e.currentTarget.style.background = `${f.color}09` }}
+                    onMouseLeave={e => { e.currentTarget.style.borderColor = 'rgba(255,255,255,0.06)'; e.currentTarget.style.background = 'rgba(255,255,255,0.02)' }}
+                  >
+                    <div style={{ width: 40, height: 40, borderRadius: 10, background: `${f.color}22`, display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 14 }}>
+                      <f.icon size={19} color={f.color} />
+                    </div>
+                    <h3 style={{ fontWeight: 700, fontSize: '0.93rem', margin: '0 0 7px' }}>{f.title}</h3>
+                    <p style={{ color: '#6b7280', fontSize: '0.83rem', lineHeight: 1.6, margin: 0 }}>{f.desc}</p>
                   </div>
-                  <h3 style={{ fontWeight: 700, fontSize: '0.93rem', margin: '0 0 7px' }}>{f.title}</h3>
-                  <p style={{ color: '#6b7280', fontSize: '0.83rem', lineHeight: 1.6, margin: 0 }}>{f.desc}</p>
-                </div>
-              </TiltCard>
-            </Reveal>
-          ))}
-        </div>
+                </TiltCard>
+              </Reveal>
+            ))}
+          </div>
 
-        {/* ADAM AI spotlight */}
-        <Reveal delay={100}>
-          <div style={{
-            maxWidth: 1100, margin: '56px auto 0',
-            background: 'linear-gradient(135deg, rgba(139,92,246,0.1), rgba(99,102,241,0.06))',
-            border: '1px solid rgba(139,92,246,0.2)', borderRadius: 20, padding: '48px',
-            display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: 52, alignItems: 'center',
-          }}>
-            <div>
-              <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8, background: 'rgba(139,92,246,0.15)', border: '1px solid rgba(139,92,246,0.3)', borderRadius: 99, padding: '5px 14px', marginBottom: 20, fontSize: '0.78rem', color: '#a78bfa', fontWeight: 600, letterSpacing: '0.06em', textTransform: 'uppercase' }}>
-                <Bot size={12} />
-                ADAM — AI Automation
+          <div style={{ textAlign: 'center', marginTop: 52 }}>
+            <Reveal>
+              <button onClick={openDemo} style={{ ...primaryBtn, background: 'linear-gradient(135deg, #f59e0b, #f97316)', boxShadow: '0 12px 32px rgba(245,158,11,0.35)' }}
+                onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.boxShadow = '0 18px 40px rgba(245,158,11,0.55)' }}
+                onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = '0 12px 32px rgba(245,158,11,0.35)' }}
+              >
+                <Play size={18} /> See Quote Onsite in Action <ArrowRight size={16} />
+              </button>
+            </Reveal>
+          </div>
+        </FocusSection>
+
+        {/* ══════════════════════════════════════════════════════════════════ */}
+        {/* ── PLATFORM SECTION ── */}
+        {/* ══════════════════════════════════════════════════════════════════ */}
+        <FocusSection id="platform-section" sectionStyle={{ padding: '96px 5vw', background: 'rgba(255,255,255,0.015)', borderTop: '1px solid rgba(255,255,255,0.05)' }}>
+          <Reveal>
+            <div style={{ textAlign: 'center', marginBottom: 64 }}>
+              <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8, background: 'rgba(16,185,129,0.1)', border: '1px solid rgba(16,185,129,0.2)', borderRadius: 99, padding: '6px 16px', marginBottom: 20, fontSize: '0.8rem', color: '#6ee7b7', fontWeight: 600, letterSpacing: '0.06em', textTransform: 'uppercase' }}>
+                <BarChart2 size={13} /> The Platform
               </div>
-              <h3 style={{ fontSize: 'clamp(1.4rem, 2.5vw, 2rem)', fontWeight: 800, margin: '0 0 16px', letterSpacing: '-0.02em' }}>
-                Always the right reply.<br />Every time.
-              </h3>
-              <p style={{ color: '#9ca3af', lineHeight: 1.7, fontSize: '0.95rem', margin: '0 0 20px' }}>
-                ADAM reads the full conversation history, open quote details, job status and customer profile to construct the perfect reply — instantly. No copy-pasting. No generic responses. Always on-brand, always in context.
-              </p>
-              <p style={{ color: '#9ca3af', lineHeight: 1.7, fontSize: '0.95rem', margin: '0 0 28px' }}>
-                Connect ADAM to automated triggers: a job status change fires a personalised SMS —
-                <span style={{ color: '#c4b5fd', fontStyle: 'italic' }}>{' '}“Salesman John Doe is en route for your on-site quote — ETA 28 minutes based on current location.”</span>
-                {' '}Your customer is always informed, without anyone on your team lifting a finger.
-              </p>
-              <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
-                {['Smart reply suggestions', 'Quote & job context', 'Tone-matched responses', 'Status change automation', 'Triggered messaging', 'Full conversation history'].map(tag => (
-                  <div key={tag} style={{ background: 'rgba(139,92,246,0.12)', border: '1px solid rgba(139,92,246,0.2)', borderRadius: 99, padding: '5px 12px', fontSize: '0.76rem', color: '#c4b5fd', fontWeight: 500 }}>{tag}</div>
+              <h2 style={{ fontSize: 'clamp(1.8rem, 3.5vw, 2.8rem)', fontWeight: 800, letterSpacing: '-0.02em', margin: '0 0 16px' }}>Everything your business needs</h2>
+              <p style={{ color: '#9ca3af', fontSize: '1.05rem', maxWidth: 520, margin: '0 auto' }}>One login. All your data. No juggling between apps.</p>
+            </div>
+          </Reveal>
+
+          {/* Featured spotlight */}
+          <Reveal delay={80}>
+            <div style={{ maxWidth: 1100, margin: '0 auto 64px', background: 'linear-gradient(135deg, rgba(99,102,241,0.08), rgba(139,92,246,0.05))', border: '1px solid rgba(99,102,241,0.15)', borderRadius: 20, padding: '40px 48px', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: 48, alignItems: 'center' }}>
+              <div>
+                <div style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: 56, height: 56, borderRadius: 14, background: `${af.color}22`, marginBottom: 20 }}>
+                  <af.icon size={28} color={af.color} />
+                </div>
+                <h3 style={{ fontSize: '1.7rem', fontWeight: 800, margin: '0 0 12px', letterSpacing: '-0.02em' }}>{af.title}</h3>
+                <p style={{ color: '#9ca3af', lineHeight: 1.7, fontSize: '1rem', margin: '0 0 20px' }}>{af.desc}</p>
+                <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8, background: `${af.color}18`, color: af.color, borderRadius: 99, padding: '6px 14px', fontSize: '0.82rem', fontWeight: 600 }}>
+                  <CheckCircle size={14} /> {af.stats}
+                </div>
+              </div>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 10 }}>
+                {PLATFORM_FEATURES.map((f, i) => (
+                  <button key={i} onClick={() => setActivePlatformFeature(i)}
+                    style={{ background: i === activePlatformFeature ? `${f.color}18` : 'rgba(255,255,255,0.03)', border: `1px solid ${i === activePlatformFeature ? f.color + '40' : 'rgba(255,255,255,0.06)'}`, borderRadius: 10, padding: '12px 14px', cursor: 'pointer', textAlign: 'left', transition: 'all .2s' }}
+                  >
+                    <f.icon size={16} color={i === activePlatformFeature ? f.color : '#6b7280'} />
+                    <div style={{ fontSize: '0.8rem', fontWeight: 600, marginTop: 6, color: i === activePlatformFeature ? '#fff' : '#9ca3af' }}>{f.title}</div>
+                  </button>
                 ))}
               </div>
             </div>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-              {[
-                { from: 'customer', text: 'Hi, just wondering when my hot water install is scheduled? I booked last Tuesday.', ts: '9:14 AM' },
-                { from: 'adam', text: '💡 ADAM suggestion: “Hi Sarah! Your hot water system install is scheduled for this Thursday 10–11 AM with our tech Mark Davis. You’ll receive an SMS when he’s en route. Let us know if you need to reschedule!”', ts: '' },
-              ].map((msg, i) => (
-                <div key={i} style={{
-                  background: msg.from === 'customer' ? 'rgba(255,255,255,0.05)' : 'rgba(139,92,246,0.12)',
-                  border: `1px solid ${msg.from === 'customer' ? 'rgba(255,255,255,0.08)' : 'rgba(139,92,246,0.25)'}`,
-                  borderRadius: 12, padding: '14px 16px',
-                  animation: `slideInRight 0.5s ease ${i * 0.3 + 0.4}s both`,
-                }}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 6 }}>
-                    <span style={{ fontSize: '0.72rem', fontWeight: 600, color: msg.from === 'customer' ? '#9ca3af' : '#a78bfa', textTransform: 'uppercase', letterSpacing: '0.06em' }}>
-                      {msg.from === 'customer' ? '← Customer' : '⚡ ADAM'}
-                    </span>
-                    {msg.ts && <span style={{ fontSize: '0.72rem', color: '#4b5563' }}>{msg.ts}</span>}
+          </Reveal>
+
+          {/* Feature cards grid */}
+          <div style={{ maxWidth: 1100, margin: '0 auto', display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: 18 }}>
+            {PLATFORM_FEATURES.map((f, i) => (
+              <Reveal key={i} delay={(i % 3) * 100}>
+                <TiltCard>
+                  <div style={{ background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.06)', borderRadius: 16, padding: '28px 24px', height: '100%', transition: 'border-color .2s, background .2s', cursor: 'default' }}
+                    onMouseEnter={e => { e.currentTarget.style.borderColor = f.color + '40'; e.currentTarget.style.background = `${f.color}08` }}
+                    onMouseLeave={e => { e.currentTarget.style.borderColor = 'rgba(255,255,255,0.06)'; e.currentTarget.style.background = 'rgba(255,255,255,0.02)' }}
+                  >
+                    <div style={{ width: 42, height: 42, borderRadius: 10, background: `${f.color}20`, display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 16 }}>
+                      <f.icon size={20} color={f.color} />
+                    </div>
+                    <h3 style={{ fontWeight: 700, fontSize: '1rem', margin: '0 0 8px' }}>{f.title}</h3>
+                    <p style={{ color: '#6b7280', fontSize: '0.88rem', lineHeight: 1.6, margin: 0 }}>{f.desc}</p>
                   </div>
-                  <p style={{ color: msg.from === 'customer' ? '#d1d5db' : '#e9d5ff', fontSize: '0.87rem', margin: 0, lineHeight: 1.5 }}>{msg.text}</p>
-                </div>
-              ))}
-              <div style={{ background: 'rgba(16,185,129,0.08)', border: '1px solid rgba(16,185,129,0.2)', borderRadius: 10, padding: '10px 14px', display: 'flex', alignItems: 'center', gap: 8 }}>
-                <CheckCircle size={14} color="#10b981" />
-                <span style={{ color: '#6ee7b7', fontSize: '0.8rem' }}>Sent by team member in 4 seconds</span>
-              </div>
-            </div>
-          </div>
-        </Reveal>
-
-        <div style={{ textAlign: 'center', marginTop: 52 }}>
-          <Reveal>
-            <button onClick={openDemo} style={primaryBtn}
-              onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.boxShadow = '0 18px 40px rgba(99,102,241,0.55)' }}
-              onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = '0 12px 32px rgba(99,102,241,0.4)' }}
-            >
-              <Play size={18} /> See Connect in Action <ArrowRight size={16} />
-            </button>
-          </Reveal>
-        </div>
-      </FocusSection>
-
-      {/* ══════════════════════════════════════════════════════════════════ */}
-      {/* ── QUOTE ONSITE SECTION ── */}
-      {/* ══════════════════════════════════════════════════════════════════ */}
-      <FocusSection id="quote-section" sectionStyle={{ padding: '96px 5vw 80px', background: 'radial-gradient(ellipse 80% 50% at 50% 0%, rgba(245,158,11,0.07) 0%, transparent 70%)', borderTop: '1px solid rgba(255,255,255,0.05)' }}>
-        <div style={{ textAlign: 'center', marginBottom: 56 }}>
-          <Reveal>
-            <div style={{
-              display: 'inline-flex', alignItems: 'center', gap: 8,
-              background: 'rgba(245,158,11,0.1)', border: '1px solid rgba(245,158,11,0.22)',
-              borderRadius: 99, padding: '6px 16px', marginBottom: 20,
-              fontSize: '0.8rem', color: '#fcd34d', fontWeight: 600, letterSpacing: '0.06em', textTransform: 'uppercase',
-            }}>
-              <ClipboardList size={13} />
-              Quote Onsite
-            </div>
-          </Reveal>
-          <Reveal delay={80}>
-            <h2 style={{ fontSize: 'clamp(2rem, 4vw, 3.2rem)', fontWeight: 800, letterSpacing: '-0.03em', margin: '0 0 20px', lineHeight: 1.1 }}>
-              Close the deal<br />
-              <span style={{ background: 'linear-gradient(135deg, #f59e0b, #fbbf24, #f97316)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>before you leave the site.</span>
-            </h2>
-          </Reveal>
-          <Reveal delay={160}>
-            <p style={{ color: '#9ca3af', fontSize: 'clamp(1rem, 1.8vw, 1.2rem)', maxWidth: 700, margin: '0 auto', lineHeight: 1.7 }}>
-              Empower your sales staff to capture everything on the spot — photos, measurements, floor area and product selections —
-              and walk away leaving a polished, interactive proposal in the customer&rsquo;s inbox. No more returning to the office to draft quotes from memory.
-            </p>
-          </Reveal>
-        </div>
-
-        <Reveal delay={200}>
-          <QuoteCarousel />
-        </Reveal>
-        <div style={{ height: 64 }} />
-
-        {/* Value prop cards */}
-        <div style={{ maxWidth: 1100, margin: '0 auto 64px', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: 20 }}>
-          {[
-            { icon: Camera,       color: '#f59e0b', headline: 'Capture everything on site.', body: 'Take photos, record measurements and floor area directly in the app. All evidence is attached to the quote automatically — no emails, no lost notes, no memory required.' },
-            { icon: ClipboardList,color: '#10b981', headline: 'Pull from your catalog live.', body: 'Connect to your job management system or import your own pricing catalog. Select products, configure options and apply discounts in seconds while standing in the customer’s home.' },
-            { icon: Eye,          color: '#6366f1', headline: 'Know the moment they open it.', body: 'Get notified the instant the customer opens your proposal. See exactly what they read, respond to their questions in-thread, and send automated follow-up reminders so no warm lead goes cold.' },
-          ].map((c, i) => (
-            <Reveal key={i} delay={i * 100}>
-              <TiltCard>
-                <div style={{ background: 'linear-gradient(135deg, rgba(245,158,11,0.06), rgba(249,115,22,0.03))', border: '1px solid rgba(245,158,11,0.14)', borderRadius: 16, padding: '32px 28px', height: '100%' }}>
-                  <div style={{ width: 44, height: 44, borderRadius: 11, background: `${c.color}22`, display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 18 }}>
-                    <c.icon size={22} color={c.color} />
-                  </div>
-                  <h3 style={{ fontWeight: 700, fontSize: '1.1rem', margin: '0 0 10px', letterSpacing: '-0.01em' }}>{c.headline}</h3>
-                  <p style={{ color: '#9ca3af', fontSize: '0.9rem', lineHeight: 1.65, margin: 0 }}>{c.body}</p>
-                </div>
-              </TiltCard>
-            </Reveal>
-          ))}
-        </div>
-
-        {/* Feature grid */}
-        <div style={{ maxWidth: 1100, margin: '0 auto', display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(256px, 1fr))', gap: 14 }}>
-          {[
-            { icon: Ruler,         color: '#f59e0b', title: 'On-site measurements & photos',   desc: 'Capture floor area, dimensions and job photos in-app. Every detail is pinned to the quote — no clipboard, no follow-up email.' },
-            { icon: Package,       color: '#8b5cf6', title: 'Live catalog & pricing',           desc: 'Pull directly from simPRO, TradeTrak or your own imported price book. Products, labour rates and options — always up to date.' },
-            { icon: DollarSign,    color: '#10b981', title: 'VEEC rebates & discounts',         desc: 'Automatically apply government rebates, energy efficiency incentives and tiered discounts to every applicable line item. No manual calculations.' },
-            { icon: ClipboardList, color: '#f97316', title: 'Multi-option interactive proposal',desc: 'Present Good / Better / Best tiers side by side. Let customers compare brands, sizes and specifications — not just price.' },
-            { icon: Send,          color: '#6366f1', title: 'Proposal in their inbox on the spot',desc: 'Send a branded, mobile-optimised proposal before you back out of the driveway. The customer receives it while the conversation is still fresh.' },
-            { icon: Eye,           color: '#ec4899', title: 'Real-time open & read tracking',   desc: 'Know the second a prospect opens your proposal. See which sections they lingered on and trigger the right follow-up at exactly the right moment.' },
-            { icon: MessageCircle, color: '#14b8a6', title: 'In-proposal Q&A thread',           desc: 'Customers leave comments or questions directly on the proposal. You respond in-thread — no back-and-forth email chains, no lost context.' },
-            { icon: Repeat,        color: '#84cc16', title: 'Automated follow-up reminders',    desc: 'Set a follow-up schedule once. The platform nudges the customer at the right intervals — and alerts your salesperson when a proposal goes quiet.' },
-          ].map((f, i) => (
-            <Reveal key={i} delay={(i % 4) * 80}>
-              <TiltCard>
-                <div style={{ background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.06)', borderRadius: 14, padding: '22px 20px', height: '100%', transition: 'border-color .2s, background .2s', cursor: 'default' }}
-                  onMouseEnter={e => { e.currentTarget.style.borderColor = f.color + '45'; e.currentTarget.style.background = `${f.color}09` }}
-                  onMouseLeave={e => { e.currentTarget.style.borderColor = 'rgba(255,255,255,0.06)'; e.currentTarget.style.background = 'rgba(255,255,255,0.02)' }}
-                >
-                  <div style={{ width: 40, height: 40, borderRadius: 10, background: `${f.color}22`, display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 14 }}>
-                    <f.icon size={19} color={f.color} />
-                  </div>
-                  <h3 style={{ fontWeight: 700, fontSize: '0.93rem', margin: '0 0 7px' }}>{f.title}</h3>
-                  <p style={{ color: '#6b7280', fontSize: '0.83rem', lineHeight: 1.6, margin: 0 }}>{f.desc}</p>
-                </div>
-              </TiltCard>
-            </Reveal>
-          ))}
-        </div>
-
-        <div style={{ textAlign: 'center', marginTop: 52 }}>
-          <Reveal>
-            <button onClick={openDemo} style={{ ...primaryBtn, background: 'linear-gradient(135deg, #f59e0b, #f97316)', boxShadow: '0 12px 32px rgba(245,158,11,0.35)' }}
-              onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.boxShadow = '0 18px 40px rgba(245,158,11,0.55)' }}
-              onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)';    e.currentTarget.style.boxShadow = '0 12px 32px rgba(245,158,11,0.35)' }}
-            >
-              <Play size={18} /> See Quote Onsite in Action <ArrowRight size={16} />
-            </button>
-          </Reveal>
-        </div>
-      </FocusSection>
-
-      {/* ══════════════════════════════════════════════════════════════════ */}
-      {/* ── PLATFORM SECTION ── */}
-      {/* ══════════════════════════════════════════════════════════════════ */}
-      <FocusSection id="platform-section" sectionStyle={{ padding: '96px 5vw', background: 'rgba(255,255,255,0.015)', borderTop: '1px solid rgba(255,255,255,0.05)' }}>
-        <Reveal>
-          <div style={{ textAlign: 'center', marginBottom: 64 }}>
-            <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8, background: 'rgba(16,185,129,0.1)', border: '1px solid rgba(16,185,129,0.2)', borderRadius: 99, padding: '6px 16px', marginBottom: 20, fontSize: '0.8rem', color: '#6ee7b7', fontWeight: 600, letterSpacing: '0.06em', textTransform: 'uppercase' }}>
-              <BarChart2 size={13} /> The Platform
-            </div>
-            <h2 style={{ fontSize: 'clamp(1.8rem, 3.5vw, 2.8rem)', fontWeight: 800, letterSpacing: '-0.02em', margin: '0 0 16px' }}>Everything your business needs</h2>
-            <p style={{ color: '#9ca3af', fontSize: '1.05rem', maxWidth: 520, margin: '0 auto' }}>One login. All your data. No juggling between apps.</p>
-          </div>
-        </Reveal>
-
-        {/* Featured spotlight */}
-        <Reveal delay={80}>
-          <div style={{ maxWidth: 1100, margin: '0 auto 64px', background: 'linear-gradient(135deg, rgba(99,102,241,0.08), rgba(139,92,246,0.05))', border: '1px solid rgba(99,102,241,0.15)', borderRadius: 20, padding: '40px 48px', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: 48, alignItems: 'center' }}>
-            <div>
-              <div style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: 56, height: 56, borderRadius: 14, background: `${af.color}22`, marginBottom: 20 }}>
-                <af.icon size={28} color={af.color} />
-              </div>
-              <h3 style={{ fontSize: '1.7rem', fontWeight: 800, margin: '0 0 12px', letterSpacing: '-0.02em' }}>{af.title}</h3>
-              <p style={{ color: '#9ca3af', lineHeight: 1.7, fontSize: '1rem', margin: '0 0 20px' }}>{af.desc}</p>
-              <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8, background: `${af.color}18`, color: af.color, borderRadius: 99, padding: '6px 14px', fontSize: '0.82rem', fontWeight: 600 }}>
-                <CheckCircle size={14} /> {af.stats}
-              </div>
-            </div>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 10 }}>
-              {PLATFORM_FEATURES.map((f, i) => (
-                <button key={i} onClick={() => setActivePlatformFeature(i)}
-                  style={{ background: i === activePlatformFeature ? `${f.color}18` : 'rgba(255,255,255,0.03)', border: `1px solid ${i === activePlatformFeature ? f.color + '40' : 'rgba(255,255,255,0.06)'}`, borderRadius: 10, padding: '12px 14px', cursor: 'pointer', textAlign: 'left', transition: 'all .2s' }}
-                >
-                  <f.icon size={16} color={i === activePlatformFeature ? f.color : '#6b7280'} />
-                  <div style={{ fontSize: '0.8rem', fontWeight: 600, marginTop: 6, color: i === activePlatformFeature ? '#fff' : '#9ca3af' }}>{f.title}</div>
-                </button>
-              ))}
-            </div>
-          </div>
-        </Reveal>
-
-        {/* Feature cards grid */}
-        <div style={{ maxWidth: 1100, margin: '0 auto', display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: 18 }}>
-          {PLATFORM_FEATURES.map((f, i) => (
-            <Reveal key={i} delay={(i % 3) * 100}>
-              <TiltCard>
-                <div style={{ background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.06)', borderRadius: 16, padding: '28px 24px', height: '100%', transition: 'border-color .2s, background .2s', cursor: 'default' }}
-                  onMouseEnter={e => { e.currentTarget.style.borderColor = f.color + '40'; e.currentTarget.style.background = `${f.color}08` }}
-                  onMouseLeave={e => { e.currentTarget.style.borderColor = 'rgba(255,255,255,0.06)'; e.currentTarget.style.background = 'rgba(255,255,255,0.02)' }}
-                >
-                  <div style={{ width: 42, height: 42, borderRadius: 10, background: `${f.color}20`, display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 16 }}>
-                    <f.icon size={20} color={f.color} />
-                  </div>
-                  <h3 style={{ fontWeight: 700, fontSize: '1rem', margin: '0 0 8px' }}>{f.title}</h3>
-                  <p style={{ color: '#6b7280', fontSize: '0.88rem', lineHeight: 1.6, margin: 0 }}>{f.desc}</p>
-                </div>
-              </TiltCard>
-            </Reveal>
-          ))}
-        </div>
-      </FocusSection>
-
-      {/* ── ROADMAP SECTION ── */}
-      <section id="roadmap-section" style={{ padding: '96px 5vw 80px', background: 'radial-gradient(ellipse 80% 50% at 50% 0%, rgba(139,92,246,0.06) 0%, transparent 70%)', borderTop: '1px solid rgba(255,255,255,0.05)' }}>
-        <div style={{ textAlign: 'center', marginBottom: 64 }}>
-          <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8, background: 'rgba(139,92,246,0.12)', border: '1px solid rgba(139,92,246,0.25)', borderRadius: 99, padding: '6px 16px', marginBottom: 20, fontSize: '0.8rem', color: '#c4b5fd', fontWeight: 600, letterSpacing: '0.06em', textTransform: 'uppercase' }}>
-            <Route size={13} /> Coming Soon
-          </div>
-          <h2 style={{ fontSize: 'clamp(1.8rem, 3.5vw, 2.8rem)', fontWeight: 800, letterSpacing: '-0.02em', margin: '0 0 16px' }}>Operations Management</h2>
-          <p style={{ color: '#9ca3af', fontSize: '1.05rem', maxWidth: 620, margin: '0 auto' }}>The next evolution of Autofront — turning field operations into a fully automated, self-optimising machine. These capabilities are in active development.</p>
-        </div>
-
-        {/* GPS / Live tracking — wide card */}
-        <div style={{ maxWidth: 1100, margin: '0 auto 24px', background: 'linear-gradient(135deg, rgba(99,102,241,0.08), rgba(16,185,129,0.05))', border: '1px solid rgba(99,102,241,0.18)', borderRadius: 20, padding: '40px 48px', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: 40, alignItems: 'center' }}>
-          <div>
-            <div style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: 52, height: 52, borderRadius: 14, background: 'rgba(99,102,241,0.18)', marginBottom: 20 }}>
-              <MapPin size={26} color="#6366f1" />
-            </div>
-            <h3 style={{ fontSize: '1.45rem', fontWeight: 800, margin: '0 0 12px', letterSpacing: '-0.02em' }}>Live GPS Field Tracking</h3>
-            <p style={{ color: '#9ca3af', lineHeight: 1.75, fontSize: '0.97rem', margin: 0 }}>Track every field and sales vehicle in real time. Know exactly where your team is throughout the day — without calling anyone. Instantly identify staff in neighbouring suburbs to service same-day requests, and provide customers with automatically updated ETAs from the moment they book.</p>
-          </div>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
-            {[
-              { icon: Navigation, color: '#6366f1', label: 'Real-time map view', desc: 'See your whole fleet on a live map at a glance' },
-              { icon: Clock, color: '#8b5cf6', label: 'Auto ETA updates', desc: 'Customers receive accurate arrival windows automatically' },
-              { icon: Truck, color: '#10b981', label: 'Same-day routing', desc: 'Spot nearby staff and re-route for urgent jobs instantly' },
-              { icon: Zap, color: '#f59e0b', label: 'Dispatch intelligence', desc: 'Surface the right person at the right time, automatically' },
-            ].map((item, i) => (
-              <div key={i} style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.07)', borderRadius: 12, padding: '16px' }}>
-                <item.icon size={18} color={item.color} style={{ marginBottom: 8 }} />
-                <div style={{ fontSize: '0.82rem', fontWeight: 700, color: '#e5e7eb', marginBottom: 4 }}>{item.label}</div>
-                <div style={{ fontSize: '0.76rem', color: '#6b7280', lineHeight: 1.5 }}>{item.desc}</div>
-              </div>
+                </TiltCard>
+              </Reveal>
             ))}
           </div>
-        </div>
+        </FocusSection>
 
-        {/* Route planning + Disruption triage + Quote scheduling — three columns */}
-        <div style={{ maxWidth: 1100, margin: '0 auto 24px', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: 20 }}>
-          <div style={{ background: 'rgba(255,255,255,0.025)', border: '1px solid rgba(139,92,246,0.2)', borderRadius: 18, padding: '32px 28px' }}>
-            <div style={{ width: 46, height: 46, borderRadius: 12, background: 'rgba(139,92,246,0.18)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 18 }}>
-              <Route size={22} color="#8b5cf6" />
+        {/* ── ROADMAP SECTION ── */}
+        <section id="roadmap-section" style={{ padding: '96px 5vw 80px', background: 'radial-gradient(ellipse 80% 50% at 50% 0%, rgba(139,92,246,0.06) 0%, transparent 70%)', borderTop: '1px solid rgba(255,255,255,0.05)' }}>
+          <div style={{ textAlign: 'center', marginBottom: 64 }}>
+            <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8, background: 'rgba(139,92,246,0.12)', border: '1px solid rgba(139,92,246,0.25)', borderRadius: 99, padding: '6px 16px', marginBottom: 20, fontSize: '0.8rem', color: '#c4b5fd', fontWeight: 600, letterSpacing: '0.06em', textTransform: 'uppercase' }}>
+              <Route size={13} /> Coming Soon
             </div>
-            <h3 style={{ fontWeight: 800, fontSize: '1.05rem', margin: '0 0 10px' }}>Intelligent Route Planning</h3>
-            <p style={{ color: '#9ca3af', fontSize: '0.87rem', lineHeight: 1.7, margin: '0 0 18px' }}>Offer customers booking windows — not rigid time slots — then let Autofront optimise the run sheet. Dedicate days or staff members to geographic quadrants (NE / NW / SE / SW), so a lead from a given suburb is automatically routed to whoever covers that zone that day. A visual map shows coverage at a glance.</p>
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
-              {['Booking windows', 'Geo quadrants', 'Fuel optimisation', 'Visual map'].map(tag => (
-                <span key={tag} style={{ fontSize: '0.74rem', fontWeight: 600, color: '#a78bfa', background: 'rgba(139,92,246,0.12)', border: '1px solid rgba(139,92,246,0.2)', borderRadius: 99, padding: '3px 10px' }}>{tag}</span>
-              ))}
-            </div>
+            <h2 style={{ fontSize: 'clamp(1.8rem, 3.5vw, 2.8rem)', fontWeight: 800, letterSpacing: '-0.02em', margin: '0 0 16px' }}>Operations Management</h2>
+            <p style={{ color: '#9ca3af', fontSize: '1.05rem', maxWidth: 620, margin: '0 auto' }}>The next evolution of Autofront — turning field operations into a fully automated, self-optimising machine. These capabilities are in active development.</p>
           </div>
 
-          <div style={{ background: 'rgba(255,255,255,0.025)', border: '1px solid rgba(239,68,68,0.2)', borderRadius: 18, padding: '32px 28px' }}>
-            <div style={{ width: 46, height: 46, borderRadius: 12, background: 'rgba(239,68,68,0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 18 }}>
-              <AlertTriangle size={22} color="#f87171" />
-            </div>
-            <h3 style={{ fontWeight: 800, fontSize: '1.05rem', margin: '0 0 10px' }}>Disruption Triage — Automated</h3>
-            <p style={{ color: '#9ca3af', fontSize: '0.87rem', lineHeight: 1.7, margin: '0 0 18px' }}>Technician calls in sick at 6am with six jobs on the run sheet? Autofront instantly triages every impacted booking: find available cover, reschedule within the AM or PM window, or — when neither is possible — send each customer an immediate apology with a rebooking link and an incentive. What once took an ops manager an hour of calls is resolved in minutes.</p>
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
-              {['Auto-triage', 'Cover matching', 'Customer comms', 'Rebooking link'].map(tag => (
-                <span key={tag} style={{ fontSize: '0.74rem', fontWeight: 600, color: '#f87171', background: 'rgba(239,68,68,0.1)', border: '1px solid rgba(239,68,68,0.2)', borderRadius: 99, padding: '3px 10px' }}>{tag}</span>
-              ))}
-            </div>
-          </div>
-
-          <div style={{ background: 'rgba(255,255,255,0.025)', border: '1px solid rgba(245,158,11,0.2)', borderRadius: 18, padding: '32px 28px' }}>
-            <div style={{ width: 46, height: 46, borderRadius: 12, background: 'rgba(245,158,11,0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 18 }}>
-              <Calendar size={22} color="#f59e0b" />
-            </div>
-            <h3 style={{ fontWeight: 800, fontSize: '1.05rem', margin: '0 0 10px' }}>Quote-to-Install Scheduling</h3>
-            <p style={{ color: '#9ca3af', fontSize: '0.87rem', lineHeight: 1.7, margin: '0 0 18px' }}>During the quoting phase, give customers realistic install timeframes based on your live capacity — and use that pencilled-in date as a conversion lever. Accepting the quote confirms the slot, reducing back-and-forth and accelerating your pipeline.</p>
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
-              {['Live capacity view', 'Pencil-in date', 'Quote incentive', 'Auto-confirms'].map(tag => (
-                <span key={tag} style={{ fontSize: '0.74rem', fontWeight: 600, color: '#f59e0b', background: 'rgba(245,158,11,0.1)', border: '1px solid rgba(245,158,11,0.2)', borderRadius: 99, padding: '3px 10px' }}>{tag}</span>
-              ))}
-            </div>
-          </div>
-        </div>
-
-        {/* On-site payment + Campaign engine — two wide cards */}
-        <div style={{ maxWidth: 1100, margin: '0 auto', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(420px, 1fr))', gap: 20 }}>
-          <div style={{ background: 'linear-gradient(135deg, rgba(16,185,129,0.08), rgba(6,182,212,0.05))', border: '1px solid rgba(16,185,129,0.2)', borderRadius: 18, padding: '36px' }}>
-            <div style={{ display: 'flex', alignItems: 'flex-start', gap: 18, marginBottom: 16 }}>
-              <div style={{ width: 46, height: 46, borderRadius: 12, background: 'rgba(16,185,129,0.18)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                <CreditCard size={22} color="#10b981" />
+          {/* GPS / Live tracking — wide card */}
+          <div style={{ maxWidth: 1100, margin: '0 auto 24px', background: 'linear-gradient(135deg, rgba(99,102,241,0.08), rgba(16,185,129,0.05))', border: '1px solid rgba(99,102,241,0.18)', borderRadius: 20, padding: '40px 48px', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: 40, alignItems: 'center' }}>
+            <div>
+              <div style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: 52, height: 52, borderRadius: 14, background: 'rgba(99,102,241,0.18)', marginBottom: 20 }}>
+                <MapPin size={26} color="#6366f1" />
               </div>
-              <div>
-                <h3 style={{ fontWeight: 800, fontSize: '1.05rem', margin: '0 0 8px' }}>On-Site Electronic Payment</h3>
-                <p style={{ color: '#9ca3af', fontSize: '0.87rem', lineHeight: 1.7, margin: 0 }}>Job complete? Any technician or sales rep can accept payment on the spot using nothing but their phone. Once processed, the job status automatically updates to invoice paid — and a review request with a loyalty incentive (free service call or future discount) is sent to the customer immediately.</p>
-              </div>
+              <h3 style={{ fontSize: '1.45rem', fontWeight: 800, margin: '0 0 12px', letterSpacing: '-0.02em' }}>Live GPS Field Tracking</h3>
+              <p style={{ color: '#9ca3af', lineHeight: 1.75, fontSize: '0.97rem', margin: 0 }}>Track every field and sales vehicle in real time. Know exactly where your team is throughout the day — without calling anyone. Instantly identify staff in neighbouring suburbs to service same-day requests, and provide customers with automatically updated ETAs from the moment they book.</p>
             </div>
-            <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
               {[
-                { icon: CreditCard, label: 'Tap-to-pay via phone' },
-                { icon: CheckCircle, label: 'Auto job status update' },
-                { icon: Gift, label: 'Loyalty incentive on completion' },
-                { icon: Star, label: 'Instant review request' },
+                { icon: Navigation, color: '#6366f1', label: 'Real-time map view', desc: 'See your whole fleet on a live map at a glance' },
+                { icon: Clock, color: '#8b5cf6', label: 'Auto ETA updates', desc: 'Customers receive accurate arrival windows automatically' },
+                { icon: Truck, color: '#10b981', label: 'Same-day routing', desc: 'Spot nearby staff and re-route for urgent jobs instantly' },
+                { icon: Zap, color: '#f59e0b', label: 'Dispatch intelligence', desc: 'Surface the right person at the right time, automatically' },
               ].map((item, i) => (
-                <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 6, background: 'rgba(16,185,129,0.1)', border: '1px solid rgba(16,185,129,0.2)', borderRadius: 8, padding: '6px 12px' }}>
-                  <item.icon size={13} color="#10b981" />
-                  <span style={{ fontSize: '0.77rem', fontWeight: 600, color: '#6ee7b7' }}>{item.label}</span>
+                <div key={i} style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.07)', borderRadius: 12, padding: '16px' }}>
+                  <item.icon size={18} color={item.color} style={{ marginBottom: 8 }} />
+                  <div style={{ fontSize: '0.82rem', fontWeight: 700, color: '#e5e7eb', marginBottom: 4 }}>{item.label}</div>
+                  <div style={{ fontSize: '0.76rem', color: '#6b7280', lineHeight: 1.5 }}>{item.desc}</div>
                 </div>
               ))}
             </div>
           </div>
 
-          <div style={{ background: 'linear-gradient(135deg, rgba(236,72,153,0.08), rgba(139,92,246,0.05))', border: '1px solid rgba(236,72,153,0.2)', borderRadius: 18, padding: '36px' }}>
-            <div style={{ display: 'flex', alignItems: 'flex-start', gap: 18, marginBottom: 16 }}>
-              <div style={{ width: 46, height: 46, borderRadius: 12, background: 'rgba(236,72,153,0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                <Megaphone size={22} color="#ec4899" />
+          {/* Route planning + Disruption triage + Quote scheduling — three columns */}
+          <div style={{ maxWidth: 1100, margin: '0 auto 24px', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: 20 }}>
+            <div style={{ background: 'rgba(255,255,255,0.025)', border: '1px solid rgba(139,92,246,0.2)', borderRadius: 18, padding: '32px 28px' }}>
+              <div style={{ width: 46, height: 46, borderRadius: 12, background: 'rgba(139,92,246,0.18)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 18 }}>
+                <Route size={22} color="#8b5cf6" />
               </div>
-              <div>
-                <h3 style={{ fontWeight: 800, fontSize: '1.05rem', margin: '0 0 8px' }}>Targeted Customer Campaigns</h3>
-                <p style={{ color: '#9ca3af', fontSize: '0.87rem', lineHeight: 1.7, margin: 0 }}>Your existing customer base is your most valuable asset. Pull a precision list — every customer you installed solar for in the past 3 years, or every unit of a specific brand and model — and send a targeted SMS or email campaign in minutes. Track responses and conversions in real time, measure ROI, save the campaign to re-run or tweak next season. All fully compliant with ACMA regulations, with automatic opt-out and do-not-contact management built in.</p>
+              <h3 style={{ fontWeight: 800, fontSize: '1.05rem', margin: '0 0 10px' }}>Intelligent Route Planning</h3>
+              <p style={{ color: '#9ca3af', fontSize: '0.87rem', lineHeight: 1.7, margin: '0 0 18px' }}>Offer customers booking windows — not rigid time slots — then let Autofront optimise the run sheet. Dedicate days or staff members to geographic quadrants (NE / NW / SE / SW), so a lead from a given suburb is automatically routed to whoever covers that zone that day. A visual map shows coverage at a glance.</p>
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
+                {['Booking windows', 'Geo quadrants', 'Fuel optimisation', 'Visual map'].map(tag => (
+                  <span key={tag} style={{ fontSize: '0.74rem', fontWeight: 600, color: '#a78bfa', background: 'rgba(139,92,246,0.12)', border: '1px solid rgba(139,92,246,0.2)', borderRadius: 99, padding: '3px 10px' }}>{tag}</span>
+                ))}
               </div>
             </div>
-            <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
-              {[
-                { icon: Target, label: 'Precision audience builder' },
-                { icon: Send, label: 'SMS & email delivery' },
-                { icon: BarChart2, label: 'Live ROI tracking' },
-                { icon: Shield, label: 'ACMA compliant' },
-              ].map((item, i) => (
-                <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 6, background: 'rgba(236,72,153,0.1)', border: '1px solid rgba(236,72,153,0.2)', borderRadius: 8, padding: '6px 12px' }}>
-                  <item.icon size={13} color="#ec4899" />
-                  <span style={{ fontSize: '0.77rem', fontWeight: 600, color: '#f9a8d4' }}>{item.label}</span>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </section>
 
-      {/* ── HOW THE DEMO WORKS ── */}
-      <section style={{ padding: '80px 5vw', background: 'rgba(99,102,241,0.04)', borderTop: '1px solid rgba(99,102,241,0.1)', borderBottom: '1px solid rgba(99,102,241,0.1)' }}>
-        <Reveal>
-          <div style={{ textAlign: 'center', marginBottom: 52 }}>
-            <h2 style={{ fontSize: 'clamp(1.6rem, 3vw, 2.4rem)', fontWeight: 800, margin: '0 0 12px', letterSpacing: '-0.02em' }}>How the live demo works</h2>
-            <p style={{ color: '#9ca3af', maxWidth: 480, margin: '0 auto' }}>No credit card. No long sales call. Tell us about your business and explore a fully live dashboard.</p>
+            <div style={{ background: 'rgba(255,255,255,0.025)', border: '1px solid rgba(239,68,68,0.2)', borderRadius: 18, padding: '32px 28px' }}>
+              <div style={{ width: 46, height: 46, borderRadius: 12, background: 'rgba(239,68,68,0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 18 }}>
+                <AlertTriangle size={22} color="#f87171" />
+              </div>
+              <h3 style={{ fontWeight: 800, fontSize: '1.05rem', margin: '0 0 10px' }}>Disruption Triage — Automated</h3>
+              <p style={{ color: '#9ca3af', fontSize: '0.87rem', lineHeight: 1.7, margin: '0 0 18px' }}>Technician calls in sick at 6am with six jobs on the run sheet? Autofront instantly triages every impacted booking: find available cover, reschedule within the AM or PM window, or — when neither is possible — send each customer an immediate apology with a rebooking link and an incentive. What once took an ops manager an hour of calls is resolved in minutes.</p>
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
+                {['Auto-triage', 'Cover matching', 'Customer comms', 'Rebooking link'].map(tag => (
+                  <span key={tag} style={{ fontSize: '0.74rem', fontWeight: 600, color: '#f87171', background: 'rgba(239,68,68,0.1)', border: '1px solid rgba(239,68,68,0.2)', borderRadius: 99, padding: '3px 10px' }}>{tag}</span>
+                ))}
+              </div>
+            </div>
+
+            <div style={{ background: 'rgba(255,255,255,0.025)', border: '1px solid rgba(245,158,11,0.2)', borderRadius: 18, padding: '32px 28px' }}>
+              <div style={{ width: 46, height: 46, borderRadius: 12, background: 'rgba(245,158,11,0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 18 }}>
+                <Calendar size={22} color="#f59e0b" />
+              </div>
+              <h3 style={{ fontWeight: 800, fontSize: '1.05rem', margin: '0 0 10px' }}>Quote-to-Install Scheduling</h3>
+              <p style={{ color: '#9ca3af', fontSize: '0.87rem', lineHeight: 1.7, margin: '0 0 18px' }}>During the quoting phase, give customers realistic install timeframes based on your live capacity — and use that pencilled-in date as a conversion lever. Accepting the quote confirms the slot, reducing back-and-forth and accelerating your pipeline.</p>
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
+                {['Live capacity view', 'Pencil-in date', 'Quote incentive', 'Auto-confirms'].map(tag => (
+                  <span key={tag} style={{ fontSize: '0.74rem', fontWeight: 600, color: '#f59e0b', background: 'rgba(245,158,11,0.1)', border: '1px solid rgba(245,158,11,0.2)', borderRadius: 99, padding: '3px 10px' }}>{tag}</span>
+                ))}
+              </div>
+            </div>
           </div>
-        </Reveal>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 22, maxWidth: 960, margin: '0 auto 48px', alignItems: 'stretch' }}>
-          {[
-            { step: '01', icon: Users, color: '#6366f1', title: 'Quick intro', desc: 'Tell us your name, number and what job system you\'re using. Takes 30 seconds.' },
-            { step: '02', icon: Building2, color: '#8b5cf6', title: 'Pick a company', desc: 'Switch between APEX Electrical and APEX Plumbing to see multi-tenant in action.' },
-            { step: '03', icon: Smartphone, color: '#ec4899', title: 'Explore freely', desc: 'Leads, calls, campaigns, analytics, Connect — all live with real data.' },
-            { step: '04', icon: RefreshCw, color: '#10b981', title: 'Data resets daily', desc: 'Test data refreshes every 24 hours so it’s always clean for the next visitor.' },
-          ].map((s, i) => (
-            <Reveal key={i} delay={i * 100} style={{ height: '100%' }}>
-              <TiltCard style={{ height: '100%' }}>
-                <div style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)', borderRadius: 14, padding: '28px 22px', height: '100%', boxSizing: 'border-box' }}>
-                  <div style={{ fontSize: '0.72rem', fontWeight: 700, color: s.color, letterSpacing: '0.1em', marginBottom: 14 }}>STEP {s.step}</div>
-                  <s.icon size={24} color={s.color} style={{ marginBottom: 12 }} />
-                  <h3 style={{ fontWeight: 700, fontSize: '0.95rem', margin: '0 0 8px' }}>{s.title}</h3>
-                  <p style={{ color: '#6b7280', fontSize: '0.85rem', lineHeight: 1.6, margin: 0 }}>{s.desc}</p>
+
+          {/* On-site payment + Campaign engine — two wide cards */}
+          <div style={{ maxWidth: 1100, margin: '0 auto', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(420px, 1fr))', gap: 20 }}>
+            <div style={{ background: 'linear-gradient(135deg, rgba(16,185,129,0.08), rgba(6,182,212,0.05))', border: '1px solid rgba(16,185,129,0.2)', borderRadius: 18, padding: '36px' }}>
+              <div style={{ display: 'flex', alignItems: 'flex-start', gap: 18, marginBottom: 16 }}>
+                <div style={{ width: 46, height: 46, borderRadius: 12, background: 'rgba(16,185,129,0.18)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                  <CreditCard size={22} color="#10b981" />
                 </div>
-              </TiltCard>
-            </Reveal>
-          ))}
-        </div>
-        <div style={{ textAlign: 'center' }}>
+                <div>
+                  <h3 style={{ fontWeight: 800, fontSize: '1.05rem', margin: '0 0 8px' }}>On-Site Electronic Payment</h3>
+                  <p style={{ color: '#9ca3af', fontSize: '0.87rem', lineHeight: 1.7, margin: 0 }}>Job complete? Any technician or sales rep can accept payment on the spot using nothing but their phone. Once processed, the job status automatically updates to invoice paid — and a review request with a loyalty incentive (free service call or future discount) is sent to the customer immediately.</p>
+                </div>
+              </div>
+              <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
+                {[
+                  { icon: CreditCard, label: 'Tap-to-pay via phone' },
+                  { icon: CheckCircle, label: 'Auto job status update' },
+                  { icon: Gift, label: 'Loyalty incentive on completion' },
+                  { icon: Star, label: 'Instant review request' },
+                ].map((item, i) => (
+                  <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 6, background: 'rgba(16,185,129,0.1)', border: '1px solid rgba(16,185,129,0.2)', borderRadius: 8, padding: '6px 12px' }}>
+                    <item.icon size={13} color="#10b981" />
+                    <span style={{ fontSize: '0.77rem', fontWeight: 600, color: '#6ee7b7' }}>{item.label}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div style={{ background: 'linear-gradient(135deg, rgba(236,72,153,0.08), rgba(139,92,246,0.05))', border: '1px solid rgba(236,72,153,0.2)', borderRadius: 18, padding: '36px' }}>
+              <div style={{ display: 'flex', alignItems: 'flex-start', gap: 18, marginBottom: 16 }}>
+                <div style={{ width: 46, height: 46, borderRadius: 12, background: 'rgba(236,72,153,0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                  <Megaphone size={22} color="#ec4899" />
+                </div>
+                <div>
+                  <h3 style={{ fontWeight: 800, fontSize: '1.05rem', margin: '0 0 8px' }}>Targeted Customer Campaigns</h3>
+                  <p style={{ color: '#9ca3af', fontSize: '0.87rem', lineHeight: 1.7, margin: 0 }}>Your existing customer base is your most valuable asset. Pull a precision list — every customer you installed solar for in the past 3 years, or every unit of a specific brand and model — and send a targeted SMS or email campaign in minutes. Track responses and conversions in real time, measure ROI, save the campaign to re-run or tweak next season. All fully compliant with ACMA regulations, with automatic opt-out and do-not-contact management built in.</p>
+                </div>
+              </div>
+              <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
+                {[
+                  { icon: Target, label: 'Precision audience builder' },
+                  { icon: Send, label: 'SMS & email delivery' },
+                  { icon: BarChart2, label: 'Live ROI tracking' },
+                  { icon: Shield, label: 'ACMA compliant' },
+                ].map((item, i) => (
+                  <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 6, background: 'rgba(236,72,153,0.1)', border: '1px solid rgba(236,72,153,0.2)', borderRadius: 8, padding: '6px 12px' }}>
+                    <item.icon size={13} color="#ec4899" />
+                    <span style={{ fontSize: '0.77rem', fontWeight: 600, color: '#f9a8d4' }}>{item.label}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* ── HOW THE DEMO WORKS ── */}
+        <section style={{ padding: '80px 5vw', background: 'rgba(99,102,241,0.04)', borderTop: '1px solid rgba(99,102,241,0.1)', borderBottom: '1px solid rgba(99,102,241,0.1)' }}>
           <Reveal>
-            <button onClick={openDemo} style={primaryBtn}
-              onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.boxShadow = '0 18px 40px rgba(99,102,241,0.55)' }}
-              onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = '0 12px 32px rgba(99,102,241,0.4)' }}
+            <div style={{ textAlign: 'center', marginBottom: 52 }}>
+              <h2 style={{ fontSize: 'clamp(1.6rem, 3vw, 2.4rem)', fontWeight: 800, margin: '0 0 12px', letterSpacing: '-0.02em' }}>How the live demo works</h2>
+              <p style={{ color: '#9ca3af', maxWidth: 480, margin: '0 auto' }}>No credit card. No long sales call. Tell us about your business and explore a fully live dashboard.</p>
+            </div>
+          </Reveal>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 22, maxWidth: 960, margin: '0 auto 48px', alignItems: 'stretch' }}>
+            {[
+              { step: '01', icon: Users, color: '#6366f1', title: 'Quick intro', desc: 'Tell us your name, number and what job system you\'re using. Takes 30 seconds.' },
+              { step: '02', icon: Building2, color: '#8b5cf6', title: 'Pick a company', desc: 'Switch between APEX Electrical and APEX Plumbing to see multi-tenant in action.' },
+              { step: '03', icon: Smartphone, color: '#ec4899', title: 'Explore freely', desc: 'Leads, calls, campaigns, analytics, Connect — all live with real data.' },
+              { step: '04', icon: RefreshCw, color: '#10b981', title: 'Data resets daily', desc: 'Test data refreshes every 24 hours so it’s always clean for the next visitor.' },
+            ].map((s, i) => (
+              <Reveal key={i} delay={i * 100} style={{ height: '100%' }}>
+                <TiltCard style={{ height: '100%' }}>
+                  <div style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)', borderRadius: 14, padding: '28px 22px', height: '100%', boxSizing: 'border-box' }}>
+                    <div style={{ fontSize: '0.72rem', fontWeight: 700, color: s.color, letterSpacing: '0.1em', marginBottom: 14 }}>STEP {s.step}</div>
+                    <s.icon size={24} color={s.color} style={{ marginBottom: 12 }} />
+                    <h3 style={{ fontWeight: 700, fontSize: '0.95rem', margin: '0 0 8px' }}>{s.title}</h3>
+                    <p style={{ color: '#6b7280', fontSize: '0.85rem', lineHeight: 1.6, margin: 0 }}>{s.desc}</p>
+                  </div>
+                </TiltCard>
+              </Reveal>
+            ))}
+          </div>
+          <div style={{ textAlign: 'center' }}>
+            <Reveal>
+              <button onClick={openDemo} style={primaryBtn}
+                onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.boxShadow = '0 18px 40px rgba(99,102,241,0.55)' }}
+                onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = '0 12px 32px rgba(99,102,241,0.4)' }}
+              >
+                <Play size={18} /> Launch Live Demo <ArrowRight size={16} />
+              </button>
+            </Reveal>
+          </div>
+        </section>
+
+        {/* ── INTEGRATIONS (infinite marquee) ── */}
+        <section style={{ padding: '64px 0', textAlign: 'center' }}>
+          <Reveal>
+            <p style={{ color: '#6b7280', fontSize: '0.85rem', fontWeight: 600, letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: 28 }}>
+              Connects with your existing tools
+            </p>
+          </Reveal>
+          <InfiniteMarquee />
+        </section>
+
+        {/* ── FINAL CTA ── */}
+        <section style={{ padding: '96px 5vw', textAlign: 'center', background: 'radial-gradient(ellipse 70% 50% at 50% 100%, rgba(99,102,241,0.16) 0%, transparent 70%)', borderTop: '1px solid rgba(255,255,255,0.05)', position: 'relative', overflow: 'hidden' }}>
+          {/* Shimmer headline */}
+          <Reveal>
+            <h2 style={{ fontSize: 'clamp(1.8rem, 3.5vw, 2.8rem)', fontWeight: 800, margin: '0 auto 16px', maxWidth: 680, letterSpacing: '-0.02em' }}>
+              Ready to see it for yourself?
+            </h2>
+          </Reveal>
+          <Reveal delay={80}>
+            <p style={{ color: '#9ca3af', fontSize: '1.05rem', maxWidth: 480, margin: '0 auto 40px' }}>
+              Explore every feature with live data &mdash; no commitment, no sales pitch, no card required.
+            </p>
+          </Reveal>
+          <Reveal delay={160}>
+            <button onClick={openDemo}
+              style={{ ...primaryBtn, padding: '18px 48px', fontSize: '1.1rem', borderRadius: 14, boxShadow: '0 16px 40px rgba(99,102,241,0.4)' }}
+              onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-3px)'; e.currentTarget.style.boxShadow = '0 22px 52px rgba(99,102,241,0.6)' }}
+              onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = '0 16px 40px rgba(99,102,241,0.4)' }}
             >
-              <Play size={18} /> Launch Live Demo <ArrowRight size={16} />
+              <Play size={20} /> Try the Live Demo
             </button>
           </Reveal>
-        </div>
-      </section>
+        </section>
 
-      {/* ── INTEGRATIONS (infinite marquee) ── */}
-      <section style={{ padding: '64px 0', textAlign: 'center' }}>
-        <Reveal>
-          <p style={{ color: '#6b7280', fontSize: '0.85rem', fontWeight: 600, letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: 28 }}>
-            Connects with your existing tools
-          </p>
-        </Reveal>
-        <InfiniteMarquee />
-      </section>
-
-      {/* ── FINAL CTA ── */}
-      <section style={{ padding: '96px 5vw', textAlign: 'center', background: 'radial-gradient(ellipse 70% 50% at 50% 100%, rgba(99,102,241,0.16) 0%, transparent 70%)', borderTop: '1px solid rgba(255,255,255,0.05)', position: 'relative', overflow: 'hidden' }}>
-        {/* Shimmer headline */}
-        <Reveal>
-          <h2 style={{ fontSize: 'clamp(1.8rem, 3.5vw, 2.8rem)', fontWeight: 800, margin: '0 auto 16px', maxWidth: 680, letterSpacing: '-0.02em' }}>
-            Ready to see it for yourself?
-          </h2>
-        </Reveal>
-        <Reveal delay={80}>
-          <p style={{ color: '#9ca3af', fontSize: '1.05rem', maxWidth: 480, margin: '0 auto 40px' }}>
-            Explore every feature with live data &mdash; no commitment, no sales pitch, no card required.
-          </p>
-        </Reveal>
-        <Reveal delay={160}>
-          <button onClick={openDemo}
-            style={{ ...primaryBtn, padding: '18px 48px', fontSize: '1.1rem', borderRadius: 14, boxShadow: '0 16px 40px rgba(99,102,241,0.4)' }}
-            onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-3px)'; e.currentTarget.style.boxShadow = '0 22px 52px rgba(99,102,241,0.6)' }}
-            onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = '0 16px 40px rgba(99,102,241,0.4)' }}
-          >
-            <Play size={20} /> Try the Live Demo
-          </button>
-        </Reveal>
-      </section>
-
-      {/* ── FOOTER ── */}
-      <footer style={{ padding: '48px 5vw 36px', borderTop: '1px solid rgba(255,255,255,0.05)', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 20 }}>
-        <img src="/autofront-logo.png" alt="Autofront" style={{ height: 32, width: 'auto', opacity: 0.65 }} />
-        <div style={{ display: 'flex', gap: 28, flexWrap: 'wrap', justifyContent: 'center' }}>
-          <span style={{ color: '#4b5563', fontSize: '0.82rem' }}>AU-hosted · SOC 2 ready</span>
-          <span style={{ color: '#374151' }}>·</span>
-          <button onClick={handleLogin} style={{ background: 'none', border: 'none', color: '#6b7280', cursor: 'pointer', fontSize: '0.82rem', padding: 0, transition: 'color .2s' }}
-            onMouseEnter={e => e.currentTarget.style.color = '#9ca3af'}
-            onMouseLeave={e => e.currentTarget.style.color = '#6b7280'}
-          >Staff login</button>
-        </div>
-      </footer>
+        {/* ── FOOTER ── */}
+        <footer style={{ padding: '48px 5vw 36px', borderTop: '1px solid rgba(255,255,255,0.05)', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 20 }}>
+          <img src="/autofront-logo.png" alt="Autofront" style={{ height: 32, width: 'auto', opacity: 0.65 }} />
+          <div style={{ display: 'flex', gap: 28, flexWrap: 'wrap', justifyContent: 'center' }}>
+            <span style={{ color: '#4b5563', fontSize: '0.82rem' }}>AU-hosted · SOC 2 ready</span>
+            <span style={{ color: '#374151' }}>·</span>
+            <button onClick={handleLogin} style={{ background: 'none', border: 'none', color: '#6b7280', cursor: 'pointer', fontSize: '0.82rem', padding: 0, transition: 'color .2s' }}
+              onMouseEnter={e => e.currentTarget.style.color = '#9ca3af'}
+              onMouseLeave={e => e.currentTarget.style.color = '#6b7280'}
+            >Staff login</button>
+          </div>
+        </footer>
       </div>
     </div>
   )
