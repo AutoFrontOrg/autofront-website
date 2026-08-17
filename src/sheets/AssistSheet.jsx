@@ -4,7 +4,7 @@ import {
   Wrench, Video, Target, ChevronsRight,
 } from 'lucide-react'
 import { getTheme, ACCENTS } from './theme'
-import { SheetShell, LogoMark, Eyebrow, Pill, GradientText, CapCard, FlowDiagram, Callout } from './ui'
+import { SheetShell, LogoMark, Eyebrow, Pill, GradientText, CapCard, FlowDiagram, Callout, useIsMobile } from './ui'
 
 const MISSED_CALL_STEPS = [
   { label: 'Missed Call', icon: PhoneMissed, color: ACCENTS.pink },
@@ -47,12 +47,9 @@ const CAPS = [
   },
 ]
 
-export default function AssistSheet() {
-  const [theme, setTheme] = useState('dark')
-  const t = getTheme(theme)
+function AssistA4({ t }) {
   return (
-    <SheetShell t={t} theme={theme} setTheme={setTheme} title="Assist">
-      <div style={{ height: '100%', boxSizing: 'border-box', padding: '8mm 12mm', display: 'flex', flexDirection: 'column', gap: '6mm' }}>
+    <div style={{ height: '100%', boxSizing: 'border-box', padding: '8mm 12mm', display: 'flex', flexDirection: 'column', gap: '6mm' }}>
 
         {/* Header */}
         <div style={{ height: '12mm', flex: '0 0 auto', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
@@ -112,6 +109,64 @@ export default function AssistSheet() {
         </div>
 
       </div>
+  )
+}
+
+function AssistMobile({ t }) {
+  return (
+    <div style={{ boxSizing: 'border-box', padding: '22px 18px 26px', display: 'flex', flexDirection: 'column', gap: 20 }}>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+        <LogoMark t={t} size={24} />
+        <Eyebrow t={t} color={ACCENTS.indigo}>Assist</Eyebrow>
+      </div>
+
+      <div>
+        <h1 style={{ margin: '0 0 8px', fontSize: 27, fontWeight: 800, letterSpacing: '-0.03em', lineHeight: 1.12, color: t.heading }}>
+          Turn enquiries into <GradientText t={t}>booked work.</GradientText> Automatically.
+        </h1>
+        <p style={{ margin: '0 0 8px', fontSize: 14.5, fontWeight: 600, color: t.mode === 'dark' ? '#c7d2fe' : '#4f46e5' }}>
+          Your rules. Your availability. Your customer books themselves.
+        </p>
+        <p style={{ margin: 0, fontSize: 14, lineHeight: 1.6, color: t.body }}>
+          Assist isn't just an online calendar. It's a self-service qualification, conversion and
+          scheduling layer connected to the operational systems the business already runs.
+        </p>
+      </div>
+
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 9 }}>
+        <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: '0.06em', textTransform: 'uppercase', color: t.muted }}>Missed calls become booked work</div>
+        <FlowDiagram t={t} steps={MISSED_CALL_STEPS} dense />
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
+          {['Video Consultation', 'On-Site', 'Quote', 'Assessment', 'Service', 'Installation'].map(p => <Pill key={p} t={t}>{p}</Pill>)}
+        </div>
+      </div>
+
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+        {CAPS.map(c => <CapCard key={c.title} t={t} {...c} />)}
+      </div>
+
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 9 }}>
+        <div style={{ fontSize: 17, fontWeight: 800, color: t.heading, letterSpacing: '-0.01em' }}>Know which marketing actually makes you money.</div>
+        <div style={{ fontSize: 13.5, color: t.body, lineHeight: 1.55 }}>Entry source tracked all the way through to invoiced revenue — real ROAS, not just clicks.</div>
+        <FlowDiagram t={t} steps={ATTRIBUTION_STEPS} dense />
+      </div>
+
+      <Callout t={t} color={ACCENTS.indigo}>Capture. Qualify. Schedule. Convert. — Less admin. Better data. More booked work.</Callout>
+      <div style={{ fontSize: 13, lineHeight: 1.55, color: t.muted, display: 'flex', gap: 8 }}>
+        <ChevronsRight size={16} color={t.mode === 'dark' ? '#6366f1' : '#4f46e5'} style={{ flex: '0 0 auto', marginTop: 2 }} />
+        Assist extends the job management system already in place — it never replaces it.
+      </div>
+    </div>
+  )
+}
+
+export default function AssistSheet() {
+  const [theme, setTheme] = useState('dark')
+  const mobile = useIsMobile()
+  const t = getTheme(theme, mobile)
+  return (
+    <SheetShell t={t} theme={theme} setTheme={setTheme} title="Assist">
+      {mobile ? <AssistMobile t={t} /> : <AssistA4 t={t} />}
     </SheetShell>
   )
 }

@@ -13,10 +13,11 @@ export const ACCENTS = {
   cyan: '#06b6d4',
 }
 
-export function getTheme(mode) {
+export function getTheme(mode, mobile = false) {
   if (mode === 'light') {
     return {
       mode,
+      mobile,
       page: '#ffffff',
       panel: '#f8f9fc',
       panelAlt: '#f1f2f8',
@@ -37,6 +38,7 @@ export function getTheme(mode) {
   }
   return {
     mode: 'dark',
+    mobile,
     page: '#0b0f1a',
     panel: '#131828',
     panelAlt: '#0e1320',

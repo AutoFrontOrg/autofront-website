@@ -1,8 +1,22 @@
-import { useLayoutEffect, useRef, useState } from 'react'
+import { useLayoutEffect, useRef, useState, useEffect } from 'react'
 import { RADIUS, FONT } from './theme'
 
 // px-per-mm at 96dpi screen preview; print CSS below re-pins the real element to exact mm.
 const MM = 3.7795
+
+// Mobile gets a re-flowed single-column layout (not a zoomed-out A4 preview).
+export function useIsMobile(breakpoint = 768) {
+  const [mobile, setMobile] = useState(
+    () => typeof window !== 'undefined' && window.matchMedia(`(max-width: ${breakpoint}px)`).matches
+  )
+  useEffect(() => {
+    const mq = window.matchMedia(`(max-width: ${breakpoint}px)`)
+    const onChange = e => setMobile(e.matches)
+    mq.addEventListener('change', onChange)
+    return () => mq.removeEventListener('change', onChange)
+  }, [breakpoint])
+  return mobile
+}
 
 // ─── Logo ───────────────────────────────────────────────────────────────────
 // Two variants of the SAME raster logo: the default has a near-white "Auto"
@@ -20,11 +34,11 @@ export function Eyebrow({ t, color, icon: Icon, children }) {
       display: 'inline-flex', alignItems: 'center', gap: 6,
       background: t.tint(color, t.mode === 'dark' ? '20' : '12'),
       border: `1px solid ${t.tintBorder(color)}`,
-      borderRadius: RADIUS.pill, padding: '3px 11px',
-      fontSize: 9.5, fontWeight: 700, letterSpacing: '0.07em', textTransform: 'uppercase',
+      borderRadius: RADIUS.pill, padding: t.mobile ? '4px 12px' : '3px 11px',
+      fontSize: t.mobile ? 11.5 : 9.5, fontWeight: 700, letterSpacing: '0.07em', textTransform: 'uppercase',
       color, whiteSpace: 'nowrap',
     }}>
-      {Icon && <Icon size={11} />}
+      {Icon && <Icon size={t.mobile ? 13 : 11} />}
       {children}
     </div>
   )
@@ -34,7 +48,7 @@ export function Pill({ t, children }) {
   return (
     <span style={{
       display: 'inline-block', background: t.panelAlt, border: `1px solid ${t.border}`,
-      borderRadius: RADIUS.pill, padding: '3px 10px', fontSize: 9, fontWeight: 600,
+      borderRadius: RADIUS.pill, padding: t.mobile ? '4px 12px' : '3px 10px', fontSize: t.mobile ? 12 : 9, fontWeight: 600,
       color: t.body, whiteSpace: 'nowrap',
     }}>{children}</span>
   )
@@ -60,21 +74,21 @@ export function CapCard({ t, color, icon: Icon, title, desc, tags, style }) {
     <div style={{
       background: t.mode === 'dark' ? 'rgba(255,255,255,0.035)' : '#ffffff',
       border: `1px solid ${t.border}`, borderRadius: RADIUS.lg,
-      padding: '11px 13px', display: 'flex', flexDirection: 'column', gap: 6,
+      padding: t.mobile ? '14px 16px' : '11px 13px', display: 'flex', flexDirection: 'column', gap: t.mobile ? 8 : 6,
       boxShadow: t.mode === 'light' ? t.cardShadow : 'none',
       minHeight: 0, ...style,
     }}>
       <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-        <div style={{ width: 26, height: 26, flex: '0 0 auto', borderRadius: RADIUS.sm, background: t.tint(color), display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-          <Icon size={14} color={color} />
+        <div style={{ width: t.mobile ? 34 : 26, height: t.mobile ? 34 : 26, flex: '0 0 auto', borderRadius: RADIUS.sm, background: t.tint(color), display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <Icon size={t.mobile ? 18 : 14} color={color} />
         </div>
-        <h3 style={{ margin: 0, fontSize: 11.5, fontWeight: 700, color: t.heading, letterSpacing: '-0.01em', lineHeight: 1.2 }}>{title}</h3>
+        <h3 style={{ margin: 0, fontSize: t.mobile ? 15 : 11.5, fontWeight: 700, color: t.heading, letterSpacing: '-0.01em', lineHeight: 1.2 }}>{title}</h3>
       </div>
-      <p style={{ margin: 0, fontSize: 9, lineHeight: 1.45, color: t.body }}>{desc}</p>
+      <p style={{ margin: 0, fontSize: t.mobile ? 13.5 : 9, lineHeight: t.mobile ? 1.55 : 1.45, color: t.body }}>{desc}</p>
       {tags && (
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: 4, marginTop: 'auto', paddingTop: 3 }}>
           {tags.map(tag => (
-            <span key={tag} style={{ fontSize: 7.6, fontWeight: 600, color, background: t.tint(color, '14'), border: `1px solid ${t.tintBorder(color, '2a')}`, borderRadius: RADIUS.pill, padding: '2px 6px' }}>{tag}</span>
+            <span key={tag} style={{ fontSize: t.mobile ? 11 : 7.6, fontWeight: 600, color, background: t.tint(color, '14'), border: `1px solid ${t.tintBorder(color, '2a')}`, borderRadius: RADIUS.pill, padding: t.mobile ? '3px 8px' : '2px 6px' }}>{tag}</span>
           ))}
         </div>
       )}
@@ -85,17 +99,17 @@ export function CapCard({ t, color, icon: Icon, title, desc, tags, style }) {
 // ─── Horizontal flow diagram: Step -> Step -> Step ────────────────────────
 export function FlowDiagram({ t, steps, color = ACCENTS_DEFAULT, dense }) {
   return (
-    <div style={{ display: 'flex', alignItems: 'stretch', flexWrap: 'wrap', gap: dense ? 3 : 6 }}>
+    <div style={{ display: 'flex', alignItems: 'stretch', flexWrap: 'wrap', gap: dense ? 3 : 6, ...(t.mobile ? { rowGap: 8 } : {}) }}>
       {steps.map((s, i) => (
         <div key={s.label} style={{ display: 'flex', alignItems: 'center', gap: dense ? 3 : 6 }}>
           <div style={{
             display: 'flex', alignItems: 'center', gap: 6,
             background: t.tint(s.color || color, t.mode === 'dark' ? '16' : '0e'),
             border: `1px solid ${t.tintBorder(s.color || color)}`,
-            borderRadius: RADIUS.pill, padding: dense ? '4px 9px' : '6px 12px',
+            borderRadius: RADIUS.pill, padding: t.mobile ? (dense ? '6px 11px' : '8px 14px') : (dense ? '4px 9px' : '6px 12px'),
           }}>
-            {s.icon && <s.icon size={dense ? 11 : 13} color={s.color || color} />}
-            <span style={{ fontSize: dense ? 8.5 : 9.5, fontWeight: 700, color: t.heading, whiteSpace: 'nowrap' }}>{s.label}</span>
+            {s.icon && <s.icon size={t.mobile ? (dense ? 14 : 16) : (dense ? 11 : 13)} color={s.color || color} />}
+            <span style={{ fontSize: t.mobile ? (dense ? 11 : 12) : (dense ? 8.5 : 9.5), fontWeight: 700, color: t.heading, whiteSpace: 'nowrap' }}>{s.label}</span>
           </div>
           {i < steps.length - 1 && <ArrowGlyph t={t} />}
         </div>
@@ -116,11 +130,11 @@ export function Callout({ t, color, children, style }) {
     <div style={{
       background: t.tint(color, t.mode === 'dark' ? '14' : '0c'),
       border: `1px solid ${t.tintBorder(color)}`,
-      borderRadius: RADIUS.lg, padding: '10px 18px',
+      borderRadius: RADIUS.lg, padding: t.mobile ? '14px 20px' : '10px 18px',
       display: 'flex', alignItems: 'center', justifyContent: 'center', textAlign: 'center',
       ...style,
     }}>
-      <span style={{ fontSize: 14.5, fontWeight: 800, letterSpacing: '-0.01em', color: t.heading }}>{children}</span>
+      <span style={{ fontSize: t.mobile ? 16 : 14.5, fontWeight: 800, letterSpacing: '-0.01em', color: t.heading }}>{children}</span>
     </div>
   )
 }
@@ -177,7 +191,17 @@ export function SheetShell({ t, theme, setTheme, children, title }) {
         </div>
       </div>
 
-      <ScaledSheet t={t}>{children}</ScaledSheet>
+      {t.mobile ? (
+        <div className="af-sheet af-sheet-mobile" style={{
+          width: '100%', maxWidth: 680, background: t.page, color: t.ink,
+          borderRadius: RADIUS.xl, overflow: 'hidden', flex: '0 0 auto',
+          boxShadow: t.mode === 'dark' ? '0 40px 100px rgba(0,0,0,0.6)' : '0 24px 60px rgba(15,23,42,0.18)',
+        }}>
+          {children}
+        </div>
+      ) : (
+        <ScaledSheet t={t}>{children}</ScaledSheet>
+      )}
       <div className="sheet-footnote" style={{ marginTop: 10, fontSize: 11, color: t.mode === 'dark' ? '#4b5563' : '#8891a3' }}>{title} &middot; Autofront partner product sheet</div>
     </div>
   )
@@ -207,6 +231,10 @@ const PRINT_CSS = `
       position: static !important; transform: none !important;
       box-shadow: none !important; margin: 0 !important;
       -webkit-print-color-adjust: exact; print-color-adjust: exact;
+    }
+    .af-sheet-mobile {
+      width: 100% !important; max-width: none !important;
+      border-radius: 0 !important; box-shadow: none !important;
     }
     * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
   }

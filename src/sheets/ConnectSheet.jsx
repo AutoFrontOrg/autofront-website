@@ -4,7 +4,7 @@ import {
   Smartphone, Bot, Radio, Gift, ChevronsRight, Wrench,
 } from 'lucide-react'
 import { getTheme, ACCENTS } from './theme'
-import { SheetShell, LogoMark, Eyebrow, GradientText, CapCard, Callout } from './ui'
+import { SheetShell, LogoMark, Eyebrow, GradientText, CapCard, Callout, useIsMobile } from './ui'
 
 const TIMELINE = [
   { day: 'MON', time: '12:00', label: 'Email sent', icon: Mail },
@@ -43,12 +43,9 @@ const CAPS = [
   },
 ]
 
-export default function ConnectSheet() {
-  const [theme, setTheme] = useState('dark')
-  const t = getTheme(theme)
+function ConnectA4({ t }) {
   return (
-    <SheetShell t={t} theme={theme} setTheme={setTheme} title="Connect">
-      <div style={{ height: '100%', boxSizing: 'border-box', padding: '8mm 12mm', display: 'flex', flexDirection: 'column', gap: '6mm' }}>
+    <div style={{ height: '100%', boxSizing: 'border-box', padding: '8mm 12mm', display: 'flex', flexDirection: 'column', gap: '6mm' }}>
 
         {/* Header */}
         <div style={{ height: '12mm', flex: '0 0 auto', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
@@ -112,42 +109,110 @@ export default function ConnectSheet() {
         </div>
 
       </div>
+  )
+}
+
+function ConnectMobile({ t }) {
+  return (
+    <div style={{ boxSizing: 'border-box', padding: '22px 18px 26px', display: 'flex', flexDirection: 'column', gap: 20 }}>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+        <LogoMark t={t} size={24} />
+        <Eyebrow t={t} color={ACCENTS.indigo}>Connect</Eyebrow>
+      </div>
+
+      <div>
+        <h1 style={{ margin: '0 0 8px', fontSize: 27, fontWeight: 800, letterSpacing: '-0.03em', lineHeight: 1.12, color: t.heading }}>
+          Every customer <GradientText t={t}>conversation.</GradientText> One place.
+        </h1>
+        <p style={{ margin: '0 0 8px', fontSize: 14.5, fontWeight: 600, color: t.mode === 'dark' ? '#c7d2fe' : '#4f46e5' }}>
+          Calls. Messages. Email. Voicemail. Bookings. Jobs. One chronological timeline.
+        </p>
+        <p style={{ margin: 0, fontSize: 14, lineHeight: 1.6, color: t.body }}>
+          Connect is the communications layer between the business and its customers — not a phone
+          system on its own. The difference is context: communication, customer and job, together.
+        </p>
+      </div>
+
+      <IncomingCallCard t={t} />
+
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 9 }}>
+        <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: '0.06em', textTransform: 'uppercase', color: t.muted }}>One customer. One timeline.</div>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 0 }}>
+          {TIMELINE.map((e, i) => (
+            <div key={i} style={{ display: 'flex', gap: 12 }}>
+              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                <div style={{ width: 30, height: 30, borderRadius: '50%', background: t.tint(ACCENTS.indigo, t.mode === 'dark' ? '25' : '14'), border: `1px solid ${t.tintBorder(ACCENTS.indigo)}`, display: 'flex', alignItems: 'center', justifyContent: 'center', flex: '0 0 auto' }}>
+                  <e.icon size={15} color={t.mode === 'dark' ? '#a5b4fc' : '#4f46e5'} />
+                </div>
+                {i < TIMELINE.length - 1 && <div style={{ width: 1, flex: 1, background: t.border, minHeight: 14 }} />}
+              </div>
+              <div style={{ paddingBottom: i < TIMELINE.length - 1 ? 14 : 0 }}>
+                <div style={{ fontSize: 10.5, fontWeight: 700, letterSpacing: '0.05em', color: t.faint }}>{e.day}{e.time ? ` \u00b7 ${e.time}` : ''}</div>
+                <div style={{ fontSize: 14, fontWeight: 600, color: t.heading }}>{e.label}</div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+        {CAPS.map(c => <CapCard key={c.title} t={t} {...c} />)}
+      </div>
+
+      <Callout t={t} color={ACCENTS.indigo}>One number. One timeline. Full customer context.</Callout>
+      <div style={{ fontSize: 13, lineHeight: 1.55, color: t.muted, display: 'flex', gap: 8 }}>
+        <ChevronsRight size={16} color={t.mode === 'dark' ? '#6366f1' : '#4f46e5'} style={{ flex: '0 0 auto', marginTop: 2 }} />
+        Connect layers onto the job management system already in place — it never replaces it.
+      </div>
+    </div>
+  )
+}
+
+export default function ConnectSheet() {
+  const [theme, setTheme] = useState('dark')
+  const mobile = useIsMobile()
+  const t = getTheme(theme, mobile)
+  return (
+    <SheetShell t={t} theme={theme} setTheme={setTheme} title="Connect">
+      {mobile ? <ConnectMobile t={t} /> : <ConnectA4 t={t} />}
     </SheetShell>
   )
 }
 
 function IncomingCallCard({ t }) {
+  const m = !!t.mobile
   return (
     <div style={{
-      flex: '1 1 42%', background: t.mode === 'dark' ? '#0e1320' : '#f8f9fc',
-      border: `1px solid ${t.border}`, borderRadius: 14, padding: '12px 14px',
+      background: t.mode === 'dark' ? '#0e1320' : '#f8f9fc',
+      border: `1px solid ${t.border}`, borderRadius: 14, padding: m ? '16px' : '12px 14px',
       boxShadow: t.mode === 'light' ? t.cardShadow : 'none',
     }}>
       <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8 }}>
-        <div style={{ width: 30, height: 30, borderRadius: '50%', background: t.tint(ACCENTS.indigo), display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-          <Phone size={14} color={t.mode === 'dark' ? '#a5b4fc' : '#4f46e5'} />
+        <div style={{ width: m ? 38 : 30, height: m ? 38 : 30, borderRadius: '50%', background: t.tint(ACCENTS.indigo), display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <Phone size={m ? 18 : 14} color={t.mode === 'dark' ? '#a5b4fc' : '#4f46e5'} />
         </div>
         <div>
-          <div style={{ fontSize: 11.5, fontWeight: 700, color: t.heading }}>John Doe is calling</div>
-          <div style={{ fontSize: 8.5, color: ACCENTS.emerald, fontWeight: 600 }}>Existing Customer</div>
+          <div style={{ fontSize: m ? 14.5 : 11.5, fontWeight: 700, color: t.heading }}>John Doe is calling</div>
+          <div style={{ fontSize: m ? 11 : 8.5, color: ACCENTS.emerald, fontWeight: 600 }}>Existing Customer</div>
         </div>
       </div>
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 6 }}>
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: m ? 8 : 6 }}>
         <MiniField t={t} label="Current Job" value="Completed" />
         <MiniField t={t} label="Outstanding Invoice" value="INV768 — $800" accent={ACCENTS.amber} />
         <MiniField t={t} label="IVR Selection" value="2 — Service" />
         <MiniField t={t} label="Prior Attempts" value="3, no answer" accent={ACCENTS.pink} />
       </div>
-      <div style={{ marginTop: 8, fontSize: 8.6, color: t.muted, lineHeight: 1.4 }}>Know who you're speaking to before you answer.</div>
+      <div style={{ marginTop: 8, fontSize: m ? 11.5 : 8.6, color: t.muted, lineHeight: 1.4 }}>Know who you're speaking to before you answer.</div>
     </div>
   )
 }
 
 function MiniField({ t, label, value, accent }) {
+  const m = !!t.mobile
   return (
-    <div style={{ background: t.panelAlt, border: `1px solid ${t.border}`, borderRadius: 8, padding: '5px 8px' }}>
-      <div style={{ fontSize: 7, fontWeight: 700, letterSpacing: '0.05em', textTransform: 'uppercase', color: t.faint }}>{label}</div>
-      <div style={{ fontSize: 9, fontWeight: 700, color: accent || t.heading }}>{value}</div>
+    <div style={{ background: t.panelAlt, border: `1px solid ${t.border}`, borderRadius: 8, padding: m ? '8px 10px' : '5px 8px' }}>
+      <div style={{ fontSize: m ? 9.5 : 7, fontWeight: 700, letterSpacing: '0.05em', textTransform: 'uppercase', color: t.faint }}>{label}</div>
+      <div style={{ fontSize: m ? 12.5 : 9, fontWeight: 700, color: accent || t.heading }}>{value}</div>
     </div>
   )
 }
