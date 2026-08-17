@@ -124,6 +124,21 @@ function ArrowGlyph({ t }) {
 
 const ACCENTS_DEFAULT = '#6366f1'
 
+// ─── Mobile section divider: hairline + small label between mobile sections ────
+export function MobileSection({ t, label }) {
+  if (!t.mobile) return null
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 14, paddingTop: 4 }}>
+      <div style={{ height: 1, background: t.border, width: '100%' }} />
+      {label && (
+        <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase', color: t.faint }}>
+          {label}
+        </div>
+      )}
+    </div>
+  )
+}
+
 // ─── Callout band ───────────────────────────────────────────────────────────
 export function Callout({ t, color, children, style }) {
   return (

@@ -4,7 +4,7 @@ import {
   Smartphone, Bot, Radio, Gift, ChevronsRight, Wrench,
 } from 'lucide-react'
 import { getTheme, ACCENTS } from './theme'
-import { SheetShell, LogoMark, Eyebrow, GradientText, CapCard, Callout, useIsMobile } from './ui'
+import { SheetShell, LogoMark, Eyebrow, GradientText, CapCard, Callout, MobileSection, useIsMobile } from './ui'
 
 const TIMELINE = [
   { day: 'MON', time: '12:00', label: 'Email sent', icon: Mail },
@@ -47,74 +47,74 @@ function ConnectA4({ t }) {
   return (
     <div style={{ height: '100%', boxSizing: 'border-box', padding: '8mm 12mm', display: 'flex', flexDirection: 'column', gap: '6mm' }}>
 
-        {/* Header */}
-        <div style={{ height: '12mm', flex: '0 0 auto', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-          <LogoMark t={t} />
-          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-            <Eyebrow t={t} color={ACCENTS.indigo}>Connect</Eyebrow>
-            <span style={{ fontSize: 10, color: t.muted, fontWeight: 600 }}>Partner Product Sheet</span>
-          </div>
+      {/* Header */}
+      <div style={{ height: '12mm', flex: '0 0 auto', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+        <LogoMark t={t} />
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+          <Eyebrow t={t} color={ACCENTS.indigo}>Connect</Eyebrow>
+          <span style={{ fontSize: 10, color: t.muted, fontWeight: 600 }}>Partner Product Sheet</span>
         </div>
-
-        {/* Hero */}
-        <div style={{ height: '46mm', flex: '0 0 auto', display: 'flex', gap: '10mm', alignItems: 'center' }}>
-          <div style={{ flex: '1 1 58%' }}>
-            <h1 style={{ margin: '0 0 6px', fontSize: 30, fontWeight: 800, letterSpacing: '-0.03em', lineHeight: 1.06, color: t.heading }}>
-              Every customer <GradientText t={t}>conversation.</GradientText><br />One place.
-            </h1>
-            <p style={{ margin: '0 0 8px', fontSize: 12.5, fontWeight: 600, color: t.mode === 'dark' ? '#c7d2fe' : '#4f46e5' }}>
-              Calls. Messages. Email. Voicemail. Bookings. Jobs. One chronological timeline.
-            </p>
-            <p style={{ margin: 0, fontSize: 10.5, lineHeight: 1.55, color: t.body, maxWidth: '95%' }}>
-              Connect is the communications layer between the business and its customers — not a phone
-              system on its own. The difference is context: communication, customer and job, together.
-            </p>
-          </div>
-          <IncomingCallCard t={t} />
-        </div>
-
-        {/* Timeline */}
-        <div style={{ height: '26mm', flex: '0 0 auto', display: 'flex', flexDirection: 'column', justifyContent: 'center', gap: 6 }}>
-          <div style={{ fontSize: 9, fontWeight: 700, letterSpacing: '0.06em', textTransform: 'uppercase', color: t.muted }}>One customer. One timeline.</div>
-          <div style={{ display: 'flex', alignItems: 'stretch' }}>
-            {TIMELINE.map((e, i) => (
-              <div key={i} style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', position: 'relative' }}>
-                {i > 0 && <div style={{ position: 'absolute', top: 8, right: '50%', width: '100%', height: 1, background: t.border, zIndex: 0 }} />}
-                <div style={{ width: 16, height: 16, borderRadius: '50%', background: t.tint(ACCENTS.indigo, t.mode === 'dark' ? '25' : '14'), border: `1px solid ${t.tintBorder(ACCENTS.indigo)}`, display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1, position: 'relative' }}>
-                  <e.icon size={9} color={t.mode === 'dark' ? '#a5b4fc' : '#4f46e5'} />
-                </div>
-                <div style={{ marginTop: 5, textAlign: 'center' }}>
-                  <div style={{ fontSize: 7.5, fontWeight: 700, letterSpacing: '0.05em', color: t.faint }}>{e.day}{e.time ? ` · ${e.time}` : ''}</div>
-                  <div style={{ fontSize: 8.6, fontWeight: 600, color: t.heading, maxWidth: 80 }}>{e.label}</div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Capability grid */}
-        <div style={{ height: '48mm', flex: '0 0 auto', display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gridTemplateRows: '1fr', gap: '3mm' }}>
-          {CAPS.map(c => <CapCard key={c.title} t={t} {...c} />)}
-        </div>
-
-        {/* Closing */}
-        <div style={{ height: '34mm', flex: '0 0 auto', display: 'flex', alignItems: 'center', gap: '8mm' }}>
-          <Callout t={t} color={ACCENTS.indigo} style={{ flex: '1 1 auto', height: '100%' }}>
-            One number. One timeline. Full customer context.
-          </Callout>
-          <div style={{ flex: '0 0 auto', maxWidth: '70mm', fontSize: 9, lineHeight: 1.5, color: t.muted, display: 'flex', alignItems: 'center', gap: 6 }}>
-            <ChevronsRight size={14} color={t.mode === 'dark' ? '#6366f1' : '#4f46e5'} style={{ flex: '0 0 auto' }} />
-            Connect layers onto the job management system already in place — it never replaces it.
-          </div>
-        </div>
-
       </div>
+
+      {/* Hero */}
+      <div style={{ height: '46mm', flex: '0 0 auto', display: 'flex', gap: '10mm', alignItems: 'center' }}>
+        <div style={{ flex: '1 1 58%' }}>
+          <h1 style={{ margin: '0 0 6px', fontSize: 30, fontWeight: 800, letterSpacing: '-0.03em', lineHeight: 1.06, color: t.heading }}>
+            Every customer <GradientText t={t}>conversation.</GradientText><br />One place.
+          </h1>
+          <p style={{ margin: '0 0 8px', fontSize: 12.5, fontWeight: 600, color: t.mode === 'dark' ? '#c7d2fe' : '#4f46e5' }}>
+            Calls. Messages. Email. Voicemail. Bookings. Jobs. One chronological timeline.
+          </p>
+          <p style={{ margin: 0, fontSize: 10.5, lineHeight: 1.55, color: t.body, maxWidth: '95%' }}>
+            Connect is the communications layer between the business and its customers — not a phone
+            system on its own. The difference is context: communication, customer and job, together.
+          </p>
+        </div>
+        <IncomingCallCard t={t} />
+      </div>
+
+      {/* Timeline */}
+      <div style={{ height: '26mm', flex: '0 0 auto', display: 'flex', flexDirection: 'column', justifyContent: 'center', gap: 6 }}>
+        <div style={{ fontSize: 9, fontWeight: 700, letterSpacing: '0.06em', textTransform: 'uppercase', color: t.muted }}>One customer. One timeline.</div>
+        <div style={{ display: 'flex', alignItems: 'stretch' }}>
+          {TIMELINE.map((e, i) => (
+            <div key={i} style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', position: 'relative' }}>
+              {i > 0 && <div style={{ position: 'absolute', top: 8, right: '50%', width: '100%', height: 1, background: t.border, zIndex: 0 }} />}
+              <div style={{ width: 16, height: 16, borderRadius: '50%', background: t.tint(ACCENTS.indigo, t.mode === 'dark' ? '25' : '14'), border: `1px solid ${t.tintBorder(ACCENTS.indigo)}`, display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1, position: 'relative' }}>
+                <e.icon size={9} color={t.mode === 'dark' ? '#a5b4fc' : '#4f46e5'} />
+              </div>
+              <div style={{ marginTop: 5, textAlign: 'center' }}>
+                <div style={{ fontSize: 7.5, fontWeight: 700, letterSpacing: '0.05em', color: t.faint }}>{e.day}{e.time ? ` · ${e.time}` : ''}</div>
+                <div style={{ fontSize: 8.6, fontWeight: 600, color: t.heading, maxWidth: 80 }}>{e.label}</div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Capability grid */}
+      <div style={{ height: '48mm', flex: '0 0 auto', display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gridTemplateRows: '1fr', gap: '3mm' }}>
+        {CAPS.map(c => <CapCard key={c.title} t={t} {...c} />)}
+      </div>
+
+      {/* Closing */}
+      <div style={{ height: '34mm', flex: '0 0 auto', display: 'flex', alignItems: 'center', gap: '8mm' }}>
+        <Callout t={t} color={ACCENTS.indigo} style={{ flex: '1 1 auto', height: '100%' }}>
+          One number. One timeline. Full customer context.
+        </Callout>
+        <div style={{ flex: '0 0 auto', maxWidth: '70mm', fontSize: 9, lineHeight: 1.5, color: t.muted, display: 'flex', alignItems: 'center', gap: 6 }}>
+          <ChevronsRight size={14} color={t.mode === 'dark' ? '#6366f1' : '#4f46e5'} style={{ flex: '0 0 auto' }} />
+          Connect layers onto the job management system already in place — it never replaces it.
+        </div>
+      </div>
+
+    </div>
   )
 }
 
 function ConnectMobile({ t }) {
   return (
-    <div style={{ boxSizing: 'border-box', padding: '22px 18px 26px', display: 'flex', flexDirection: 'column', gap: 20 }}>
+    <div style={{ boxSizing: 'border-box', padding: '26px 20px 34px', display: 'flex', flexDirection: 'column', gap: 28 }}>
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
         <LogoMark t={t} size={24} />
         <Eyebrow t={t} color={ACCENTS.indigo}>Connect</Eyebrow>
@@ -133,11 +133,11 @@ function ConnectMobile({ t }) {
         </p>
       </div>
 
+      <MobileSection t={t} label="Know who's calling" />
       <IncomingCallCard t={t} />
 
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 9 }}>
-        <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: '0.06em', textTransform: 'uppercase', color: t.muted }}>One customer. One timeline.</div>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 0 }}>
+      <MobileSection t={t} label="One customer. One timeline." />
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 0 }}>
           {TIMELINE.map((e, i) => (
             <div key={i} style={{ display: 'flex', gap: 12 }}>
               <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
@@ -146,19 +146,20 @@ function ConnectMobile({ t }) {
                 </div>
                 {i < TIMELINE.length - 1 && <div style={{ width: 1, flex: 1, background: t.border, minHeight: 14 }} />}
               </div>
-              <div style={{ paddingBottom: i < TIMELINE.length - 1 ? 14 : 0 }}>
+              <div style={{ paddingBottom: i < TIMELINE.length - 1 ? 18 : 0 }}>
                 <div style={{ fontSize: 10.5, fontWeight: 700, letterSpacing: '0.05em', color: t.faint }}>{e.day}{e.time ? ` \u00b7 ${e.time}` : ''}</div>
                 <div style={{ fontSize: 14, fontWeight: 600, color: t.heading }}>{e.label}</div>
               </div>
             </div>
           ))}
-        </div>
       </div>
 
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+      <MobileSection t={t} label="What Connect does" />
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
         {CAPS.map(c => <CapCard key={c.title} t={t} {...c} />)}
       </div>
 
+      <MobileSection t={t} />
       <Callout t={t} color={ACCENTS.indigo}>One number. One timeline. Full customer context.</Callout>
       <div style={{ fontSize: 13, lineHeight: 1.55, color: t.muted, display: 'flex', gap: 8 }}>
         <ChevronsRight size={16} color={t.mode === 'dark' ? '#6366f1' : '#4f46e5'} style={{ flex: '0 0 auto', marginTop: 2 }} />
