@@ -1,0 +1,269 @@
+import { useState } from 'react'
+import {
+  Phone, MessageSquare, Voicemail as VoicemailIcon, ListChecks, Mic, FileText,
+  Smartphone, Monitor, Sparkles, Calendar, Video, Link2, PhoneMissed,
+  PhoneCall, Users, UserCog, RefreshCcw, Check, ChevronRight,
+} from 'lucide-react'
+import { getTheme, ACCENTS } from './theme'
+import { LogoMark, Eyebrow, useIsMobile } from './ui'
+
+// Feature lists validated against the AFConnect_backend repo — every line maps to
+// shipped functionality (controllers/services listed inline for traceability).
+const CORE_FEATURES = [
+  { icon: Phone, text: 'Dedicated business number — inbound & outbound calling, personal numbers stay private' },
+  { icon: MessageSquare, text: 'Business SMS messaging — one thread per customer' },
+  { icon: VoicemailIcon, text: 'Business voicemail with custom greetings' },
+  { icon: ListChecks, text: 'Call log — every call recorded against the customer timeline' },
+  { icon: Mic, text: 'Call recordings, stored against the conversation' },
+  { icon: FileText, text: 'Call transcriptions — read the call without replaying it' },
+  { icon: Smartphone, text: 'Mobile app for calling on the road' },
+  { icon: Monitor, text: 'Web platform for the office' },
+]
+
+const PLUS_FEATURES = [
+  { icon: Sparkles, text: 'Ava — AI voice answering, qualification and smart forwarding. Never a lost call.' },
+  { icon: Link2, text: 'Job management system integration — customer, job and invoice context on every call' },
+  { icon: Video, text: 'Video calling — remote quotes, assessments and support' },
+  { icon: PhoneMissed, text: 'Adam — automated SMS follow-up on every missed call' },
+]
+
+const PREMIUM_FEATURES = [
+  { icon: PhoneCall, text: 'Full IVR — menus, options, after-hours and holiday handling' },
+  { icon: UserCog, text: 'Staff-based routing — ring groups, availability-aware and business-hours scheduling' },
+  { icon: Users, text: 'Team messaging — staff-to-staff internal comms, groups and direct' },
+  { icon: RefreshCcw, text: 'Auto call recovery — detects carrier drop-outs and re-dials automatically' },
+]
+
+const TIERS = [
+  {
+    id: 'core', name: 'Core', color: ACCENTS.indigo,
+    tagline: 'One business number. Every conversation.',
+    best: 'Sole traders & small teams getting a business number',
+    features: CORE_FEATURES,
+  },
+  {
+    id: 'plus', name: 'Plus', color: ACCENTS.violet,
+    tagline: 'Your front desk, answered.',
+    best: 'Teams ready to stop missing calls and leads',
+    features: PLUS_FEATURES,
+    includes: 'core',
+    highlighted: true,
+  },
+  {
+    id: 'premium', name: 'Premium', color: ACCENTS.emerald,
+    tagline: 'A complete business phone system.',
+    best: 'Multi-staff businesses that live on the phone',
+    features: PREMIUM_FEATURES,
+    includes: 'plus',
+  },
+]
+
+function TierCard({ t, tier, mobile }) {
+  return (
+    <div style={{
+      flex: mobile ? '0 0 auto' : '1 1 0',
+      width: '100%',
+      background: tier.highlighted
+        ? (t.mode === 'dark' ? 'rgba(139,92,246,0.07)' : '#ffffff')
+        : (t.mode === 'dark' ? 'rgba(255,255,255,0.035)' : '#ffffff'),
+      border: `1px solid ${tier.highlighted ? t.tintBorder(tier.color, '55') : t.border}`,
+      borderRadius: 18,
+      padding: mobile ? '22px 20px' : '24px 22px',
+      display: 'flex', flexDirection: 'column', gap: mobile ? 16 : 14,
+      boxShadow: t.mode === 'light' ? t.cardShadow : 'none',
+      position: 'relative',
+      ...(tier.highlighted && !mobile ? { transform: 'translateY(-10px)' } : {}),
+    }}>
+      {tier.highlighted && (
+        <div style={{
+          position: 'absolute', top: -12, left: '50%', transform: 'translateX(-50%)',
+          background: 'linear-gradient(135deg, #6366f1, #8b5cf6)', color: '#fff',
+          fontSize: 10, fontWeight: 800, letterSpacing: '0.08em', textTransform: 'uppercase',
+          borderRadius: 99, padding: '4px 14px', whiteSpace: 'nowrap',
+        }}>Most popular</div>
+      )}
+
+      <div>
+        <div style={{ fontSize: mobile ? 22 : 20, fontWeight: 800, color: tier.color, letterSpacing: '-0.01em' }}>
+          Connect {tier.name}
+        </div>
+        <div style={{ fontSize: mobile ? 14 : 12, color: t.heading, fontWeight: 600, marginTop: 4 }}>{tier.tagline}</div>
+        <div style={{ fontSize: mobile ? 12 : 10.5, color: t.muted, marginTop: 6 }}>Best for: {tier.best}</div>
+      </div>
+
+      <div style={{ height: 1, background: t.border }} />
+
+      {tier.includes && (
+        <div style={{
+          display: 'flex', alignItems: 'center', gap: 6,
+          fontSize: mobile ? 12.5 : 11, fontWeight: 700, color: t.body,
+          background: t.tint(tier.color, t.mode === 'dark' ? '14' : '0a'),
+          border: `1px solid ${t.tintBorder(tier.color, '22')}`,
+          borderRadius: 8, padding: mobile ? '8px 10px' : '6px 9px',
+        }}>
+          <Check size={mobile ? 14 : 12} color={tier.color} />
+          Everything in Connect {tier.includes.includes('core') ? 'Core' : 'Plus'}, plus:
+        </div>
+      )}
+
+      <div style={{ display: 'flex', flexDirection: 'column', gap: mobile ? 12 : 10 }}>
+        {tier.features.map(f => (
+          <div key={f.text} style={{ display: 'flex', gap: 10, alignItems: 'flex-start' }}>
+            <div style={{
+              width: mobile ? 30 : 26, height: mobile ? 30 : 26, flex: '0 0 auto',
+              borderRadius: 7, background: t.tint(tier.color),
+              display: 'flex', alignItems: 'center', justifyContent: 'center', marginTop: 1,
+            }}>
+              <f.icon size={mobile ? 15 : 13} color={tier.color} />
+            </div>
+            <div style={{ fontSize: mobile ? 13.5 : 11.5, lineHeight: 1.5, color: t.body, fontWeight: 500 }}>
+              {f.text}
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}
+
+const COMPARE = [
+  { label: 'Business number, calling & SMS', core: true, plus: true, premium: true },
+  { label: 'Voicemail, recordings & transcriptions', core: true, plus: true, premium: true },
+  { label: 'Mobile app & web platform', core: true, plus: true, premium: true },
+  { label: 'Ava — AI answering & forwarding', core: false, plus: true, premium: true },
+  { label: 'Job system integration (customer context)', core: false, plus: true, premium: true },
+  { label: 'Video calling', core: false, plus: true, premium: true },
+  { label: 'Adam — missed-call SMS follow-up', core: false, plus: true, premium: true },
+  { label: 'Full IVR (menus, after-hours, holidays)', core: false, plus: false, premium: true },
+  { label: 'Staff-based routing & ring groups', core: false, plus: false, premium: true },
+  { label: 'Team messaging', core: false, plus: false, premium: true },
+  { label: 'Auto call recovery on drop-out', core: false, plus: false, premium: true },
+]
+
+function CompareTable({ t, mobile }) {
+  const cell = (val) => val
+    ? <Check size={mobile ? 16 : 14} color={ACCENTS.emerald} />
+    : <span style={{ color: t.faint, fontSize: mobile ? 13 : 11 }}>&mdash;</span>
+  return (
+    <div style={{
+      background: t.mode === 'dark' ? 'rgba(255,255,255,0.035)' : '#ffffff',
+      border: `1px solid ${t.border}`, borderRadius: 18,
+      padding: mobile ? '18px 16px' : '20px 24px',
+      boxShadow: t.mode === 'light' ? t.cardShadow : 'none',
+      overflowX: 'auto',
+    }}>
+      <table style={{ width: '100%', borderCollapse: 'collapse', minWidth: mobile ? 420 : 0 }}>
+        <thead>
+          <tr>
+            {['', 'Core', 'Plus', 'Premium'].map((h, i) => (
+              <th key={h || 'f'} style={{
+                textAlign: i === 0 ? 'left' : 'center',
+                fontSize: mobile ? 12 : 11, fontWeight: 800, letterSpacing: '0.04em',
+                textTransform: 'uppercase', color: t.heading,
+                padding: mobile ? '8px 8px' : '8px 10px',
+                borderBottom: `1px solid ${t.borderStrong}`,
+              }}>{h}</th>
+            ))}
+          </tr>
+        </thead>
+        <tbody>
+          {COMPARE.map(row => (
+            <tr key={row.label}>
+              <td style={{
+                fontSize: mobile ? 12.5 : 11, color: t.body, fontWeight: 500,
+                padding: mobile ? '9px 8px' : '8px 10px',
+                borderBottom: `1px solid ${t.border}`, minWidth: 160,
+              }}>{row.label}</td>
+              {[row.core, row.plus, row.premium].map((v, i) => (
+                <td key={i} style={{
+                  textAlign: 'center', padding: mobile ? '9px 8px' : '8px 10px',
+                  borderBottom: `1px solid ${t.border}`,
+                }}>{cell(v)}</td>
+              ))}
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  )
+}
+
+export default function ConnectTiers() {
+  const [theme, setTheme] = useState('dark')
+  const mobile = useIsMobile()
+  const t = getTheme(theme, mobile)
+
+  return (
+    <div style={{ minHeight: '100vh', background: t.mode === 'dark' ? '#05070c' : '#e7e9ef', fontFamily: "'Inter', system-ui, -apple-system, sans-serif", padding: mobile ? '18px 14px 40px' : '28px 0 60px' }}>
+      <div style={{ maxWidth: 1180, margin: '0 auto', display: 'flex', flexDirection: 'column', gap: mobile ? 26 : 34 }}>
+
+        {/* Header */}
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 10, padding: mobile ? '0 4px' : 0 }}>
+          <a href="/sheets" style={{ fontSize: 12.5, color: t.mode === 'dark' ? '#9ca3af' : '#4b5566', textDecoration: 'none', fontWeight: 600 }}>&larr; All product sheets</a>
+          <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+            <div style={{ display: 'flex', background: t.mode === 'dark' ? 'rgba(255,255,255,0.06)' : '#fff', border: `1px solid ${t.border}`, borderRadius: 99, padding: 3, gap: 2 }}>
+              <button onClick={() => setTheme('dark')} style={{
+                padding: '6px 12px', borderRadius: 99, border: 'none', cursor: 'pointer', fontSize: 11, fontWeight: 700,
+                background: theme === 'dark' ? 'linear-gradient(135deg, #6366f1, #8b5cf6)' : 'transparent',
+                color: theme === 'dark' ? '#fff' : '#8891a3',
+              }}>Dark</button>
+              <button onClick={() => setTheme('light')} style={{
+                padding: '6px 12px', borderRadius: 99, border: 'none', cursor: 'pointer', fontSize: 11, fontWeight: 700,
+                background: theme === 'light' ? 'linear-gradient(135deg, #6366f1, #8b5cf6)' : 'transparent',
+                color: theme === 'light' ? '#fff' : '#8891a3',
+              }}>Light</button>
+            </div>
+          </div>
+        </div>
+
+        {/* Hero */}
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', gap: mobile ? 12 : 14, padding: mobile ? '0 4px' : 0 }}>
+          <LogoMark t={t} size={24} />
+          <Eyebrow t={t} color={ACCENTS.indigo}>Connect Plans</Eyebrow>
+          <h1 style={{ margin: 0, fontSize: mobile ? 28 : 38, fontWeight: 800, letterSpacing: '-0.03em', lineHeight: 1.1, color: t.heading, maxWidth: 720 }}>
+            One business number. <span style={{
+              backgroundImage: t.heroGradient, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text',
+            }}>Three ways to grow.</span>
+          </h1>
+          <p style={{ margin: 0, fontSize: mobile ? 14.5 : 15.5, lineHeight: 1.6, color: t.body, maxWidth: 640 }}>
+            Every plan starts with a dedicated business number for calls, messages and voicemail —
+            with recordings and transcriptions built in. Step up when you're ready for AI answering,
+            job-system integration and full routing control.
+          </p>
+        </div>
+
+        {/* Tier cards */}
+        <div style={{
+          display: mobile ? 'flex' : 'grid',
+          gridTemplateColumns: mobile ? undefined : 'repeat(3, 1fr)',
+          flexDirection: 'column',
+          gap: mobile ? 22 : 20,
+          alignItems: 'stretch',
+          paddingTop: mobile ? 0 : 10,
+        }}>
+          {TIERS.map(tier => <TierCard key={tier.id} t={t} tier={tier} mobile={mobile} />)}
+        </div>
+
+        {/* Compare table */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: mobile ? 12 : 14 }}>
+          <div style={{ fontSize: mobile ? 13 : 12, fontWeight: 700, letterSpacing: '0.06em', textTransform: 'uppercase', color: t.muted, padding: mobile ? '0 4px' : 0 }}>
+            Compare plans
+          </div>
+          <CompareTable t={t} mobile={mobile} />
+        </div>
+
+        {/* Footer */}
+        <div style={{
+          display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, flexWrap: 'wrap',
+          fontSize: mobile ? 13 : 12, color: t.muted, textAlign: 'center', padding: mobile ? '0 8px' : 0,
+        }}>
+          <Calendar size={14} style={{ flex: '0 0 auto' }} color={t.mode === 'dark' ? '#6366f1' : '#4f46e5'} />
+          All plans are month-to-month, include unlimited users on the web platform, and you keep your number if you leave.
+          <a href="/sheets/connect" style={{ color: t.mode === 'dark' ? '#a5b4fc' : '#4f46e5', fontWeight: 700, textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: 4 }}>
+            See the Connect sheet <ChevronRight size={13} />
+          </a>
+        </div>
+      </div>
+    </div>
+  )
+}

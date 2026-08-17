@@ -188,7 +188,7 @@ function ScaledSheet({ t, children }) {
   )
 }
 
-export function SheetShell({ t, theme, setTheme, children, title }) {
+export function SheetShell({ t, theme, setTheme, children, title, footnoteExtra }) {
   return (
     <div className="sheet-page-wrap" style={{ minHeight: '100vh', background: t.mode === 'dark' ? '#05070c' : '#e7e9ef', fontFamily: FONT, padding: '20px 0 60px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
       <style>{PRINT_CSS}</style>
@@ -217,7 +217,7 @@ export function SheetShell({ t, theme, setTheme, children, title }) {
       ) : (
         <ScaledSheet t={t}>{children}</ScaledSheet>
       )}
-      <div className="sheet-footnote" style={{ marginTop: 10, fontSize: 11, color: t.mode === 'dark' ? '#4b5563' : '#8891a3' }}>{title} &middot; Autofront partner product sheet</div>
+      <div className="sheet-footnote" style={{ marginTop: 10, fontSize: 11, color: t.mode === 'dark' ? '#4b5563' : '#8891a3', display: 'flex', alignItems: 'center', flexWrap: 'wrap', justifyContent: 'center' }}>{title} &middot; Autofront partner product sheet{footnoteExtra}</div>
     </div>
   )
 }

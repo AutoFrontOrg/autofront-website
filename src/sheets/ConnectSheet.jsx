@@ -174,7 +174,8 @@ export default function ConnectSheet() {
   const mobile = useIsMobile()
   const t = getTheme(theme, mobile)
   return (
-    <SheetShell t={t} theme={theme} setTheme={setTheme} title="Connect">
+    <SheetShell t={t} theme={theme} setTheme={setTheme} title="Connect"
+      footnoteExtra={<a href="/sheets/connect-tiers" style={{ color: t.mode === 'dark' ? '#a5b4fc' : '#4f46e5', fontWeight: 700, textDecoration: 'none', marginLeft: 12 }}>View Connect plans (Core / Plus / Premium) &rarr;</a>}>
       {mobile ? <ConnectMobile t={t} /> : <ConnectA4 t={t} />}
     </SheetShell>
   )

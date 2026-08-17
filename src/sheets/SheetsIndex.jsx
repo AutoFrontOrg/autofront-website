@@ -4,6 +4,7 @@ import { FONT } from './theme'
 const SHEETS = [
   { href: '/sheets/assist', name: 'Assist', desc: 'Self-service booking, qualification and scheduling.' },
   { href: '/sheets/connect', name: 'Connect', desc: 'Unified calling, messaging and customer context.' },
+  { href: '/sheets/connect-tiers', name: 'Connect Plans', desc: 'Core, Plus and Premium — what each tier includes.' },
   { href: '/sheets/assist-connect', name: 'Assist + Connect', desc: 'The combined customer journey, strategic overview.' },
 ]
 
