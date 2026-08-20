@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import {
   Search, MessageSquare, Target, Calendar, CheckCircle, Phone, Send,
-  Wrench, DollarSign, TrendingUp, Users, ChevronsRight,
+  Wrench, DollarSign, TrendingUp, Users, ChevronsRight, ChevronsLeft,
 } from 'lucide-react'
 import { getTheme, ACCENTS } from './theme'
 import { SheetShell, LogoMark, Eyebrow, GradientText, Callout, MobileSection, PriceBand, useIsMobile } from './ui'
@@ -101,7 +101,10 @@ function AssistConnectA4({ t }) {
               ))}
             </div>
             {i < LAYERS.length - 1 && (
-              <ChevronsRight size={14} color={t.faint} style={{ position: 'absolute', right: -10, top: '50%', transform: 'translateY(-50%)', zIndex: 1 }} />
+              <div style={{ position: 'absolute', right: -10, top: '50%', transform: 'translateY(-50%)', zIndex: 1, display: 'flex', flexDirection: 'column', gap: 1 }}>
+                <ChevronsRight size={14} color={t.faint} />
+                {i === 0 && <ChevronsLeft size={14} color={t.faint} />}
+              </div>
             )}
           </div>
         ))}
@@ -135,7 +138,7 @@ function AssistConnectA4({ t }) {
 
       {/* Closing */}
       <div style={{ flex: '1 1 auto', display: 'flex', alignItems: 'center', gap: '8mm' }}>
-        <Callout t={t} color={ACCENTS.violet} style={{ flex: '1 1 auto', height: '100%' }}>
+        <Callout t={t} color={ACCENTS.violet} style={{ flex: '1 1 auto' }}>
           Capture. Qualify. Book. Communicate. Convert.
         </Callout>
         <div style={{ flex: '0 0 auto', maxWidth: '68mm', display: 'flex', flexDirection: 'column', gap: 5 }}>
