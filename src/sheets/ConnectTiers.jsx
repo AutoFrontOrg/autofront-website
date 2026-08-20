@@ -30,7 +30,7 @@ const PLUS_FEATURES = [
 ]
 
 const PREMIUM_FEATURES = [
-    { icon: RefreshCcw, text: 'Assist booking drop-off recovery included free (if you run Assist)' },
+    { icon: RefreshCcw, text: 'Booking drop-off recovery included free (for Assist customers)' },
     { icon: PhoneCall, text: 'Full IVR — menus, options, after-hours and holiday handling' },
     { icon: UserCog, text: 'Staff-based routing — ring groups, availability-aware and business-hours scheduling' },
     { icon: Users, text: 'Team messaging — staff-to-staff internal comms, groups and direct' },
@@ -150,7 +150,7 @@ const COMPARE = [
     { label: 'Video calling with transcription + link to recording in TradeTrak', core: false, plus: true, premium: true },
     { label: 'Ava — AI answering & forwarding', core: false, plus: true, premium: true },
     { label: 'Adam — missed-call SMS follow-up', core: false, plus: true, premium: true },
-    { label: 'Assist booking drop-off recovery (requires Assist)', core: false, plus: false, premium: true },
+    { label: 'Booking drop-off recovery (for Assist customers)', core: false, plus: false, premium: true },
     { label: 'Full IVR (menus, after-hours, holidays)', core: false, plus: false, premium: true },
     { label: 'Staff-based routing & ring groups', core: false, plus: false, premium: true },
     { label: 'Team messaging', core: false, plus: false, premium: true },
