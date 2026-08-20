@@ -4,7 +4,7 @@ import {
   Wrench, DollarSign, TrendingUp, Users, ChevronsRight,
 } from 'lucide-react'
 import { getTheme, ACCENTS } from './theme'
-import { SheetShell, LogoMark, Eyebrow, GradientText, Callout, MobileSection, useIsMobile } from './ui'
+import { SheetShell, LogoMark, Eyebrow, GradientText, Callout, MobileSection, PriceBand, useIsMobile } from './ui'
 
 const JOURNEY = [
   { label: 'Discover', icon: Search, color: ACCENTS.indigo },
@@ -42,6 +42,7 @@ function AssistConnectA4({ t }) {
       <div style={{ height: '11mm', flex: '0 0 auto', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
         <LogoMark t={t} />
         <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+          <PriceBand t={t}>Build your stack from $128/mo — full range on the plans page</PriceBand>
           <Eyebrow t={t} color={ACCENTS.violet}>Assist + Connect</Eyebrow>
           <span style={{ fontSize: 10, color: t.muted, fontWeight: 600 }}>Partner Product Sheet</span>
         </div>
@@ -158,7 +159,10 @@ function AssistConnectMobile({ t }) {
     <div style={{ boxSizing: 'border-box', padding: '26px 20px 34px', display: 'flex', flexDirection: 'column', gap: 28 }}>
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
         <LogoMark t={t} size={24} />
-        <Eyebrow t={t} color={ACCENTS.violet}>Assist + Connect</Eyebrow>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
+          <PriceBand t={t}>Stacks from $128/mo</PriceBand>
+          <Eyebrow t={t} color={ACCENTS.violet}>Assist + Connect</Eyebrow>
+        </div>
       </div>
 
       <div>
@@ -258,7 +262,8 @@ export default function AssistConnectSheet() {
   const mobile = useIsMobile()
   const t = getTheme(theme, mobile)
   return (
-    <SheetShell t={t} theme={theme} setTheme={setTheme} title="Assist + Connect">
+    <SheetShell t={t} theme={theme} setTheme={setTheme} title="Assist + Connect"
+      footnoteExtra={<a href="/sheets/connect-tiers" style={{ color: t.mode === 'dark' ? '#a5b4fc' : '#4f46e5', fontWeight: 700, textDecoration: 'none', marginLeft: 12 }}>See all plans &amp; pricing &rarr;</a>}>
       {mobile ? <AssistConnectMobile t={t} /> : <AssistConnectA4 t={t} />}
     </SheetShell>
   )

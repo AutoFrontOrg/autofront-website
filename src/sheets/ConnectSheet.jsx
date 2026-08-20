@@ -4,7 +4,7 @@ import {
   Smartphone, Bot, Radio, Gift, ChevronsRight, Wrench,
 } from 'lucide-react'
 import { getTheme, ACCENTS } from './theme'
-import { SheetShell, LogoMark, Eyebrow, GradientText, CapCard, Callout, MobileSection, useIsMobile } from './ui'
+import { SheetShell, LogoMark, Eyebrow, GradientText, CapCard, Callout, MobileSection, PriceBand, useIsMobile } from './ui'
 
 const TIMELINE = [
   { day: 'MON', time: '12:00', label: 'Email sent', icon: Mail },
@@ -51,6 +51,7 @@ function ConnectA4({ t }) {
       <div style={{ height: '12mm', flex: '0 0 auto', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
         <LogoMark t={t} />
         <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+          <PriceBand t={t}>Core $79 · Plus $300 · Premium $800 /mo + usage</PriceBand>
           <Eyebrow t={t} color={ACCENTS.indigo}>Connect</Eyebrow>
           <span style={{ fontSize: 10, color: t.muted, fontWeight: 600 }}>Partner Product Sheet</span>
         </div>
@@ -117,7 +118,10 @@ function ConnectMobile({ t }) {
     <div style={{ boxSizing: 'border-box', padding: '26px 20px 34px', display: 'flex', flexDirection: 'column', gap: 28 }}>
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
         <LogoMark t={t} size={24} />
-        <Eyebrow t={t} color={ACCENTS.indigo}>Connect</Eyebrow>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
+          <PriceBand t={t}>Core $79 · Plus $300 · Premium $800 /mo</PriceBand>
+          <Eyebrow t={t} color={ACCENTS.indigo}>Connect</Eyebrow>
+        </div>
       </div>
 
       <div>

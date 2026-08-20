@@ -123,7 +123,22 @@ function ArrowGlyph({ t }) {
 }
 
 const ACCENTS_DEFAULT = '#6366f1'
-
+// ─── Price band chip: one-glance pricing on every sheet ────────────────────
+// Full detail lives on /sheets/connect-tiers — this is the honest range per page.
+export function PriceBand({ t, children, link = '/sheets/connect-tiers' }) {
+  return (
+    <a href={link} style={{
+      display: 'inline-flex', alignItems: 'center', gap: 6,
+      fontSize: t.mobile ? 12.5 : 11.5, fontWeight: 800, whiteSpace: 'nowrap',
+      color: t.mode === 'dark' ? '#a5b4fc' : '#4f46e5',
+      background: t.tint(ACCENTS_INDIGO, t.mode === 'dark' ? '1c' : '0c'),
+      border: `1px solid ${t.tintBorder(ACCENTS_INDIGO, '3a')}`,
+      borderRadius: 99, padding: t.mobile ? '5px 13px' : '4px 12px',
+      textDecoration: 'none',
+    }}>{children}</a>
+  )
+}
+const ACCENTS_INDIGO = '#6366f1'
 // ─── Mobile section divider: hairline + small label between mobile sections ────
 export function MobileSection({ t, label }) {
   if (!t.mobile) return null

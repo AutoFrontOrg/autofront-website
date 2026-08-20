@@ -4,7 +4,7 @@ import {
   Wrench, Video, Target, ChevronsRight,
 } from 'lucide-react'
 import { getTheme, ACCENTS } from './theme'
-import { SheetShell, LogoMark, Eyebrow, Pill, GradientText, CapCard, FlowDiagram, Callout, MobileSection, useIsMobile } from './ui'
+import { SheetShell, LogoMark, Eyebrow, Pill, GradientText, CapCard, FlowDiagram, Callout, MobileSection, PriceBand, useIsMobile } from './ui'
 
 const MISSED_CALL_STEPS = [
   { label: 'Missed Call', icon: PhoneMissed, color: ACCENTS.pink },
@@ -55,6 +55,7 @@ function AssistA4({ t }) {
       <div style={{ height: '12mm', flex: '0 0 auto', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
         <LogoMark t={t} />
         <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+          <PriceBand t={t}>From $49/mo + $6/booking · or $149/mo flat</PriceBand>
           <Eyebrow t={t} color={ACCENTS.indigo}>Assist</Eyebrow>
           <span style={{ fontSize: 10, color: t.muted, fontWeight: 600 }}>Partner Product Sheet</span>
         </div>
@@ -117,7 +118,10 @@ function AssistMobile({ t }) {
     <div style={{ boxSizing: 'border-box', padding: '26px 20px 34px', display: 'flex', flexDirection: 'column', gap: 28 }}>
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
         <LogoMark t={t} size={24} />
-        <Eyebrow t={t} color={ACCENTS.indigo}>Assist</Eyebrow>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
+          <PriceBand t={t}>From $49/mo + $6/booking · or $149/mo flat</PriceBand>
+          <Eyebrow t={t} color={ACCENTS.indigo}>Assist</Eyebrow>
+        </div>
       </div>
 
       <div>
@@ -168,7 +172,8 @@ export default function AssistSheet() {
   const mobile = useIsMobile()
   const t = getTheme(theme, mobile)
   return (
-    <SheetShell t={t} theme={theme} setTheme={setTheme} title="Assist">
+    <SheetShell t={t} theme={theme} setTheme={setTheme} title="Assist"
+      footnoteExtra={<a href="/sheets/connect-tiers" style={{ color: t.mode === 'dark' ? '#a5b4fc' : '#4f46e5', fontWeight: 700, textDecoration: 'none', marginLeft: 12 }}>See all plans &amp; pricing &rarr;</a>}>
       {mobile ? <AssistMobile t={t} /> : <AssistA4 t={t} />}
     </SheetShell>
   )
