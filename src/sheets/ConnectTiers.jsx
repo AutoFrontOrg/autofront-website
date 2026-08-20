@@ -30,7 +30,7 @@ const PLUS_FEATURES = [
 ]
 
 const PREMIUM_FEATURES = [
-    { icon: RefreshCcw, text: 'All bolt-ons included — Adam missed-call SMS, Ava AI answering, and Assist booking drop-off recovery (if you run Assist)' },
+    { icon: RefreshCcw, text: 'Assist booking drop-off recovery included free (if you run Assist)' },
     { icon: PhoneCall, text: 'Full IVR — menus, options, after-hours and holiday handling' },
     { icon: UserCog, text: 'Staff-based routing — ring groups, availability-aware and business-hours scheduling' },
     { icon: Users, text: 'Team messaging — staff-to-staff internal comms, groups and direct' },
