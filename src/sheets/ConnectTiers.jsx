@@ -328,16 +328,26 @@ export default function ConnectTiers() {
                         How it fits with TradeTrak
                     </div>
                     <div style={{
-                        background: t.mode === 'dark' ? 'rgba(99,102,241,0.04)' : 'rgba(99,102,241,0.03)',
+                        // Light mode: border only, no background — the page background
+                        // shows straight through so the diagram adds no extra colour block.
+                        background: t.mode === 'dark' ? 'rgba(99,102,241,0.04)' : 'transparent',
                         border: `1px solid ${t.border}`, borderRadius: 18,
                         padding: mobile ? '14px' : '20px 22px',
                     }}>
-                        <div style={{ marginBottom: mobile ? 14 : 16, textAlign: 'center' }}>
-                            <div style={{ fontSize: mobile ? 15.5 : 16, fontWeight: 800, color: t.heading, letterSpacing: '-0.01em' }}>
-                                Every product pushes jobs <span style={{ color: ACCENTS.emerald }}>into</span> TradeTrak. Nothing pulls customers out.
+                        <div style={{ marginBottom: mobile ? 16 : 20, textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6 }}>
+                            <div style={{
+                                fontSize: mobile ? 22 : 28, fontWeight: 800, color: t.heading,
+                                letterSpacing: '-0.02em', lineHeight: 1.15, maxWidth: 760,
+                            }}>
+                                Every product pushes jobs{' '}
+                                <span style={{
+                                    backgroundImage: t.heroGradient, WebkitBackgroundClip: 'text',
+                                    WebkitTextFillColor: 'transparent', backgroundClip: 'text',
+                                }}>into</span>{' '}
+                                TradeTrak. Nothing pulls customers out.
                             </div>
-                            <div style={{ fontSize: mobile ? 12.5 : 12, color: t.muted, marginTop: 4 }}>
-                                TradeTrak stays the system of record — Autofront is the lead-flow layer around it.
+                            <div style={{ fontSize: mobile ? 13.5 : 14, color: t.body, marginTop: 2 }}>
+                                TradeTrak stays the system of record — <span style={{ fontWeight: 700, color: t.heading }}>Autofront is the lead-flow layer around it.</span>
                             </div>
                         </div>
                         <TradetrakStack theme={theme} />
