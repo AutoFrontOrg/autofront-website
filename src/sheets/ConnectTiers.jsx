@@ -2,7 +2,7 @@ import { useState } from 'react'
 import {
     Phone, MessageSquare, Voicemail as VoicemailIcon, ListChecks, Mic, FileText,
     Smartphone, Monitor, Sparkles, Calendar, Video, Link2, PhoneMissed,
-    PhoneCall, Users, UserCog, RefreshCcw, Check, ChevronRight,
+    PhoneCall, Users, UserCog, RefreshCcw, Check, ChevronRight, MapPin,
 } from 'lucide-react'
 import { getTheme, ACCENTS } from './theme'
 import { LogoMark, Eyebrow, useIsMobile } from './ui'
@@ -34,7 +34,9 @@ const PREMIUM_FEATURES = [
     { icon: PhoneCall, text: 'Full IVR — menus, options, after-hours and holiday handling' },
     { icon: UserCog, text: 'Staff-based routing — ring groups, availability-aware and business-hours scheduling' },
     { icon: Users, text: 'Team messaging — staff-to-staff internal comms, groups and direct' },
+    { icon: Phone, text: 'Internal calling — call any teammate directly, VoIP with automatic mobile fallback' },
     { icon: FileText, text: 'Internal notes on every conversation — text or voice, pinned for the team, notified in real time' },
+    { icon: MapPin, text: 'Live staff presence & location — see who\'s available and where your field team is right now' },
     { icon: PhoneMissed, text: 'Auto call recovery — detects carrier drop-outs and re-dials automatically' },
 ]
 
@@ -152,7 +154,9 @@ const COMPARE = [
     { label: 'Full IVR (menus, after-hours, holidays)', core: false, plus: false, premium: true },
     { label: 'Staff-based routing & ring groups', core: false, plus: false, premium: true },
     { label: 'Team messaging', core: false, plus: false, premium: true },
+    { label: 'Internal staff-to-staff calling (VoIP + mobile fallback)', core: false, plus: false, premium: true },
     { label: 'Internal notes on conversations (text & voice)', core: false, plus: false, premium: true },
+    { label: 'Live staff presence & field location', core: false, plus: false, premium: true },
     { label: 'Auto call recovery on drop-out', core: false, plus: false, premium: true },
 ]
 
