@@ -340,7 +340,7 @@ export default function ConnectTiers() {
                                 TradeTrak stays the system of record — Autofront is the lead-flow layer around it.
                             </div>
                         </div>
-                        <TradetrakStack />
+                        <TradetrakStack theme={theme} />
                     </div>
                 </div>
 

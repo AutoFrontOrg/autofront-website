@@ -145,9 +145,9 @@ function LayerRow({ t, mobile, layer }) {
     )
 }
 
-export default function TradetrakStack() {
+export default function TradetrakStack({ theme = 'dark' }) {
     const mobile = useIsMobile()
-    const t = getTheme('dark', mobile)
+    const t = getTheme(theme, mobile)
 
     return (
         <div style={{ display: 'flex', flexDirection: 'column', gap: mobile ? 14 : 16 }}>
