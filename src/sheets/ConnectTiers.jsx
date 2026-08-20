@@ -14,11 +14,12 @@ const CORE_FEATURES = [
     { icon: Phone, text: 'Dedicated business number — inbound & outbound calling, personal numbers stay private' },
     { icon: MessageSquare, text: 'Business SMS messaging — one thread per customer' },
     { icon: VoicemailIcon, text: 'Business voicemail with custom greetings' },
-    { icon: ListChecks, text: 'Call log — every call recorded against the customer timeline' },
+    { icon: ListChecks, text: 'Realtime usage view — itemised list of every call in and out, live' },
     { icon: Mic, text: 'Call recordings, stored against the conversation' },
     { icon: FileText, text: 'Call transcriptions — read the call without replaying it' },
     { icon: Smartphone, text: 'Mobile app for calling on the road' },
     { icon: Monitor, text: 'Full web app access — live dashboard for call records and usage' },
+    { icon: Users, text: 'Unlimited users — no per-seat tax, ever' },
 ]
 
 const PLUS_FEATURES = [
@@ -29,10 +30,11 @@ const PLUS_FEATURES = [
 ]
 
 const PREMIUM_FEATURES = [
+    { icon: RefreshCcw, text: 'All bolt-ons included — Adam missed-call SMS, Ava AI answering, drop-off recovery' },
     { icon: PhoneCall, text: 'Full IVR — menus, options, after-hours and holiday handling' },
     { icon: UserCog, text: 'Staff-based routing — ring groups, availability-aware and business-hours scheduling' },
     { icon: Users, text: 'Team messaging — staff-to-staff internal comms, groups and direct' },
-    { icon: RefreshCcw, text: 'Auto call recovery — detects carrier drop-outs and re-dials automatically' },
+    { icon: PhoneMissed, text: 'Auto call recovery — detects carrier drop-outs and re-dials automatically' },
 ]
 
 const TIERS = [
@@ -99,7 +101,7 @@ function TierCard({ t, tier, mobile }) {
                 <span style={{ fontSize: mobile ? 30 : 26, fontWeight: 800, color: t.heading, letterSpacing: '-0.02em' }}>${tier.price}</span>
                 <span style={{ fontSize: mobile ? 13 : 11.5, color: t.muted, fontWeight: 600 }}>/month</span>
             </div>
-            <div style={{ fontSize: mobile ? 11.5 : 10, color: t.muted, marginTop: -8 }}>+ usage costs, billed monthly</div>
+            <div style={{ fontSize: mobile ? 11.5 : 10, color: t.muted, marginTop: -8 }}>+ metered calls & SMS — watch it live in the usage view, no surprises</div>
 
             <div style={{ height: 1, background: t.border }} />
 
@@ -138,12 +140,14 @@ function TierCard({ t, tier, mobile }) {
 
 const COMPARE = [
     { label: 'Business number, calling & SMS', core: true, plus: true, premium: true },
+    { label: 'Realtime itemised usage — every call in and out', core: true, plus: true, premium: true },
     { label: 'Voicemail, recordings & transcriptions', core: true, plus: true, premium: true },
-    { label: 'Mobile app & full web app dashboard', core: true, plus: true, premium: true },
+    { label: 'Unlimited users — no per-seat pricing', core: true, plus: true, premium: true },
     { label: 'TradeTrak integration — calls, transcripts & messages logged to contact + job', core: false, plus: true, premium: true },
     { label: 'Video calling with transcription + link to recording in TradeTrak', core: false, plus: true, premium: true },
     { label: 'Ava — AI answering & forwarding', core: false, plus: true, premium: true },
     { label: 'Adam — missed-call SMS follow-up', core: false, plus: true, premium: true },
+    { label: 'Booking drop-off recovery', core: false, plus: false, premium: true },
     { label: 'Full IVR (menus, after-hours, holidays)', core: false, plus: false, premium: true },
     { label: 'Staff-based routing & ring groups', core: false, plus: false, premium: true },
     { label: 'Team messaging', core: false, plus: false, premium: true },
@@ -346,7 +350,7 @@ export default function ConnectTiers() {
                     fontSize: mobile ? 13 : 12, color: t.muted, textAlign: 'center', padding: mobile ? '0 8px' : 0,
                 }}>
                     <Calendar size={14} style={{ flex: '0 0 auto' }} color={t.mode === 'dark' ? '#6366f1' : '#4f46e5'} />
-                    All plans are month-to-month plus usage costs (billed monthly), include unlimited users on the web platform, and you keep your number if you leave.
+                    Month-to-month, unlimited users on every plan, and you keep your number if you leave. Usage (calls & SMS) is metered at cost with a realtime itemised view — what you see is what you pay.
                     <a href="/sheets/connect" style={{ color: t.mode === 'dark' ? '#a5b4fc' : '#4f46e5', fontWeight: 700, textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: 4 }}>
                         See the Connect sheet <ChevronRight size={13} />
                     </a>

@@ -32,10 +32,11 @@ const FLOW = [
                 ],
             },
             {
-                title: 'Assist · from $99/mo', color: ACCENTS.emerald,
+                title: 'Assist · 2 honest ways to pay', color: ACCENTS.emerald,
                 items: [
-                    { icon: CalendarCheck, text: 'Self-serve booking + qualification' },
-                    { icon: Wrench, text: 'Creates the job in TradeTrak' },
+                    { icon: CalendarCheck, text: 'Flat — $149/mo, unlimited bookings' },
+                    { icon: CircleDollarSign, text: 'Or per-outcome — $49/mo + $6 per booking created in Trak' },
+                    { icon: RefreshCcw, text: '60-day review: we move you to whichever is cheaper' },
                 ],
             },
             {
@@ -50,7 +51,7 @@ const FLOW = [
                 title: 'Add-ons', color: ACCENTS.cyan,
                 items: [
                     { icon: Megaphone, text: 'Campaigns — SMS/email win-back · $99' },
-                    { icon: Route, text: 'Route Optimisation — sequences Trak jobs · $39/staff' },
+                    { icon: Route, text: 'Route Optimisation — $99 up to 5 staff, $189 up to 15' },
                     { icon: Target, text: 'Leads & Attribution · $69' },
                     { icon: Bot, text: 'AI Assistant · $39' },
                 ],
