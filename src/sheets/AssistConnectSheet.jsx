@@ -80,22 +80,22 @@ function AssistConnectA4({ t }) {
       </div>
 
       {/* Three layers */}
-      <div style={{ height: '48mm', flex: '0 0 auto', display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gridTemplateRows: '1fr', gap: '4mm' }}>
+      <div style={{ height: '50mm', flex: '0 0 auto', display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gridTemplateRows: '1fr', gap: '4mm' }}>
         {LAYERS.map((l, i) => (
           <div key={l.title} style={{
             background: t.mode === 'dark' ? 'rgba(255,255,255,0.035)' : '#ffffff',
-            border: `1px solid ${t.tintBorder(l.color)}`, borderRadius: 14, padding: '10px 12px',
-            display: 'flex', flexDirection: 'column', gap: 6,
+            border: `1px solid ${t.tintBorder(l.color)}`, borderRadius: 14, padding: '14px 16px',
+            display: 'flex', flexDirection: 'column', gap: 9,
             boxShadow: t.mode === 'light' ? t.cardShadow : 'none', position: 'relative',
           }}>
             <div>
-              <div style={{ fontSize: 13, fontWeight: 800, color: l.color, letterSpacing: '-0.01em' }}>{l.title}</div>
-              <div style={{ fontSize: 8.5, color: t.muted, fontWeight: 600 }}>{l.sub}</div>
+              <div style={{ fontSize: 16, fontWeight: 800, color: l.color, letterSpacing: '-0.01em' }}>{l.title}</div>
+              <div style={{ fontSize: 10.5, color: t.muted, fontWeight: 600 }}>{l.sub}</div>
             </div>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 3, marginTop: 2 }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 6, marginTop: 2 }}>
               {l.items.map(it => (
-                <div key={it} style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: 9, color: t.body }}>
-                  <span style={{ width: 4, height: 4, borderRadius: '50%', background: l.color, flex: '0 0 auto' }} />
+                <div key={it} style={{ display: 'flex', alignItems: 'center', gap: 7, fontSize: 12, color: t.body }}>
+                  <span style={{ width: 5, height: 5, borderRadius: '50%', background: l.color, flex: '0 0 auto' }} />
                   {it}
                 </div>
               ))}
