@@ -36,9 +36,9 @@ const CAPS = [
     tags: ['Custom questions', 'Photos & docs', 'Measurements'],
   },
   {
-    color: ACCENTS.amber, icon: Wrench, title: 'Straight into your job system',
-    desc: 'Confirmed bookings create or update the customer, quote or job automatically.',
-    tags: ['Real-time availability', 'SMS confirmation', 'Reminders'],
+    color: ACCENTS.amber, icon: Wrench, title: 'Straight into TradeTrak',
+    desc: 'Every booked lead creates a Job directly inside TradeTrak automatically — following your booking rules.',
+    tags: ['TradeTrak jobs', 'Rule-based booking', 'Real-time availability'],
   },
   {
     color: ACCENTS.emerald, icon: Video, title: 'Every appointment type',
@@ -104,7 +104,7 @@ function AssistA4({ t }) {
         </Callout>
         <div style={{ flex: '0 0 auto', maxWidth: '70mm', fontSize: 9, lineHeight: 1.5, color: t.muted, display: 'flex', alignItems: 'center', gap: 6 }}>
           <ChevronsRight size={14} color={t.mode === 'dark' ? '#6366f1' : '#4f46e5'} style={{ flex: '0 0 auto' }} />
-          Assist extends the job management system already in place — it never replaces it.
+          Built for trade businesses running TradeTrak — Assist extends it, never replaces it.
         </div>
       </div>
 
@@ -157,7 +157,7 @@ function AssistMobile({ t }) {
       <Callout t={t} color={ACCENTS.indigo}>Capture. Qualify. Schedule. Convert. — Less admin. Better data. More booked work.</Callout>
       <div style={{ fontSize: 13, lineHeight: 1.55, color: t.muted, display: 'flex', gap: 8 }}>
         <ChevronsRight size={16} color={t.mode === 'dark' ? '#6366f1' : '#4f46e5'} style={{ flex: '0 0 auto', marginTop: 2 }} />
-        Assist extends the job management system already in place — it never replaces it.
+        Built for trade businesses running TradeTrak — Assist extends it, never replaces it.
       </div>
     </div>
   )

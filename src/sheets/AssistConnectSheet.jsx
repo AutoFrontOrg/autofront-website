@@ -29,7 +29,7 @@ const LAYERS = [
     items: ['Calling', 'Messaging', 'Email', 'AI (Adam & Ava)', 'Conversation history', 'Customer context'],
   },
   {
-    color: ACCENTS.emerald, title: 'Job Management Platform', sub: 'Operational Execution',
+    color: ACCENTS.emerald, title: 'TradeTrak', sub: 'Operational Execution',
     items: ['Customers', 'Quotes', 'Jobs', 'Scheduling', 'Technicians', 'Invoices'],
   },
 ]
@@ -50,12 +50,13 @@ function AssistConnectA4({ t }) {
       {/* Hero */}
       <div style={{ flex: '0 0 auto', display: 'flex', flexDirection: 'column', gap: 4 }}>
         <h1 style={{ margin: 0, fontSize: 25, fontWeight: 800, letterSpacing: '-0.03em', lineHeight: 1.12, color: t.heading, maxWidth: '86%' }}>
-          Your job management system manages the job.{' '}
+          TradeTrak manages the job.{' '}
           <GradientText t={t}>Autofront manages the journey.</GradientText>
         </h1>
         <p style={{ margin: 0, fontSize: 10.5, lineHeight: 1.5, color: t.body, maxWidth: '80%' }}>
           The customer relationship starts before a job exists and continues after the booking. Assist + Connect
-          joins that journey to the operational systems already running the business.
+          joins that journey directly to TradeTrak — the platform we're building toward a direct integration
+          and partnership with.
         </p>
       </div>
 
@@ -108,11 +109,12 @@ function AssistConnectA4({ t }) {
       {/* Partner positioning */}
       <div style={{ flex: '0 0 auto', display: 'flex', alignItems: 'center', gap: '10mm', padding: '3mm 0' }}>
         <div style={{ flex: '1 1 60%' }}>
-          <div style={{ fontSize: 13.5, fontWeight: 800, color: t.heading, letterSpacing: '-0.01em', marginBottom: 4 }}>Extend the systems your customers already use.</div>
+          <div style={{ fontSize: 13.5, fontWeight: 800, color: t.heading, letterSpacing: '-0.01em', marginBottom: 4 }}>Built for trade businesses running TradeTrak.</div>
           <p style={{ margin: 0, fontSize: 9.5, lineHeight: 1.5, color: t.body }}>
-            Job management systems are excellent at managing operational work once it exists. Autofront adds the
-            customer engagement and orchestration layer around that work — for the platform, and for the partner
-            who implements and supports it.
+            TradeTrak is excellent at managing operational work once it exists. Autofront adds the customer
+            engagement and orchestration layer around that work — calls, messages and bookings landing straight
+            on the matching TradeTrak contact and job. We're targeting this combination directly at TradeTrak
+            customers, with a direct integration and partnership in progress.
           </p>
         </div>
         <div style={{ flex: '0 0 auto', display: 'flex', alignItems: 'center', gap: 6 }}>
@@ -135,9 +137,15 @@ function AssistConnectA4({ t }) {
         <Callout t={t} color={ACCENTS.violet} style={{ flex: '1 1 auto', height: '100%' }}>
           Capture. Qualify. Book. Communicate. Convert.
         </Callout>
-        <div style={{ flex: '0 0 auto', maxWidth: '68mm', fontSize: 9, lineHeight: 1.5, color: t.muted, display: 'flex', alignItems: 'center', gap: 6 }}>
-          <Users size={14} color={t.mode === 'dark' ? '#8b5cf6' : '#7c3aed'} style={{ flex: '0 0 auto' }} />
-          Ask your Autofront contact about introducing Assist + Connect to customers who need more from their existing platform.
+        <div style={{ flex: '0 0 auto', maxWidth: '68mm', display: 'flex', flexDirection: 'column', gap: 5 }}>
+          <div style={{ fontSize: 10.5, fontWeight: 800, color: t.heading }}>
+            Recommended: Assist + Connect Plus — $449/month + usage
+          </div>
+          <div style={{ fontSize: 9, lineHeight: 1.5, color: t.muted, display: 'flex', alignItems: 'flex-start', gap: 6 }}>
+            <Users size={14} color={t.mode === 'dark' ? '#8b5cf6' : '#7c3aed'} style={{ flex: '0 0 auto', marginTop: 1 }} />
+            The complete TradeTrak journey — every enquiry captured, qualified, booked and pushed into TradeTrak
+            as a Job, with every call and video consult logged back to it.
+          </div>
         </div>
       </div>
 
@@ -155,28 +163,29 @@ function AssistConnectMobile({ t }) {
 
       <div>
         <h1 style={{ margin: '0 0 8px', fontSize: 23, fontWeight: 800, letterSpacing: '-0.03em', lineHeight: 1.18, color: t.heading }}>
-          Your job management system manages the job.{' '}
+          TradeTrak manages the job.{' '}
           <GradientText t={t}>Autofront manages the journey.</GradientText>
         </h1>
         <p style={{ margin: 0, fontSize: 14, lineHeight: 1.6, color: t.body }}>
           The customer relationship starts before a job exists and continues after the booking. Assist + Connect
-          joins that journey to the operational systems already running the business.
+          joins that journey directly to TradeTrak — the platform we're building toward a direct integration
+          and partnership with.
         </p>
       </div>
 
       <MobileSection t={t} label="From first click or call to revenue" />
       <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
-          {JOURNEY.map(s => (
-            <div key={s.label} style={{
-              display: 'inline-flex', alignItems: 'center', gap: 6,
-              background: t.tint(s.color, t.mode === 'dark' ? '16' : '0e'),
-              border: `1px solid ${t.tintBorder(s.color)}`,
-              borderRadius: 99, padding: '6px 11px',
-            }}>
-              <s.icon size={14} color={s.color} />
-              <span style={{ fontSize: 11, fontWeight: 700, color: t.heading, whiteSpace: 'nowrap' }}>{s.label}</span>
-            </div>
-          ))}
+        {JOURNEY.map(s => (
+          <div key={s.label} style={{
+            display: 'inline-flex', alignItems: 'center', gap: 6,
+            background: t.tint(s.color, t.mode === 'dark' ? '16' : '0e'),
+            border: `1px solid ${t.tintBorder(s.color)}`,
+            borderRadius: 99, padding: '6px 11px',
+          }}>
+            <s.icon size={14} color={s.color} />
+            <span style={{ fontSize: 11, fontWeight: 700, color: t.heading, whiteSpace: 'nowrap' }}>{s.label}</span>
+          </div>
+        ))}
       </div>
 
       <MobileSection t={t} label="The three layers" />
@@ -206,11 +215,12 @@ function AssistConnectMobile({ t }) {
 
       <MobileSection t={t} label="Partner positioning" />
       <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-        <div style={{ fontSize: 17, fontWeight: 800, color: t.heading, letterSpacing: '-0.01em' }}>Extend the systems your customers already use.</div>
+        <div style={{ fontSize: 17, fontWeight: 800, color: t.heading, letterSpacing: '-0.01em' }}>Built for trade businesses running TradeTrak.</div>
         <p style={{ margin: 0, fontSize: 13.5, lineHeight: 1.6, color: t.body }}>
-          Job management systems are excellent at managing operational work once it exists. Autofront adds the
-          customer engagement and orchestration layer around that work — for the platform, and for the partner
-          who implements and supports it.
+          TradeTrak is excellent at managing operational work once it exists. Autofront adds the customer
+          engagement and orchestration layer around that work — calls, messages and bookings landing straight
+          on the matching TradeTrak contact and job. We're targeting this combination directly at TradeTrak
+          customers, with a direct integration and partnership in progress.
         </p>
         <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: 6 }}>
           {['Customer', 'Autofront', 'Job Management', 'Business Operations'].map((label, i, arr) => (
@@ -229,9 +239,15 @@ function AssistConnectMobile({ t }) {
 
       <MobileSection t={t} />
       <Callout t={t} color={ACCENTS.violet}>Capture. Qualify. Book. Communicate. Convert.</Callout>
-      <div style={{ fontSize: 13, lineHeight: 1.55, color: t.muted, display: 'flex', gap: 8 }}>
-        <Users size={16} color={t.mode === 'dark' ? '#8b5cf6' : '#7c3aed'} style={{ flex: '0 0 auto', marginTop: 2 }} />
-        Ask your Autofront contact about introducing Assist + Connect to customers who need more from their existing platform.
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+        <div style={{ fontSize: 15, fontWeight: 800, color: t.heading }}>
+          Recommended: Assist + Connect Plus — $449/month + usage
+        </div>
+        <div style={{ fontSize: 13, lineHeight: 1.55, color: t.muted, display: 'flex', gap: 8 }}>
+          <Users size={16} color={t.mode === 'dark' ? '#8b5cf6' : '#7c3aed'} style={{ flex: '0 0 auto', marginTop: 2 }} />
+          The complete TradeTrak journey — every enquiry captured, qualified, booked and pushed into TradeTrak
+          as a Job, with every call and video consult logged back to it.
+        </div>
       </div>
     </div>
   )

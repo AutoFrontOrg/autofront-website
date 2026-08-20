@@ -138,20 +138,20 @@ function ConnectMobile({ t }) {
 
       <MobileSection t={t} label="One customer. One timeline." />
       <div style={{ display: 'flex', flexDirection: 'column', gap: 0 }}>
-          {TIMELINE.map((e, i) => (
-            <div key={i} style={{ display: 'flex', gap: 12 }}>
-              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                <div style={{ width: 30, height: 30, borderRadius: '50%', background: t.tint(ACCENTS.indigo, t.mode === 'dark' ? '25' : '14'), border: `1px solid ${t.tintBorder(ACCENTS.indigo)}`, display: 'flex', alignItems: 'center', justifyContent: 'center', flex: '0 0 auto' }}>
-                  <e.icon size={15} color={t.mode === 'dark' ? '#a5b4fc' : '#4f46e5'} />
-                </div>
-                {i < TIMELINE.length - 1 && <div style={{ width: 1, flex: 1, background: t.border, minHeight: 14 }} />}
+        {TIMELINE.map((e, i) => (
+          <div key={i} style={{ display: 'flex', gap: 12 }}>
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+              <div style={{ width: 30, height: 30, borderRadius: '50%', background: t.tint(ACCENTS.indigo, t.mode === 'dark' ? '25' : '14'), border: `1px solid ${t.tintBorder(ACCENTS.indigo)}`, display: 'flex', alignItems: 'center', justifyContent: 'center', flex: '0 0 auto' }}>
+                <e.icon size={15} color={t.mode === 'dark' ? '#a5b4fc' : '#4f46e5'} />
               </div>
-              <div style={{ paddingBottom: i < TIMELINE.length - 1 ? 18 : 0 }}>
-                <div style={{ fontSize: 10.5, fontWeight: 700, letterSpacing: '0.05em', color: t.faint }}>{e.day}{e.time ? ` \u00b7 ${e.time}` : ''}</div>
-                <div style={{ fontSize: 14, fontWeight: 600, color: t.heading }}>{e.label}</div>
-              </div>
+              {i < TIMELINE.length - 1 && <div style={{ width: 1, flex: 1, background: t.border, minHeight: 14 }} />}
             </div>
-          ))}
+            <div style={{ paddingBottom: i < TIMELINE.length - 1 ? 18 : 0 }}>
+              <div style={{ fontSize: 10.5, fontWeight: 700, letterSpacing: '0.05em', color: t.faint }}>{e.day}{e.time ? ` \u00b7 ${e.time}` : ''}</div>
+              <div style={{ fontSize: 14, fontWeight: 600, color: t.heading }}>{e.label}</div>
+            </div>
+          </div>
+        ))}
       </div>
 
       <MobileSection t={t} label="What Connect does" />
