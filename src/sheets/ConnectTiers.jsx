@@ -154,23 +154,67 @@ function CompareTable({ t, mobile }) {
     const cell = (val) => val
         ? <Check size={mobile ? 16 : 14} color={ACCENTS.emerald} />
         : <span style={{ color: t.faint, fontSize: mobile ? 13 : 11 }}>&mdash;</span>
+
+    // Mobile: a 4-column grid can't fit a phone screen without awkward side-scrolling —
+    // render one compact card per feature row instead, with per-tier ticks inline.
+    if (mobile) {
+        return (
+            <div style={{
+                background: t.mode === 'dark' ? 'rgba(255,255,255,0.035)' : '#ffffff',
+                border: `1px solid ${t.border}`, borderRadius: 18,
+                padding: '16px 14px',
+                boxShadow: t.mode === 'light' ? t.cardShadow : 'none',
+                display: 'flex', flexDirection: 'column', gap: 8,
+            }}>
+                {COMPARE.map(row => (
+                    <div key={row.label} style={{
+                        background: t.mode === 'dark' ? 'rgba(255,255,255,0.025)' : t.panel,
+                        border: `1px solid ${t.border}`, borderRadius: 10, padding: '10px 12px',
+                        display: 'flex', flexDirection: 'column', gap: 7,
+                    }}>
+                        <div style={{ fontSize: 12.5, fontWeight: 700, color: t.heading, lineHeight: 1.35 }}>{row.label}</div>
+                        <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
+                            {[['Core', row.core], ['Plus', row.plus], ['Premium', row.premium]].map(([name, val]) => {
+                                const included = !!val
+                                return (
+                                    <span key={name} style={{
+                                        display: 'inline-flex', alignItems: 'center', gap: 4,
+                                        fontSize: 10.5, fontWeight: 700, whiteSpace: 'nowrap',
+                                        color: included ? (t.mode === 'dark' ? '#a7f3d0' : '#047857') : t.faint,
+                                        background: included
+                                            ? (t.mode === 'dark' ? 'rgba(16,185,129,0.12)' : 'rgba(16,185,129,0.08)')
+                                            : t.panelAlt,
+                                        border: `1px solid ${included ? 'rgba(16,185,129,0.3)' : t.border}`,
+                                        borderRadius: 99, padding: '3px 9px',
+                                    }}>
+                                        {included ? <Check size={11} color={ACCENTS.emerald} /> : <span style={{ fontSize: 10 }}>&mdash;</span>}
+                                        {name}
+                                    </span>
+                                );
+                            })}
+                        </div>
+                    </div>
+                ))}
+            </div>
+        )
+    }
+
     return (
         <div style={{
             background: t.mode === 'dark' ? 'rgba(255,255,255,0.035)' : '#ffffff',
             border: `1px solid ${t.border}`, borderRadius: 18,
-            padding: mobile ? '18px 16px' : '20px 24px',
+            padding: '20px 24px',
             boxShadow: t.mode === 'light' ? t.cardShadow : 'none',
-            overflowX: 'auto',
         }}>
-            <table style={{ width: '100%', borderCollapse: 'collapse', minWidth: mobile ? 420 : 0 }}>
+            <table style={{ width: '100%', borderCollapse: 'collapse' }}>
                 <thead>
                     <tr>
                         {['', 'Core', 'Plus', 'Premium'].map((h, i) => (
                             <th key={h || 'f'} style={{
                                 textAlign: i === 0 ? 'left' : 'center',
-                                fontSize: mobile ? 12 : 11, fontWeight: 800, letterSpacing: '0.04em',
+                                fontSize: 11, fontWeight: 800, letterSpacing: '0.04em',
                                 textTransform: 'uppercase', color: t.heading,
-                                padding: mobile ? '8px 8px' : '8px 10px',
+                                padding: '8px 10px',
                                 borderBottom: `1px solid ${t.borderStrong}`,
                             }}>{h}</th>
                         ))}
@@ -180,13 +224,13 @@ function CompareTable({ t, mobile }) {
                     {COMPARE.map(row => (
                         <tr key={row.label}>
                             <td style={{
-                                fontSize: mobile ? 12.5 : 11, color: t.body, fontWeight: 500,
-                                padding: mobile ? '9px 8px' : '8px 10px',
+                                fontSize: 11, color: t.body, fontWeight: 500,
+                                padding: '8px 10px',
                                 borderBottom: `1px solid ${t.border}`, minWidth: 160,
                             }}>{row.label}</td>
                             {[row.core, row.plus, row.premium].map((v, i) => (
                                 <td key={i} style={{
-                                    textAlign: 'center', padding: mobile ? '9px 8px' : '8px 10px',
+                                    textAlign: 'center', padding: '8px 10px',
                                     borderBottom: `1px solid ${t.border}`,
                                 }}>{cell(v)}</td>
                             ))}
