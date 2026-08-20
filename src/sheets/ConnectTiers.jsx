@@ -360,7 +360,7 @@ export default function ConnectTiers() {
                     fontSize: mobile ? 13 : 12, color: t.muted, textAlign: 'center', padding: mobile ? '0 8px' : 0,
                 }}>
                     <Calendar size={14} style={{ flex: '0 0 auto' }} color={t.mode === 'dark' ? '#6366f1' : '#4f46e5'} />
-                    Month-to-month, unlimited users on every plan, and you keep your number if you leave. Usage (calls & SMS) is metered at cost with a realtime itemised view — what you see is what you pay.
+                    Month-to-month, unlimited users on every plan, and you keep your number if you leave. Usage (calls & SMS) is transparently metered with a realtime itemised view — what you see is what you pay.
                     <a href="/sheets/connect" style={{ color: t.mode === 'dark' ? '#a5b4fc' : '#4f46e5', fontWeight: 700, textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: 4 }}>
                         See the Connect sheet <ChevronRight size={13} />
                     </a>
