@@ -151,50 +151,62 @@ const COMPARE = [
 ]
 
 function CompareTable({ t, mobile }) {
+    const [selectedTier, setSelectedTier] = useState('core')
     const cell = (val) => val
-        ? <Check size={mobile ? 16 : 14} color={ACCENTS.emerald} />
-        : <span style={{ color: t.faint, fontSize: mobile ? 13 : 11 }}>&mdash;</span>
+        ? <Check size={14} color={ACCENTS.emerald} />
+        : <span style={{ color: t.faint, fontSize: 11 }}>&mdash;</span>
 
-    // Mobile: a 4-column grid can't fit a phone screen without awkward side-scrolling —
-    // render one compact card per feature row instead, with per-tier ticks inline.
+    // Mobile: pick a plan, see a clean checklist for just that plan. A 4-column
+    // grid can't fit a phone, and per-feature pill rows read noisy — one plan at
+    // a time directly answers "what do I get in Plus?".
     if (mobile) {
+        const tiers = [
+            { id: 'core', label: 'Core' },
+            { id: 'plus', label: 'Plus' },
+            { id: 'premium', label: 'Premium' },
+        ]
+        const value = (row) => row[selectedTier]
         return (
             <div style={{
                 background: t.mode === 'dark' ? 'rgba(255,255,255,0.035)' : '#ffffff',
                 border: `1px solid ${t.border}`, borderRadius: 18,
                 padding: '16px 14px',
                 boxShadow: t.mode === 'light' ? t.cardShadow : 'none',
-                display: 'flex', flexDirection: 'column', gap: 8,
+                display: 'flex', flexDirection: 'column', gap: 12,
             }}>
-                {COMPARE.map(row => (
-                    <div key={row.label} style={{
-                        background: t.mode === 'dark' ? 'rgba(255,255,255,0.025)' : t.panel,
-                        border: `1px solid ${t.border}`, borderRadius: 10, padding: '10px 12px',
-                        display: 'flex', flexDirection: 'column', gap: 7,
-                    }}>
-                        <div style={{ fontSize: 12.5, fontWeight: 700, color: t.heading, lineHeight: 1.35 }}>{row.label}</div>
-                        <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
-                            {[['Core', row.core], ['Plus', row.plus], ['Premium', row.premium]].map(([name, val]) => {
-                                const included = !!val
-                                return (
-                                    <span key={name} style={{
-                                        display: 'inline-flex', alignItems: 'center', gap: 4,
-                                        fontSize: 10.5, fontWeight: 700, whiteSpace: 'nowrap',
-                                        color: included ? (t.mode === 'dark' ? '#a7f3d0' : '#047857') : t.faint,
-                                        background: included
-                                            ? (t.mode === 'dark' ? 'rgba(16,185,129,0.12)' : 'rgba(16,185,129,0.08)')
-                                            : t.panelAlt,
-                                        border: `1px solid ${included ? 'rgba(16,185,129,0.3)' : t.border}`,
-                                        borderRadius: 99, padding: '3px 9px',
-                                    }}>
-                                        {included ? <Check size={11} color={ACCENTS.emerald} /> : <span style={{ fontSize: 10 }}>&mdash;</span>}
-                                        {name}
-                                    </span>
-                                );
-                            })}
+                <div style={{
+                    display: 'flex', gap: 2,
+                    background: t.mode === 'dark' ? 'rgba(255,255,255,0.05)' : t.panelAlt,
+                    border: `1px solid ${t.border}`, borderRadius: 99, padding: 3,
+                }}>
+                    {tiers.map(tier => (
+                        <button key={tier.id} onClick={() => setSelectedTier(tier.id)} style={{
+                            flex: 1, padding: '8px 0', borderRadius: 99, border: 'none', cursor: 'pointer',
+                            fontSize: 12.5, fontWeight: 700,
+                            background: selectedTier === tier.id ? 'linear-gradient(135deg, #6366f1, #8b5cf6)' : 'transparent',
+                            color: selectedTier === tier.id ? '#fff' : t.muted,
+                        }}>{tier.label}</button>
+                    ))}
+                </div>
+
+                <div style={{ display: 'flex', flexDirection: 'column' }}>
+                    {COMPARE.map((row, i) => (
+                        <div key={row.label} style={{
+                            display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12,
+                            padding: '11px 2px',
+                            borderBottom: i < COMPARE.length - 1 ? `1px solid ${t.border}` : 'none',
+                        }}>
+                            <span style={{ fontSize: 13, color: value(row) ? t.heading : t.muted, fontWeight: 500, lineHeight: 1.4 }}>
+                                {row.label}
+                            </span>
+                            <span style={{ flex: '0 0 auto' }}>
+                                {value(row)
+                                    ? <Check size={17} color={ACCENTS.emerald} />
+                                    : <span style={{ color: t.faint, fontSize: 13 }}>&mdash;</span>}
+                            </span>
                         </div>
-                    </div>
-                ))}
+                    ))}
+                </div>
             </div>
         )
     }
