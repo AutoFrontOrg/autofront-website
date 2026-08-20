@@ -1,7 +1,7 @@
 import {
     Phone, MessageSquare, CalendarCheck, PhoneMissed, Sparkles, RefreshCcw,
-    Megaphone, Route, Target, Bot, Briefcase, FileText, CalendarDays,
-    ArrowDown, CircleDollarSign, Wrench,
+    Megaphone, Route, Target, Briefcase, FileText, CalendarDays,
+    ArrowDown, CircleDollarSign,
 } from 'lucide-react'
 import { getTheme, ACCENTS } from './theme'
 import { useIsMobile } from './ui'
@@ -53,7 +53,6 @@ const FLOW = [
                     { icon: Megaphone, text: 'Campaigns — SMS/email win-back · $99' },
                     { icon: Route, text: 'Route Optimisation · $99 — backend orchestration engine, sequences jobs around confirmed bookings & staff windows; shown in Connect\'s job view or built into Trak (vehicle tracking on the roadmap)' },
                     { icon: Target, text: 'Leads & Attribution · $69' },
-                    { icon: Bot, text: 'AI Assistant · $39' },
                 ],
             },
         ],
