@@ -51,7 +51,7 @@ const FLOW = [
                 title: 'Add-ons', color: ACCENTS.cyan,
                 items: [
                     { icon: Megaphone, text: 'Campaigns — SMS/email win-back · $99' },
-                    { icon: Route, text: 'Route Optimisation · $99 — sequenced runs from your Trak jobs (vehicle tracking on the roadmap)' },
+                    { icon: Route, text: 'Route Optimisation · $99 — backend orchestration engine, sequences jobs around confirmed bookings & staff windows; shown in Connect\'s job view or built into Trak (vehicle tracking on the roadmap)' },
                     { icon: Target, text: 'Leads & Attribution · $69' },
                     { icon: Bot, text: 'AI Assistant · $39' },
                 ],
