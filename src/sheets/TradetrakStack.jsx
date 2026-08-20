@@ -65,7 +65,7 @@ const FLOW = [
             { icon: Briefcase, text: 'Jobs & tasks' },
             { icon: FileText, text: 'Quoting' },
             { icon: CalendarDays, text: 'Scheduling' },
-            { icon: CircleDollarSign, text: '$1 per job' },
+            { icon: FileText, text: 'Invoicing' },
         ],
     },
 ]
@@ -74,13 +74,13 @@ function FlowArrow({ t, mobile, label }) {
     return (
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4, padding: mobile ? '6px 0' : '8px 0' }}>
             <div style={{
-                display: 'flex', alignItems: 'center', gap: 6,
-                fontSize: mobile ? 11.5 : 11.5, fontWeight: 700, color: t.mode === 'dark' ? '#c4b5fd' : '#6d28d8',
+                display: 'flex', alignItems: 'center', gap: 8,
+                fontSize: mobile ? 14 : 15.5, fontWeight: 800, letterSpacing: '-0.01em', color: t.mode === 'dark' ? '#c4b5fd' : '#6d28d8',
                 background: t.tint(ACCENTS.violet, t.mode === 'dark' ? '1c' : '10'),
                 border: `1px solid ${t.tintBorder(ACCENTS.violet, '33')}`,
-                borderRadius: 99, padding: '5px 14px',
+                borderRadius: 99, padding: mobile ? '8px 18px' : '9px 20px',
             }}>
-                <ArrowDown size={13} />
+                <ArrowDown size={mobile ? 16 : 17} />
                 {label}
             </div>
             <div style={{ width: 1, height: mobile ? 10 : 14, background: t.tintBorder(ACCENTS.violet, '55') }} />
